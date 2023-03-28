@@ -14,10 +14,10 @@
 - 本脚本的作用就是解决以上自己的痛点，解除网页限制，实现畅快地上网学习
 
 ## 用法
-1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器插件；
-2. 安装```KeepChatGPT```脚本，可从下面一个渠道安装：
+1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器拓展；
+2. 安装```KeepChatGPT```插件，可从下面选一个渠道安装：
 
 | 序号 | UserScript源 |
 | --- | --- |
 | 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
-| 2 | [GreasyFork](https://greasyfork.org/) |
+| 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
