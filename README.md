@@ -2,20 +2,25 @@
 
 ## 简介
 
-- ChatGPT畅聊插件
-- 不再有下面这个报错```NetworkError when attempting to fetch resource.```：
+- ChatGPT畅聊插件，ChatGPT网络异常拜拜员
+- 解决报错```NetworkError when attempting to fetch resource.```：
 - <img src="./assets/network_error.png" width="750"></img>
-- 不再有下面这个报错```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```：
+- 解决报错```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```：
 - <img src="./assets/somthing_wrong.png" width="750"></img>
-- 不再被频繁地打断交流
-- 不再频繁地刷新网页
+- 解决被频繁地打断交流
+- 解决频繁地刷新网页
 - 喜欢这个脚本的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
 
-## 研发思路来源
+## 体验
 
-- 天天频繁红框警告```NetworkError```，梁非凡都觉得烦
-- 可能是网络慢，但是据说
-- 本脚本的作用就是解决以上自己的痛点，解除网页限制，实现畅快地上网学习
+- 在没有这个插件之前，聊天频频红框警告```NetworkError```，每隔十几分钟出现一次，总是需要经历这几个步骤：下发指令+等待结果+遇到报错+点击再次下发+继续报错+复制刚刚的指令+刷新页面+粘贴刚刚的指令+重新下发指令+得到结果。
+- 有了这个插件以后，经历了顺畅地步骤：下发指令+得到结果。
+- 顺畅地聊天
+
+## 原理
+
+- 绕过Cloudflare防机器人
+- 流量最小化
 
 ## 用法
 
