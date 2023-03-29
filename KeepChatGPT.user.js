@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         KeepChatGPT
 // @description  ChatGPT网络异常拜拜员. Chatgpt no longer network error. 解决这几类报错: (1) NetworkError when attempting to fetch resource, (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version      2.1
+// @version      2.2
 // @author       xcanwin
 // @namespace    https://github.com/xcanwin/KeepChatGPT/
 // @supportURL   https://github.com/xcanwin/KeepChatGPT/
+// @updateURL    https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js
+// @downloadURL  https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js
 // @license      GPL-2.0-only
 // @match        *://chat.openai.com/chat*
 // @grant        none
