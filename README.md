@@ -2,7 +2,7 @@
 
 ## 简介
 
-- ChatGPT畅聊插件，ChatGPT网络异常拜拜员
+- ChatGPT畅聊插件，ChatGPT网络c错误拜拜员
 - 解决报错```NetworkError when attempting to fetch resource.```：
 - <img src="./assets/network_error.png" width="750"></img>
 - 解决报错```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```：
@@ -21,9 +21,9 @@
 
 ## 原理
 
-- 绕过Cloudflare防机器人
-- 流量最小化
-- 点击KeepChatGPT畅聊用户专属金标可以看到左下角出现绕过过程
+- Headless绕过Cloudflare图灵
+- 流量最小化原则
+- 点击KeepChatGPT畅聊用户专属金标，左下角会展现绕过过程
 
 ## 用法
 
