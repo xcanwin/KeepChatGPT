@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KeepChatGPT
 // @description  完美解决ChatGPT网络错误, 不再频繁地刷新网页, 非常顺畅. 解决了这几类报错: (1) NetworkError when attempting to fetch resource, (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version      2.3
+// @version      2.4
 // @author       xcanwin
 // @namespace    https://github.com/xcanwin/KeepChatGPT/
 // @supportURL   https://github.com/xcanwin/KeepChatGPT/
@@ -31,6 +31,10 @@
                 try {
                     console.log(`KeepChatGPT: ${JSON.parse(ifr.contentDocument.body.innerText)['expires']}`);
                     ifr.contentWindow.document.body.style.background = '#555';
+                    var cf_checkbox = document.querySelector(".ctp-checkbox-label");
+                    if (cf_checkbox) {
+                        cf_checkbox.click();
+                    }
                 } catch (e) {
                 }
             };

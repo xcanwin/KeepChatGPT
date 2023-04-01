@@ -21,7 +21,8 @@
 
 ## 原理
 
-- Headless绕过Cloudflare图灵
+- Headless绕过Cloudflare爬虫验证
+- non click绕过Cloudflare机器人验证
 - 流量最小化原则
 - 点击KeepChatGPT畅聊用户专属金标，左下角会展现绕过过程
 
