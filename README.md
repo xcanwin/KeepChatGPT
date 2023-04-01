@@ -2,7 +2,7 @@
 
 ## 简介
 
-- ChatGPT畅聊插件，ChatGPT网络c错误拜拜员
+- ChatGPT畅聊插件，再也不会出现网络报错，再也不用刷新网页
 - 解决报错```NetworkError when attempting to fetch resource.```：
 - <img src="./assets/network_error.png" width="750"></img>
 - 解决报错```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```：
@@ -11,11 +11,14 @@
 - 解决频繁地刷新网页
 - 喜欢这个脚本的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
 
-## 体验
+## 体验对比
 
-- 在没有这个插件之前，聊天频频红框警告```NetworkError```，每隔十几分钟出现一次，总是需要经历这几个步骤：下发指令+等待结果+遇到报错+点击再次下发+继续报错+复制刚刚的指令+刷新页面+粘贴刚刚的指令+重新下发指令+得到结果。
-- 有了这个插件以后，经历了顺畅地步骤：下发指令+得到结果。
-- 顺畅地聊天
+| 实验环境 | 现象 | 步骤1 | 步骤2 | 步骤3 | 步骤4 | 步骤5 | 步骤6 | 步骤7 | 步骤8 | 步骤9 | 步骤10 | 步骤11 | 步骤12 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 不使用KeepChatGPT插件 | 聊天频频红框警告```NetworkError```，每隔十几分钟出现一次，必须刷新网页 | 下发指令 | 等待结果 | 遇到网络报错 | 尝试点击重新下发 | 再次遇到网络报错 | 复制刚刚的指令 | 刷新页面 | 打开刚刚的聊天会话 | 粘贴刚刚的指令 | 再次下发指令 | 再次等待结果 | 得到结果 |
+| 使用KeepChatGPT插件 | 再也不会出现网络报错，再也不用刷新网页 | 下发指令 | 等待结果 | 得到结果 |  |  |  |  |  |  |  |  |  |
+
+- 从对比可知，足足省去9个多余的步骤，顺畅地聊天
 - 享受免费的KeepChatGPT畅聊用户专属金标
 - <img src="./assets/head.png" width="750"></img>
 
