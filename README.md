@@ -27,7 +27,7 @@
 - Headless绕过Cloudflare爬虫验证
 - non click绕过Cloudflare机器人验证
 - 流量最小化原则
-- 点击KeepChatGPT畅聊用户专属金标，左下角会展现绕过过程
+- 鼠标移到```KeepChatGPT专属金标```，点击```显示调试窗口```，左下角会展现绕过过程
 
 ## 用法
 

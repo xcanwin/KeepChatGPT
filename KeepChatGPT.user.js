@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name             KeepChatGPT
 // @description      让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: （1）NetworkError when attempting to fetch resource. （2）Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version          2.8
+// @version          2.9
 // @author           xcanwin
 // @description:en   Let's make our use of ChatGPT more efficient and smoother, by perfecting the solution to ChatGPT network errors. This saves us from frequently refreshing the webpage and eliminates over 10 unnecessary steps. The following errors have been resolved: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @namespace        https://github.com/xcanwin/KeepChatGPT/
@@ -54,7 +54,7 @@
             ndiv.innerHTML = `<img src='${GM_info.script.icon}' />KeepChatGPT by xcanwin`;
             var nav = document.querySelector('nav');
             nav.insertBefore(ndiv, nav.childNodes[0]);
-            ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>显示调试窗口</li><li id=nmenuid2>暗色主题</li><li id=nmenuid3>选项3</li></ul></div>`);
+            ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>显示调试窗口</li><li id=nmenuid2>暗色主题</li></ul></div>`);
             var newstyle = document.createElement('style');
             newstyle.innerHTML = `
 #ndivid {
