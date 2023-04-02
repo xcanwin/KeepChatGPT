@@ -10,6 +10,7 @@
 - 解决被频繁地打断交流
 - 解决频繁地刷新网页
 - 支持多国语言
+- 解决用户手误复制用户头像的问题
 - 喜欢这个脚本的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
 
 ## 对比
