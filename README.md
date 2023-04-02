@@ -19,15 +19,15 @@
 | 使用KeepChatGPT插件 | 再也不会出现网络报错，再也不用刷新网页 | 下发指令 | 等待结果 | 得到结果 |  |  |  |  |  |  |  |  |  |  |
 
 - 从对比可知，足足省去10个多余的步骤，顺畅地聊天
-- 享受免费的KeepChatGPT畅聊用户专属金标
+- 享受免费的```KeepChatGPT畅聊用户专属金标```
 - <img src="./assets/head.png" width="750"></img>
 
 ## 原理
 
-- Headless绕过Cloudflare爬虫验证
-- non click绕过Cloudflare机器人验证
-- 流量最小化原则
-- 鼠标移到```KeepChatGPT专属金标```，点击```显示调试窗口```，左下角会展现绕过过程
+- 利用Headless绕过打开页面时的Cloudflare爬虫验证
+- 利用non-click绕过不定时的Cloudflare机器人验证
+- 保持流量最小化原则
+- 鼠标移到```KeepChatGPT畅聊用户专属金标```，点击```显示调试窗口```，左下角会展现绕过过程
 
 ## 用法
 
