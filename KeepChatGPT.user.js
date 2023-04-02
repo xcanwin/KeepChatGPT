@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name             KeepChatGPT
 // @description      让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: （1）NetworkError when attempting to fetch resource. （2）Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version          2.6
+// @version          2.8
 // @author           xcanwin
 // @description:en   Let's make our use of ChatGPT more efficient and smoother, by perfecting the solution to ChatGPT network errors. This saves us from frequently refreshing the webpage and eliminates over 10 unnecessary steps. The following errors have been resolved: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @namespace        https://github.com/xcanwin/KeepChatGPT/
@@ -30,12 +30,12 @@
             ifr.style.height = '75px';
             ifr.onload = function() {
                 try {
-                    console.log(`KeepChatGPT: ${JSON.parse(ifr.contentDocument.body.innerText)['expires']}`);
-                    ifr.contentWindow.document.body.style.background = '#555';
                     var cf_checkbox = document.querySelector(".ctp-checkbox-label");
                     if (cf_checkbox) {
                         cf_checkbox.click();
                     }
+                    console.log(`KeepChatGPT: ${JSON.parse(ifr.contentDocument.body.innerText)['expires']}`);
+                    ifr.contentWindow.document.body.style.background = '#555';
                 } catch (e) {
                 }
             };
@@ -52,9 +52,9 @@
             ndiv.id = "ndivid";
             ndiv.setAttribute("class", document.querySelector("nav a").className);
             ndiv.innerHTML = `<img src='${GM_info.script.icon}' />KeepChatGPT by xcanwin`;
-            ndiv.onclick = kcg;
             var nav = document.querySelector('nav');
             nav.insertBefore(ndiv, nav.childNodes[0]);
+            ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>显示调试窗口</li><li id=nmenuid2>暗色主题</li><li id=nmenuid3>选项3</li></ul></div>`);
             var newstyle = document.createElement('style');
             newstyle.innerHTML = `
 #ndivid {
@@ -96,13 +96,70 @@
         transform: translateX(150%) translateY(150%) rotate(-45deg);
     }
 }
+
+.dropdown-menu {
+  background-color: #202123;
+  color: #FFFFFF;
+  border: 1px solid #4D4D4F;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: none;
+  min-width: 200px;
+  padding: 12px 0;
+  position: absolute;
+  z-index: 1000;
+  top: 7px;
+  left: 250px;
+}
+.dropdown-menu li {
+  display: block;
+  padding: 8px 24px;
+  text-align: left;
+  user-select: none;
+}
+.dropdown-menu li:hover {
+  background-color: #273746;
+  cursor: pointer;
+}
 `;
             document.body.appendChild(newstyle);
-        }
-    }
+            var newscript = document.createElement('script');
+            newscript.innerHTML = `
+var dropdownButton = document.querySelector('#ndivid');
+var dropdownMenu = document.querySelector('.dropdown-menu');
 
-    var kcg = function() {
-        window.xcanwin ? xcanwin.style.display == "none" ? xcanwin.style.display = "" : xcanwin.style.display = "none" : 0;
+dropdownButton.onmouseover = dropdownMenu.onmouseover = function() {
+  dropdownMenu.style.display = 'block';
+};
+
+dropdownButton.onmouseleave = dropdownMenu.onmouseleave = function() {
+  dropdownMenu.style.display = 'none';
+};
+
+nmenuid1.onclick = function() {
+    if (xcanwin.style.display == "none") {
+        xcanwin.style.display = "";
+        nmenuid1.innerText = "隐藏调试窗口";
+    } else {
+        xcanwin.style.display = "none";
+        nmenuid1.innerText = "显示调试窗口";
+    }
+};
+nmenuid2.onclick = function() {
+    if (nmenuid2.innerText == "暗色主题") {
+        ndivid.styleOrigin = ndivid.style;
+        ndivid.style.background = "#2C3E50";
+        ndivid.style.animation = "none";
+        ndivid.style.color = "#ffffff";
+        nmenuid2.innerText = "浅色主题";
+    } else {
+        ndivid.style = ndivid.styleOrigin;
+        nmenuid2.innerText = "暗色主题";
+    }
+};
+`;
+            document.body.appendChild(newscript);
+        }
     }
 
     setInterval(function() {
