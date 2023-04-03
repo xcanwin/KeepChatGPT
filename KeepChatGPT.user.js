@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           3.2
+// @version           3.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -69,17 +69,16 @@
         if(!window.xcanwin){
             var ifr = document.createElement('iframe');
             ifr.id = "xcanwin";
-            ifr.style.display = 'none';
             ifr.src = u;
+            ifr.style.height = '0px';
             ifr.style.width = document.querySelector("nav a").offsetWidth + 'px';
-            ifr.style.height = '75px';
             ifr.onload = function() {
                 try {
                     var cf_checkbox = document.querySelector(".ctp-checkbox-label");
                     if (cf_checkbox) {
                         cf_checkbox.click();
                     }
-                    console.log(`KeepChatGPT: ${JSON.parse(ifr.contentDocument.body.innerText)['expires']}`);
+                    console.log(`KeepChatGPT: ${JSON.parse(window.xcanwin.contentDocument.body.innerText).expires}`);
                     ifr.contentWindow.document.body.style.background = '#555';
                 } catch (e) {
                 }
@@ -99,7 +98,7 @@
             ndiv.innerHTML = `<img src='${GM_info.script.icon}' />KeepChatGPT by xcanwin`;
             var nav = document.querySelector('nav');
             nav.insertBefore(ndiv, nav.childNodes[0]);
-            ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${TL("显示调试")}</li><li id=nmenuid2>${TL("暗色主题")}</li></ul></div>`);
+            ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${window.TL("显示调试")}</li><li id=nmenuid2>${window.TL("暗色主题")}</li></ul></div>`);
             var newstyle = document.createElement('style');
             newstyle.innerHTML = `
 #ndivid {
@@ -186,11 +185,11 @@ dropdownButton.onmouseleave = dropdownMenu.onmouseleave = function() {
 };
 
 nmenuid1.onclick = function() {
-    if (xcanwin.style.display == "none") {
-        xcanwin.style.display = "";
+    if (xcanwin.style.height == '0px') {
+        xcanwin.style.height = '75px';
         nmenuid1.innerText = TL("隐藏调试");
     } else {
-        xcanwin.style.display = "none";
+        xcanwin.style.height = '0px';
         nmenuid1.innerText = TL("显示调试");
     }
 };
@@ -221,6 +220,6 @@ nmenuid2.onclick = function() {
         if (document.querySelector("nav a")) {
             loadifr();
         }
-    }, 1000 * 30);
+    }, 1000 * 60);
 
 })();
