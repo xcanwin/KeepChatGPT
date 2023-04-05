@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           3.3
+// @version           4.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -44,8 +44,11 @@
 // @description:zh-TW 讓我們在使用ChatGPT過程中更高效、更順暢，完美解決ChatGPT網路錯誤，不再頻繁地重新整理網頁，足足省去10個多餘的步驟。以下的錯誤已被解決: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @icon              data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" stroke-width="2" fill="none" stroke="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
 // @license           GPL-2.0-only
-// @match             *://chat.openai.com/chat*
-// @grant             none
+// @match             https://chat.openai.com/chat*
+// @grant             GM_addStyle
+// @grant             GM_addElement
+// @grant             GM_setValue
+// @grant             GM_getValue
 // @run-at            document-idie
 // ==/UserScript==
 
@@ -53,7 +56,9 @@
 (function() {
     'use strict';
 
-    window.TL = function(s) {
+    var qs = document.querySelector.bind(document);
+
+    var tl = function(s) {
         var i, r, lang = {"index":{"暗色主题":"dm","浅色主题":"lm","隐藏调试":"hd","显示调试":"sd"},"local":{"ar":{"dm":"الوضع الداكن","lm":"وضع فاتح","hd":"إخفاء التصحيح","sd":"إظهار التصحيح"},"bg":{"dm":"Тъмна тема","lm":"Светла тема","hd":"Скриване на отстраняване на грешки","sd":"Показване на отстраняване на грешки"},"cs":{"dm":"Tmavý režim","lm":"Světlý režim","hd":"Skrýt ladění","sd":"Zobrazit ladění"},"da":{"dm":"Mørk tilstand","lm":"Lys tilstand","hd":"Skjul fejlfinding","sd":"Vis fejlfinding"},"de":{"dm":"Dunkler Modus","lm":"Heller Modus","hd":"Debugging ausblenden","sd":"Fehlerbehebung anzeigen"},"el":{"dm":"Σκοτεινή θεματολογία","lm":"Φωτεινή θεματολογία","hd":"Απόκρυψη αποσφαλμάτωσης","sd":"Εμφάνιση αποσφαλμάτωσης"},"en":{"dm":"Dark mode","lm":"Light mode","hd":"Hide debugging","sd":"Show debugging"},"eo":{"dm":"Malhela moduso","lm":"Hela moduso","hd":"Kaŝi la korektadon","sd":"Montri depuradon"},"es":{"dm":"Modo oscuro","lm":"Modo claro","hd":"Ocultar depuración","sd":"Mostrar depuración"},"fi":{"dm":"Tumma tila","lm":"Vaalea tila","hd":"Piilota virheenkorjaus","sd":"Näytä virheenkorjaus"},"fr":{"dm":"Mode sombre","lm":"Mode clair","hd":"Masquer le débogage","sd":"Afficher le débogage"},"fr-CA":{"dm":"Mode nuit","lm":"Mode jour","hd":"Masquer le débogage","sd":"Afficher le débogage"},"he":{"dm":"מצב כהה","lm":"מצב בהיר","hd":"הסתרת תיקון באגים","sd":"הצגת התיקון"},"hu":{"dm":"Sötét mód","lm":"Világos mód","hd":"Hibakeresés elrejtése","sd":"Hibakeresés mutatása"},"id":{"dm":"Mode gelap","lm":"Mode terang","hd":"Sembunyikan debugging","sd":"Tampilkan debugging"},"it":{"dm":"Modalità scura","lm":"Modalità chiara","hd":"Nascondi il debug","sd":"Mostra debug"},"ja":{"dm":"ダークモード","lm":"ライトモード","hd":"デバッグを非表示","sd":"デバッグを表示"},"ka":{"dm":"ბნელი რეჟიმი","lm":"ნათელი რეჟიმი","hd":"ბრძანების მართვა დამალვა","sd":"გამოჩენა დებაგი"},"ko":{"dm":"다크 모드","lm":"라이트 모드","hd":"디버깅 숨기기","sd":"디버깅 표시"},"nb":{"dm":"Mørk modus","lm":"Lys modus","hd":"Skjul feilsøking","sd":"Vis feilsøking"},"nl":{"dm":"Donkere modus","lm":"Lichte modus","hd":"Foutopsporing verbergen","sd":"Foutopsporing weergeven"},"pl":{"dm":"Tryb ciemny","lm":"Tryb jasny","hd":"Ukryj debugowanie","sd":"Pokaż debugowanie"},"pt-BR":{"dm":"Modo escuro","lm":"Modo claro","hd":"Ocultar depuração","sd":"Mostrar depuração"},"ro":{"dm":"Mod întunecat","lm":"Mod luminos","hd":"Ascunde depanarea","sd":"Afișare depanare"},"ru":{"dm":"Темный режим","lm":"Светлый режим","hd":"Скрыть отладку","sd":"Показать отладку"},"sk":{"dm":"Tmavý režim","lm":"Svetlý režim","hd":"Skryť ladenie","sd":"Zobraziť ladenie"},"sr":{"dm":"Тамни режим","lm":"Светла тема","hd":"Сакриј отклањање грешака","sd":"Прикажи отклањање грешака"},"sv":{"dm":"Mörkt läge","lm":"Ljust läge","hd":"Dölj felsökning","sd":"Visa felsökning"},"th":{"dm":"โหมดมืด","lm":"โหมดสว่าง","hd":"ซ่อนการตรวจจับข้อผิดพลาด","sd":"แสดงการแก้ไขข้อผิดพลาด"},"tr":{"dm":"Karanlık mod","lm":"Aydınlık mod","hd":"Hata ayıklamayı gizle","sd":"Hata ayıklama göster"},"uk":{"dm":"Темний режим","lm":"Світлий режим","hd":"Приховати налагодження","sd":"Показати налагодження"},"ug":{"dm":"تېما كۆرسىتىش","lm":"ئاچقۇچ كۆرۈنۈش","hd":"خاتا تۈزۈملىكنى يوشۇرۇش","sd":"كۆرسەتكەن يۇقىرىلاش"},"vi":{"dm":"Chế độ tối","lm":"Chế độ sáng","hd":"Ẩn gỡ lỗi","sd":"Hiển thị gỡ lỗi"},"zh-CN":{"dm":"暗色主题","lm":"浅色主题","hd":"隐藏调试","sd":"显示调试"},"zh-TW":{"dm":"暗黑模式","lm":"淺色主題","hd":"隱藏除錯","sd":"顯示調試"}}};
         try {
             i = lang.index[s];
@@ -62,46 +67,85 @@
             r = s;
         }
         return r;
-    }
+    };
+
+    var sv = function(key, value = "") {
+        GM_setValue(key, value);
+    };
+
+    var gv = function(key, value = "") {
+        return GM_getValue(key, value);
+    };
 
     var loadifr = function() {
         var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
-        if(!window.xcanwin){
-            var ifr = document.createElement('iframe');
-            ifr.id = "xcanwin";
-            ifr.src = u;
-            ifr.style.height = '0px';
-            ifr.style.width = document.querySelector("nav a").offsetWidth + 'px';
-            ifr.onload = function() {
+        if (qs("#xcanwin")==null) {
+            var nifr = document.createElement('iframe');
+            nifr.id = "xcanwin";
+            nifr.src = u;
+            nifr.style = `height: 0px; width: ${qs("nav a").offsetWidth}px;`;
+            nifr.onload = function() {
                 try {
-                    var cf_checkbox = document.querySelector(".ctp-checkbox-label");
-                    if (cf_checkbox) {
-                        cf_checkbox.click();
+                    if (qs(".ctp-checkbox-label")) {
+                        qs(".ctp-checkbox-label").click();
                     }
-                    console.log(`KeepChatGPT: ${JSON.parse(window.xcanwin.contentDocument.body.innerText).expires}`);
-                    ifr.contentWindow.document.body.style.background = '#555';
+                    console.log(`KeepChatGPT: ${JSON.parse(qs("#xcanwin").contentDocument.body.innerText).expires}`);
+                    nifr.contentWindow.document.body.style.background = '#555';
                 } catch (e) {
                 }
             };
-            document.querySelector("nav").appendChild(ifr);
+            qs("nav").appendChild(nifr);
         } else{
-            window.xcanwin.src = u;
+            qs("#xcanwin").src = u;
         }
     }
 
     var loadhead = function() {
-        if(!window.ndivid){
-            loadifr();
-            var ndiv = document.createElement("div");
-            ndiv.id = "ndivid";
-            ndiv.setAttribute("class", document.querySelector("nav a").className);
-            ndiv.innerHTML = `<img src='${GM_info.script.icon}' />KeepChatGPT by xcanwin`;
-            var nav = document.querySelector('nav');
-            nav.insertBefore(ndiv, nav.childNodes[0]);
-            ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${window.TL("显示调试")}</li><li id=nmenuid2>${window.TL("暗色主题")}</li></ul></div>`);
-            var newstyle = document.createElement('style');
-            newstyle.innerHTML = `
-#ndivid {
+        if (qs("#kcg")!==null) {return;}
+        loadifr();
+        var ndiv = document.createElement("div");
+        ndiv.id = "kcg";
+        ndiv.setAttribute("class", qs("nav a").className);
+        ndiv.innerHTML = `<img src='${GM_info.script.icon}' /><a href='${GM_info.script.namespace}'>Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin</a>`;
+        var nav = qs('nav');
+        nav.insertBefore(ndiv, nav.childNodes[0]);
+        ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li></ul></div>`);
+
+        var dropdownMenu = qs('.dropdown-menu');
+        qs('#kcg').onmouseover = dropdownMenu.onmouseover = function() {
+            dropdownMenu.style.display = 'block';
+        };
+        qs('#kcg').onmouseleave = dropdownMenu.onmouseleave = function() {
+            dropdownMenu.style.display = 'none';
+        };
+
+        qs('#nmenuid1').onclick = function() {
+            if (gv("k_showDebug", false) == true) {
+                qs('#xcanwin').style.height = '0px';
+                qs('#nmenuid1').innerText = tl("显示调试")+"✗";
+                sv("k_showDebug", false);
+            } else {
+                qs('#xcanwin').style.height = '75px';
+                qs('#nmenuid1').innerText = tl("显示调试")+"✓";
+                sv("k_showDebug", true);
+            }
+        };
+        qs('#nmenuid2').onclick = function() {
+            if (gv("k_theme", "light") == "light") {
+                qs('#kcg').styleOrigin = qs('#kcg').style;
+                qs('#kcg').style.background = "#2C3E50";
+                qs('#kcg').style.animation = "none";
+                qs('#kcg').style.color = "#ffffff";
+                qs('#nmenuid2').innerText = tl("暗色主题")+"✓";
+                sv("k_theme", "dark");
+            } else {
+                qs('#kcg').style = qs('#kcg').styleOrigin;
+                qs('#nmenuid2').innerText = tl("浅色主题")+"✓";
+                sv("k_theme", "light");
+            }
+        };
+        GM_addStyle(`
+#kcg {
     color: #555;
     background: linear-gradient(to top right, #F0B27A, #FDE184, #F0B27A);
     animation: gradient 6s ease-in-out infinite;
@@ -116,7 +160,7 @@
     100%{background-color:#F0B27A;}
 }
 
-#ndivid::before {
+#kcg::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -169,55 +213,20 @@
 .rounded-sm {
   user-select: none;
 }
-`;
-            document.body.appendChild(newstyle);
-            var newscript = document.createElement('script');
-            newscript.innerHTML = `
-var dropdownButton = document.querySelector('#ndivid');
-var dropdownMenu = document.querySelector('.dropdown-menu');
-
-dropdownButton.onmouseover = dropdownMenu.onmouseover = function() {
-  dropdownMenu.style.display = 'block';
-};
-
-dropdownButton.onmouseleave = dropdownMenu.onmouseleave = function() {
-  dropdownMenu.style.display = 'none';
-};
-
-nmenuid1.onclick = function() {
-    if (xcanwin.style.height == '0px') {
-        xcanwin.style.height = '75px';
-        nmenuid1.innerText = TL("隐藏调试");
-    } else {
-        xcanwin.style.height = '0px';
-        nmenuid1.innerText = TL("显示调试");
-    }
-};
-nmenuid2.onclick = function() {
-    if (nmenuid2.innerText == TL("暗色主题")) {
-        ndivid.styleOrigin = ndivid.style;
-        ndivid.style.background = "#2C3E50";
-        ndivid.style.animation = "none";
-        ndivid.style.color = "#ffffff";
-        nmenuid2.innerText = TL("浅色主题");
-    } else {
-        ndivid.style = ndivid.styleOrigin;
-        nmenuid2.innerText = TL("暗色主题");
-    }
-};
-`;
-            document.body.appendChild(newscript);
-        }
+`);
     }
 
     setInterval(function() {
-        if (document.querySelector("nav a")) {
+        if (qs("nav a")) {
             loadhead();
         }
     }, 300);
 
     setInterval(function() {
-        if (document.querySelector("nav a")) {
+        if (qs(".ctp-checkbox-label")) {
+            qs(".ctp-checkbox-label").click();
+        }
+        if (qs("nav a")) {
             loadifr();
         }
     }, 1000 * 60);
