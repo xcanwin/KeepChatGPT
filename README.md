@@ -24,7 +24,7 @@
 - 享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
 - <img src="./assets/head.png" width="750"></img>
 - 喜欢暗调的朋友可以鼠标移到```专属金标```选择```主题```修改为```专属蓝标```：
-- <img src="./assets/head_dark.png" width="220"></img>
+- <img src="./assets/head_dark.png" width="200"></img>
 
 ## 原理
 
