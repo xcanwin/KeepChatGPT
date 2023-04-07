@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           4.0
+// @version           4.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -79,25 +79,33 @@
 
     var loadifr = function() {
         var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
-        if (qs("#xcanwin")==null) {
-            var nifr = document.createElement('iframe');
-            nifr.id = "xcanwin";
-            nifr.src = u;
-            nifr.style = `height: 0px; width: ${qs("nav a").offsetWidth}px;`;
-            nifr.onload = function() {
-                try {
-                    if (qs(".ctp-checkbox-label")) {
-                        qs(".ctp-checkbox-label").click();
-                    }
-                    console.log(`KeepChatGPT: ${JSON.parse(qs("#xcanwin").contentDocument.body.innerText).expires}`);
-                    nifr.contentWindow.document.body.style.background = '#555';
-                } catch (e) {
+        fetch(u).then((response) => {
+            if (response.status == 403) {
+                if (qs("#xcanwin")==null) {
+                    var nifr = document.createElement('iframe');
+                    nifr.id = "xcanwin";
+                    nifr.src = u;
+                    nifr.style = `height: 0px; width: ${qs("nav a").offsetWidth}px;`;
+                    nifr.onload = function() {
+                        try {
+                            console.log(`KeepChatGPT: iframe: ${JSON.parse(qs("#xcanwin").contentDocument.body.innerText).expires}`);
+                            nifr.contentWindow.document.body.style.background = '#555';
+                        } catch (e) {
+                            console.log(`KeepChatGPT: iframe: ERROR: ${e}`);
+                        }
+                    };
+                    qs("nav").appendChild(nifr);
+                } else{
+                    qs("#xcanwin").src = u;
                 }
-            };
-            qs("nav").appendChild(nifr);
-        } else{
-            qs("#xcanwin").src = u;
-        }
+            } else {
+                response.json().then((data) => {
+                    console.log(`KeepChatGPT: fetch: ${data.expires}`);
+                }).catch((err) => {
+                    console.log(`KeepChatGPT: fetch: ERROR: ${err}`);
+                })
+            }
+        });
     }
 
     var loadhead = function() {
@@ -121,11 +129,11 @@
 
         qs('#nmenuid1').onclick = function() {
             if (gv("k_showDebug", false) == true) {
-                qs('#xcanwin').style.height = '0px';
+                if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
                 qs('#nmenuid1').innerText = tl("显示调试")+"✗";
                 sv("k_showDebug", false);
             } else {
-                qs('#xcanwin').style.height = '75px';
+                if (qs('#xcanwin')) qs('#xcanwin').style.height = '75px';
                 qs('#nmenuid1').innerText = tl("显示调试")+"✓";
                 sv("k_showDebug", true);
             }
@@ -223,12 +231,9 @@
     }, 300);
 
     setInterval(function() {
-        if (qs(".ctp-checkbox-label")) {
-            qs(".ctp-checkbox-label").click();
-        }
         if (qs("nav a")) {
             loadifr();
         }
-    }, 1000 * 60);
+    }, 1000 * 30);
 
 })();
