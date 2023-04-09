@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           4.2
+// @version           4.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -85,11 +85,11 @@
                     var nifr = document.createElement('iframe');
                     nifr.id = "xcanwin";
                     nifr.src = u;
-                    nifr.style = `height: 0px; width: ${qs("nav a").offsetWidth}px;`;
+                    nifr.style = `height: 0px; width: 100%;`;
                     nifr.onload = function() {
                         try {
+                            nifr.contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
                             console.log(`KeepChatGPT: iframe: ${JSON.parse(qs("#xcanwin").contentDocument.body.innerText).expires}`);
-                            nifr.contentWindow.document.body.style.background = '#555';
                         } catch (e) {
                             console.log(`KeepChatGPT: iframe: ERROR: ${e}`);
                         }
@@ -113,7 +113,7 @@
         loadifr();
         var ndiv = document.createElement("div");
         ndiv.id = "kcg";
-        ndiv.setAttribute("class", qs("nav a").className);
+        ndiv.setAttribute("class", qs("nav a.flex").className);
         ndiv.innerHTML = `<img src='${GM_info.script.icon}' /><a href='${GM_info.script.namespace}'>Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin</a>`;
         var nav = qs('nav');
         nav.insertBefore(ndiv, nav.childNodes[0]);
@@ -133,7 +133,7 @@
                 qs('#nmenuid1').innerText = tl("显示调试")+"✗";
                 sv("k_showDebug", false);
             } else {
-                if (qs('#xcanwin')) qs('#xcanwin').style.height = '75px';
+                if (qs('#xcanwin')) qs('#xcanwin').style.height = '125px';
                 qs('#nmenuid1').innerText = tl("显示调试")+"✓";
                 sv("k_showDebug", true);
             }
@@ -229,13 +229,13 @@ nav {
     }
 
     setInterval(function() {
-        if (qs("nav a")) {
+        if (qs("nav a.flex")) {
             loadhead();
         }
     }, 300);
 
     setInterval(function() {
-        if (qs("nav a")) {
+        if (qs("nav a.flex")) {
             loadifr();
         }
     }, 1000 * 30);
