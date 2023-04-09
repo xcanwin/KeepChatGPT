@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           4.4
+// @version           4.5
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -79,35 +79,47 @@
 
     var formatDate = function(d) {
         return (new Date(d)).toLocaleString();
-    }
+    };
 
-    var loadifr = function() {
+    var setIfr = function(u = "") {
+        if (qs("#xcanwin")==null) {
+            var nIfr = document.createElement('iframe');
+            nIfr.id = "xcanwin";
+            nIfr.style = `height: 0px; width: 100%;`;
+            if (u) {
+                nIfr.src = u;
+            }
+            nIfr.onload = function() {
+                var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
+                try {
+                    qs("#xcanwin").contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
+                    if (qs("#xcanwin").src) {
+                        console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
+                    }
+                } catch (e) {
+                    console.log(`KeepChatGPT: IFRAME: ERROR: ${e},\nERROR RESPONSE:\n${nIfrText}`);
+                }
+            };
+            qs("nav").appendChild(nIfr);
+        } else{
+            if (u) {
+                qs("#xcanwin").src = u;
+            }
+        }
+    };
+
+    var keepChat = function() {
         var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
         fetch(u).then((response) => {
             if (response.status == 403) {
-                if (qs("#xcanwin")==null) {
-                    var nifr = document.createElement('iframe');
-                    nifr.id = "xcanwin";
-                    nifr.src = u;
-                    nifr.style = `height: 0px; width: 100%;`;
-                    nifr.onload = function() {
-                        try {
-                            nifr.contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
-                            console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(qs("#xcanwin").contentWindow.document.documentElement.innerText).expires)}`);
-                        } catch (e) {
-                            console.log(`KeepChatGPT: IFRAME: ERROR: ${e},\nERROR RESPONSE:\n${qs("#xcanwin").contentDocument.body.innerText}`);
-                        }
-                    };
-                    qs("nav").appendChild(nifr);
-                } else{
-                    qs("#xcanwin").src = u;
-                }
+                setIfr(u);
             } else {
                 response.text().then((data) => {
                     try {
-                        console.log(`KeepCqhatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
+                        console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
+                        qs("#xcanwin").srcdoc = data;
                     } catch (e) {
-                        console.log(`KeepChatGPT: FETCH: ERROR: ${e},\nERROR RESPONSE:\n${data}`);
+                        setIfr(u);
                     }
                 })
             }
@@ -116,7 +128,6 @@
 
     var loadhead = function() {
         if (qs("#kcg")!==null) {return;}
-        loadifr();
         var ndiv = document.createElement("div");
         ndiv.id = "kcg";
         ndiv.setAttribute("class", qs("nav a.flex").className);
@@ -124,6 +135,9 @@
         var nav = qs('nav');
         nav.insertBefore(ndiv, nav.childNodes[0]);
         ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li></ul></div>`);
+
+        setIfr();
+        keepChat();
 
         var dropdownMenu = qs('.dropdown-menu');
         qs('#kcg').onmouseover = dropdownMenu.onmouseover = function() {
@@ -242,7 +256,7 @@ nav {
 
     setInterval(function() {
         if (qs("nav a.flex")) {
-            loadifr();
+            keepChat();
         }
     }, 1000 * 30);
 
