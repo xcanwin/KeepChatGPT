@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           4.5
+// @version           5.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -90,10 +90,10 @@
                 nIfr.src = u;
             }
             nIfr.onload = function() {
-                var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
                 try {
                     qs("#xcanwin").contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
                     if (qs("#xcanwin").src) {
+                        var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
                     }
                 } catch (e) {
@@ -117,7 +117,10 @@
                 response.text().then((data) => {
                     try {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        qs("#xcanwin").srcdoc = data;
+                        var nIfrDoc = qs("#xcanwin").contentWindow.document;
+                        nIfrDoc.open();
+                        nIfrDoc.write(data);
+                        nIfrDoc.close();
                     } catch (e) {
                         setIfr(u);
                     }
