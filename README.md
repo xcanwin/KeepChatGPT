@@ -1,11 +1,17 @@
 # KeepChatGPT
 
+<br>
+
+[中文文档](README.md) | [English README](README_EN.md)
+
+<br>
+
 ## 简介
 
 - ChatGPT畅聊插件，再也不会出现网络报错，再也不用刷新网页
-- 解决报错```NetworkError when attempting to fetch resource.```：
+- 解决报错：NetworkError when attempting to fetch resource.```
 - <img src="./assets/network_error.png" width="750"></img>
-- 解决报错```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```：
+- 解决报错：Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 - <img src="./assets/somthing_wrong.png" width="750"></img>
 - 解决被频繁地打断交流
 - 解决频繁地刷新网页
@@ -35,10 +41,14 @@
 
 ## 用法
 
-1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器拓展；
-2. 安装```KeepChatGPT```插件，可从下面选一个渠道安装：
+1. 安装```Tampermonkey```浏览器拓展，可以从 [Tampermonkey官网](https://www.tampermonkey.net/) 安装；
+2. 安装```KeepChatGPT```插件，可以从```安装渠道```选一个渠道安装；
+3. 打开 [ChatGPT](https://chat.openai.com/chat) 尽情享用吧；
+4. 另外，还有一个更巧妙的方法就是问ChatGPT：```如何安装tampermonkey插件和greasyfork上的脚本```
+
+## 安装渠道
 
 | 序号 | UserScript源 |
 | --- | --- |
-| 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
-| 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
+| No.1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
+| No.2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
