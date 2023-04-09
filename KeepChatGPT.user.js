@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           4.1
+// @version           4.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -205,7 +205,7 @@
   position: absolute;
   z-index: 1000;
   top: 7px;
-  left: 250px;
+  left: calc(100% - 15px);
 }
 .dropdown-menu li {
   display: block;
@@ -220,6 +220,10 @@
 
 .rounded-sm {
   user-select: none;
+}
+
+nav {
+  position: relative;
 }
 `);
     }
