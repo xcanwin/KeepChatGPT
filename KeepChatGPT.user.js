@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           4.3
+// @version           4.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -77,6 +77,10 @@
         return GM_getValue(key, value);
     };
 
+    var formatDate = function(d) {
+        return (new Date(d)).toLocaleString();
+    }
+
     var loadifr = function() {
         var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
         fetch(u).then((response) => {
@@ -89,9 +93,9 @@
                     nifr.onload = function() {
                         try {
                             nifr.contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
-                            console.log(`KeepChatGPT: iframe: ${JSON.parse(qs("#xcanwin").contentDocument.body.innerText).expires}`);
+                            console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(qs("#xcanwin").contentWindow.document.documentElement.innerText).expires)}`);
                         } catch (e) {
-                            console.log(`KeepChatGPT: iframe: ERROR: ${e}`);
+                            console.log(`KeepChatGPT: IFRAME: ERROR: ${e},\nERROR RESPONSE:\n${qs("#xcanwin").contentDocument.body.innerText}`);
                         }
                     };
                     qs("nav").appendChild(nifr);
@@ -99,10 +103,12 @@
                     qs("#xcanwin").src = u;
                 }
             } else {
-                response.json().then((data) => {
-                    console.log(`KeepChatGPT: fetch: ${data.expires}`);
-                }).catch((err) => {
-                    console.log(`KeepChatGPT: fetch: ERROR: ${err}`);
+                response.text().then((data) => {
+                    try {
+                        console.log(`KeepCqhatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
+                    } catch (e) {
+                        console.log(`KeepChatGPT: FETCH: ERROR: ${e},\nERROR RESPONSE:\n${data}`);
+                    }
                 })
             }
         });
@@ -194,36 +200,36 @@
 }
 
 .dropdown-menu {
-  background-color: #202123;
-  color: #FFFFFF;
-  border: 1px solid #4D4D4F;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  display: none;
-  min-width: 200px;
-  padding: 12px 0;
-  position: absolute;
-  z-index: 1000;
-  top: 7px;
-  left: calc(100% - 15px);
+    background-color: #202123;
+    color: #FFFFFF;
+    border: 1px solid #4D4D4F;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: none;
+    min-width: 200px;
+    padding: 12px 0;
+    position: absolute;
+    z-index: 1000;
+    top: 7px;
+    left: calc(100% - 15px);
 }
 .dropdown-menu li {
-  display: block;
-  padding: 8px 24px;
-  text-align: left;
-  user-select: none;
+    display: block;
+    padding: 8px 24px;
+    text-align: left;
+    user-select: none;
 }
 .dropdown-menu li:hover {
-  background-color: #273746;
-  cursor: pointer;
+    background-color: #273746;
+    cursor: pointer;
 }
 
 .rounded-sm {
-  user-select: none;
+    user-select: none;
 }
 
 nav {
-  position: relative;
+    position: relative;
 }
 `);
     }
