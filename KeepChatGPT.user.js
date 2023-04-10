@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           5.1
+// @version           5.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -90,9 +90,9 @@
                 nIfr.src = u;
             }
             nIfr.onload = function() {
+                var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
                 try {
-                    qs("#xcanwin").contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
-                    var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
+                    qs("#xcanwin").contentWindow.document.documentElement.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
@@ -111,29 +111,21 @@
     };
 
     var keepChat = function() {
-        var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
         fetch(u).then((response) => {
-            if (response.status == 403) {
-                setIfr(u);
-            } else {
-                response.text().then((data) => {
-                    try {
+            response.text().then((data) => {
+                try {
+                    var contentType = response.headers.get('Content-Type');
+                    if (contentType.indexOf("application/json") > -1 && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        var nIfrDoc = qs("#xcanwin").contentWindow.document;
-                        var contentType = response.headers.get('Content-Type');
-                        if (contentType.indexOf("application/json") > -1) {
-                            nIfrDoc.documentElement.innerHTML = data;
-                            nIfrDoc.documentElement.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
-                        } else {
-                            nIfrDoc.open();
-                            nIfrDoc.write(data);
-                            nIfrDoc.close();
-                        }
-                    } catch (e) {
+                        qs("#xcanwin").contentWindow.document.documentElement.innerHTML = data;
+                    } else {
                         setIfr(u);
                     }
-                })
-            }
+                } catch (e) {
+                    console.log(`KeepChatGPT: FETCH: ERROR: ${e},\nERROR RESPONSE:\n${data}`);
+                    setIfr(u);
+                }
+            })
         });
     }
 
@@ -147,8 +139,7 @@
         nav.insertBefore(ndiv, nav.childNodes[0]);
         ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li></ul></div>`);
 
-        setIfr();
-        keepChat();
+        setIfr(u);
 
         var dropdownMenu = qs('.dropdown-menu');
         qs('#kcg').onmouseover = dropdownMenu.onmouseover = function() {
@@ -270,5 +261,7 @@ nav {
             keepChat();
         }
     }, 1000 * 30);
+
+    var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
 
 })();
