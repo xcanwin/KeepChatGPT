@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           5.0
+// @version           5.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -92,9 +92,11 @@
             nIfr.onload = function() {
                 try {
                     qs("#xcanwin").contentWindow.document.body.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
-                    if (qs("#xcanwin").src) {
-                        var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
+                    var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
+                    if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
+                    } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
+                        console.log(`KeepChatGPT: IFRAME: BypassCF`);
                     }
                 } catch (e) {
                     console.log(`KeepChatGPT: IFRAME: ERROR: ${e},\nERROR RESPONSE:\n${nIfrText}`);
@@ -118,9 +120,15 @@
                     try {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
                         var nIfrDoc = qs("#xcanwin").contentWindow.document;
-                        nIfrDoc.open();
-                        nIfrDoc.write(data);
-                        nIfrDoc.close();
+                        var contentType = response.headers.get('Content-Type');
+                        if (contentType.indexOf("application/json") > -1) {
+                            nIfrDoc.documentElement.innerHTML = data;
+                            nIfrDoc.documentElement.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
+                        } else {
+                            nIfrDoc.open();
+                            nIfrDoc.write(data);
+                            nIfrDoc.close();
+                        }
                     } catch (e) {
                         setIfr(u);
                     }
