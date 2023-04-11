@@ -2,13 +2,13 @@
 
 <br>
 
-[中文文档](README.md) | [English README](README_EN.md)
+[中文文档](https://github.com/xcanwin/KeepChatGPT/blob/main/README.md) | [English README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md)
 
 <br>
 
 ## 简介
 
-- 喜欢这个脚本的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
+- 喜欢这个插件的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
 - 这是一款ChatGPT畅聊插件，让你不再遇到网络报错，不再需要刷新网页
 - 解决了报错：NetworkError when attempting to fetch resource.
 - 解决了报错：Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
@@ -17,11 +17,12 @@
 - 解决频繁地刷新网页
 - 支持多国语言
 - 解决用户手误复制用户头像里的用户名的问题
-- 使用KeepChatGPT插件以后再也不会出现下面的场面：
 
-1. <img src="./assets/network_error.png" width="750"></img>
-2. <img src="./assets/somthing_wrong.png" width="750"></img>
-3. <img src="./assets/audit_wrong.png" width="750"></img>
+| 序号 | 使用```KeepChatGPT```插件以后再也不会出现以下场面 |
+| --- | --- |
+| 1 | <img src="./assets/network_error.png" width="750"></img> |
+| 2 | <img src="./assets/somthing_wrong.png" width="750"></img> |
+| 3 | <img src="./assets/audit_wrong.png" width="750"></img> |
 
 ## 对比
 
@@ -48,7 +49,7 @@
 1. 安装```Tampermonkey```浏览器拓展，可以从 [Tampermonkey官网](https://www.tampermonkey.net/) 安装；
 2. 安装```KeepChatGPT```插件，可以从```安装渠道```选一个渠道安装；
 3. 打开 [ChatGPT](https://chat.openai.com/chat) 尽情享用吧；
-4. 另外，还有一个更巧妙的方法就是问ChatGPT：```如何安装tampermonkey插件和greasyfork上的脚本```
+4. 另外，还有一个更巧妙的方法就是问ChatGPT：```如何安装tampermonkey拓展和greasyfork上的插件```
 
 ## 安装渠道
 

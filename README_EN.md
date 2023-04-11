@@ -17,11 +17,12 @@
 - Resolved frequent webpage refreshing
 - Supports multiple languages
 - Resolved the issue of accidentally copying user avatars
-- After using ```KeepChatGPT```, the following scene will never occur again:
 
-1. <img src="./assets/network_error.png" width="750"></img>
-2. <img src="./assets/somthing_wrong.png" width="750"></img>
-3. <img src="./assets/audit_wrong.png" width="750"></img>
+| Num | After using ```KeepChatGPT```, the following scene will never occur again |
+| --- | --- |
+| 1 | <img src="./assets/network_error.png" width="750"></img> |
+| 2 | <img src="./assets/somthing_wrong.png" width="750"></img> |
+| 3 | <img src="./assets/audit_wrong.png" width="750"></img> |
 
 ## Comparison
 
