@@ -8,16 +8,20 @@
 
 ## 简介
 
-- ChatGPT畅聊插件，再也不会出现网络报错，再也不用刷新网页
-- 解决报错：NetworkError when attempting to fetch resource.```
-- <img src="./assets/network_error.png" width="750"></img>
-- 解决报错：Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-- <img src="./assets/somthing_wrong.png" width="750"></img>
+- 喜欢这个脚本的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
+- 这是一款ChatGPT畅聊插件，让你不再遇到网络报错，不再需要刷新网页
+- 解决了报错：NetworkError when attempting to fetch resource.
+- 解决了报错：Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
+- 自由取消后台监管审计：This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
 - 解决被频繁地打断交流
 - 解决频繁地刷新网页
 - 支持多国语言
-- 解决用户手误复制用户头像的问题
-- 喜欢这个脚本的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
+- 解决用户手误复制用户头像里的用户名的问题
+- 使用KeepChatGPT插件以后再也不会出现下面的场面：
+
+1. <img src="./assets/network_error.png" width="750"></img>
+2. <img src="./assets/somthing_wrong.png" width="750"></img>
+3. <img src="./assets/audit_wrong.png" width="750"></img>
 
 ## 对比
 
@@ -30,7 +34,7 @@
 - 享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
 - <img src="./assets/head.png" width="750"></img>
 - 喜欢暗调的朋友可以鼠标移到```专属金标```选择```主题```修改为```专属蓝标```：
-- <img src="./assets/head_dark.png" width="200"></img>
+- <img src="./assets/head_dark.png" width="750"></img>
 
 ## 原理
 
@@ -50,5 +54,5 @@
 
 | 序号 | UserScript源 |
 | --- | --- |
-| No.1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
-| No.2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
+| 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
+| 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |

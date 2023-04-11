@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
-// @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @version           5.3
+// @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. This content may violate our content policy. (3) If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
+// @version           6.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -13,7 +13,7 @@
 // @description:da    Lad os gøre vores brug af ChatGPT mere effektiv og problemfri ved at perfektionere løsningen på ChatGPT-netværksfejl. Dette sparer os for hyppigt at genindlæse websiden og eliminerer mere end 10 unødvendige trin. Følgende fejl er blevet løs: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @description:de    Lassen Sie uns unsere Nutzung von ChatGPT effizienter und reibungsloser gestalten, indem wir die Lösung für ChatGPT-Netzwerkfehler perfektionieren. Dies spart uns häufiges Aktualisieren der Webseite und eliminiert mehr als 10 unnötige Schritte. Die folgenden Fehler wurden behobe: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @description:el    Ας κάνουμε τη χρήση του ChatGPT πιο αποτελεσματική και πιο ομαλή, βελτιώνοντας τη λύση στα προβλήματα δικτύου του ChatGPT. Αυτό μας σώζει από το συχνό ανανέωση της ιστοσελίδας και εξαλείφει πάνω από 10 περιττά βήματα. Τα ακόλουθα σφάλματα έχουν λυθε: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @description:en    Let's make our use of ChatGPT more efficient and smoother, by perfecting the solution to ChatGPT network errors. This saves us from frequently refreshing the webpage and eliminates over 10 unnecessary steps. The following errors have been resolve: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
+// @description:en    Let's make our use of ChatGPT more efficient and seamless, and perfectly resolve ChatGPT network errors without frequently refreshing the webpage, saving more than 10 unnecessary steps. It is also possible to disable auditing. This resolves the following types of errors: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
 // @description:eo    Ni plifaciligas nian uzadon de ChatGPT per pli efikaj kaj pli glataj solvoj por ChatGPT-retoj. Tio savas nin de oftaj reŝarĝoj de la retpaĝo kaj eliminigas pli ol 10 superfluajn paŝojn. La sekvaj eraroj estas solvita: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @description:es    Hagamos que nuestro uso de ChatGPT sea más eficiente y más fluido, perfeccionando la solución a los errores de red de ChatGPT. Esto nos ahorra de actualizar frecuentemente la página web y elimina más de 10 pasos innecesarios. Los siguientes errores han sido resuelto: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @description:fi    Tehdään käytöstämme ChatGPT:ää tehokkaampaa ja sujuvampaa täydellistämällä ratkaisu ChatGPT:n verkkovirheisiin. Tämä säästää meidät usein tapahtuvilta verkkosivun päivityksiltä ja poistaa yli 10 tarpeetonta vaihetta. Seuraavat virheet on ratkaist: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
@@ -40,8 +40,8 @@
 // @description:uk    Давайте зробимо наше використання ChatGPT більш ефективним та плавним, вдосконаливши рішення щодо помилок мережі ChatGPT. Це дозволяє нам уникнути частого оновлення веб-сторінки та усунути понад 10 зайвих кроків. Наступні помилки були виправлені: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @description:ug    چات GPT ئىشلىتىشتىكىمىزنى ئېتىبارلىق ئەرزىگە تۇنۇشتۇرۇشقا ئائىلە قىلىپ، چات GPT توردىكى تورخىذا خاتالىقىلارنى تەمىنلەشتۈرۈشقا ئائىلە قىلىپ، تورخىذىلىش يېتىشىپ قالدىغان خاتالىقلىرىمىزنى 10 دىن ئارتۇق بۇلۇپ تەتۈرلىتىشكە بولىدۇ. بۇ قانداق خاتالىقلىر تەمىنلەندى: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @description:vi    Hãy làm việc của chúng ta trên ChatGPT hiệu quả hơn và mượt hơn bằng cách hoàn thiện giải pháp cho các lỗi mạng ChatGPT. Điều này giúp chúng ta không cần phải làm mới trang web thường xuyên và loại bỏ hơn 10 bước không cần thiết. Những lỗi sau đã được khắc phục: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @description:zh-CN 让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-// @description:zh-TW 讓我們在使用ChatGPT過程中更高效、更順暢，完美解決ChatGPT網路錯誤，不再頻繁地重新整理網頁，足足省去10個多餘的步驟。以下的錯誤已被解決: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
+// @description:zh-CN 让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
+// @description:zh-TW 讓我們在使用ChatGPT過程中更高效、更順暢，完美解決ChatGPT網絡錯誤，不再頻繁地刷新網頁，足足省去10個多餘的步驟。解決了這幾類報錯: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
 // @icon              data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" stroke-width="2" fill="none" stroke="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
 // @license           GPL-2.0-only
 // @match             https://chat.openai.com/chat*
@@ -59,7 +59,8 @@
     var qs = document.querySelector.bind(document);
 
     var tl = function(s) {
-        var i, r, lang = {"index":{"暗色主题":"dm","浅色主题":"lm","隐藏调试":"hd","显示调试":"sd"},"local":{"ar":{"dm":"الوضع الداكن","lm":"وضع فاتح","hd":"إخفاء التصحيح","sd":"إظهار التصحيح"},"bg":{"dm":"Тъмна тема","lm":"Светла тема","hd":"Скриване на отстраняване на грешки","sd":"Показване на отстраняване на грешки"},"cs":{"dm":"Tmavý režim","lm":"Světlý režim","hd":"Skrýt ladění","sd":"Zobrazit ladění"},"da":{"dm":"Mørk tilstand","lm":"Lys tilstand","hd":"Skjul fejlfinding","sd":"Vis fejlfinding"},"de":{"dm":"Dunkler Modus","lm":"Heller Modus","hd":"Debugging ausblenden","sd":"Fehlerbehebung anzeigen"},"el":{"dm":"Σκοτεινή θεματολογία","lm":"Φωτεινή θεματολογία","hd":"Απόκρυψη αποσφαλμάτωσης","sd":"Εμφάνιση αποσφαλμάτωσης"},"en":{"dm":"Dark mode","lm":"Light mode","hd":"Hide debugging","sd":"Show debugging"},"eo":{"dm":"Malhela moduso","lm":"Hela moduso","hd":"Kaŝi la korektadon","sd":"Montri depuradon"},"es":{"dm":"Modo oscuro","lm":"Modo claro","hd":"Ocultar depuración","sd":"Mostrar depuración"},"fi":{"dm":"Tumma tila","lm":"Vaalea tila","hd":"Piilota virheenkorjaus","sd":"Näytä virheenkorjaus"},"fr":{"dm":"Mode sombre","lm":"Mode clair","hd":"Masquer le débogage","sd":"Afficher le débogage"},"fr-CA":{"dm":"Mode nuit","lm":"Mode jour","hd":"Masquer le débogage","sd":"Afficher le débogage"},"he":{"dm":"מצב כהה","lm":"מצב בהיר","hd":"הסתרת תיקון באגים","sd":"הצגת התיקון"},"hu":{"dm":"Sötét mód","lm":"Világos mód","hd":"Hibakeresés elrejtése","sd":"Hibakeresés mutatása"},"id":{"dm":"Mode gelap","lm":"Mode terang","hd":"Sembunyikan debugging","sd":"Tampilkan debugging"},"it":{"dm":"Modalità scura","lm":"Modalità chiara","hd":"Nascondi il debug","sd":"Mostra debug"},"ja":{"dm":"ダークモード","lm":"ライトモード","hd":"デバッグを非表示","sd":"デバッグを表示"},"ka":{"dm":"ბნელი რეჟიმი","lm":"ნათელი რეჟიმი","hd":"ბრძანების მართვა დამალვა","sd":"გამოჩენა დებაგი"},"ko":{"dm":"다크 모드","lm":"라이트 모드","hd":"디버깅 숨기기","sd":"디버깅 표시"},"nb":{"dm":"Mørk modus","lm":"Lys modus","hd":"Skjul feilsøking","sd":"Vis feilsøking"},"nl":{"dm":"Donkere modus","lm":"Lichte modus","hd":"Foutopsporing verbergen","sd":"Foutopsporing weergeven"},"pl":{"dm":"Tryb ciemny","lm":"Tryb jasny","hd":"Ukryj debugowanie","sd":"Pokaż debugowanie"},"pt-BR":{"dm":"Modo escuro","lm":"Modo claro","hd":"Ocultar depuração","sd":"Mostrar depuração"},"ro":{"dm":"Mod întunecat","lm":"Mod luminos","hd":"Ascunde depanarea","sd":"Afișare depanare"},"ru":{"dm":"Темный режим","lm":"Светлый режим","hd":"Скрыть отладку","sd":"Показать отладку"},"sk":{"dm":"Tmavý režim","lm":"Svetlý režim","hd":"Skryť ladenie","sd":"Zobraziť ladenie"},"sr":{"dm":"Тамни режим","lm":"Светла тема","hd":"Сакриј отклањање грешака","sd":"Прикажи отклањање грешака"},"sv":{"dm":"Mörkt läge","lm":"Ljust läge","hd":"Dölj felsökning","sd":"Visa felsökning"},"th":{"dm":"โหมดมืด","lm":"โหมดสว่าง","hd":"ซ่อนการตรวจจับข้อผิดพลาด","sd":"แสดงการแก้ไขข้อผิดพลาด"},"tr":{"dm":"Karanlık mod","lm":"Aydınlık mod","hd":"Hata ayıklamayı gizle","sd":"Hata ayıklama göster"},"uk":{"dm":"Темний режим","lm":"Світлий режим","hd":"Приховати налагодження","sd":"Показати налагодження"},"ug":{"dm":"تېما كۆرسىتىش","lm":"ئاچقۇچ كۆرۈنۈش","hd":"خاتا تۈزۈملىكنى يوشۇرۇش","sd":"كۆرسەتكەن يۇقىرىلاش"},"vi":{"dm":"Chế độ tối","lm":"Chế độ sáng","hd":"Ẩn gỡ lỗi","sd":"Hiển thị gỡ lỗi"},"zh-CN":{"dm":"暗色主题","lm":"浅色主题","hd":"隐藏调试","sd":"显示调试"},"zh-TW":{"dm":"暗黑模式","lm":"淺色主題","hd":"隱藏除錯","sd":"顯示調試"}}};
+        var lang = {'index': {'暗色主题': 'dm', '浅色主题': 'lm', '显示调试': 'sd', '取消审计': 'cm'}, 'local': {'ar': {'dm': 'الوضع الداكن', 'lm': 'وضع فاتح', 'sd': 'إظهار التصحيح', 'cm': 'إلغاء التدقيق'}, 'bg': {'dm': 'Тъмна тема', 'lm': 'Светла тема', 'sd': 'Показване на отстраняване на грешки', 'cm': 'Отказ от одит'}, 'cs': {'dm': 'Tmavý režim', 'lm': 'Světlý režim', 'sd': 'Zobrazit ladění', 'cm': 'Zrušení auditu'}, 'da': {'dm': 'Mørk tilstand', 'lm': 'Lys tilstand', 'sd': 'Vis fejlfinding', 'cm': 'Annuller revision'}, 'de': {'dm': 'Dunkler Modus', 'lm': 'Heller Modus', 'sd': 'Fehlerbehebung anzeigen', 'cm': 'Prüfung abbrechen'}, 'el': {'dm': 'Σκοτεινή θεματολογία', 'lm': 'Φωτεινή θεματολογία', 'sd': 'Εμφάνιση αποσφαλμάτωσης', 'cm': 'Ακύρωση ελέγχου'}, 'en': {'dm': 'Dark mode', 'lm': 'Light mode', 'sd': 'Show debugging', 'cm': 'Cancel audit'}, 'eo': {'dm': 'Malhela moduso', 'lm': 'Hela moduso', 'sd': 'Montri depuradon', 'cm': 'Nuligi kontroli'}, 'es': {'dm': 'Modo oscuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuración', 'cm': 'Cancelar auditoría'}, 'fi': {'dm': 'Tumma tila', 'lm': 'Vaalea tila', 'sd': 'Näytä virheenkorjaus', 'cm': 'Peruuta tarkistus'}, 'fr': {'dm': 'Mode sombre', 'lm': 'Mode clair', 'sd': 'Afficher le débogage', 'cm': "Annuler l'audit"}, 'fr-CA': {'dm': 'Mode nuit', 'lm': 'Mode jour', 'sd': 'Afficher le débogage', 'cm': 'Annuler la vérification'}, 'he': {'dm': 'מצב כהה', 'lm': 'מצב בהיר', 'sd': 'הצגת התיקון', 'cm': 'ביטול ביקורת'}, 'hu': {'dm': 'Sötét mód', 'lm': 'Világos mód', 'sd': 'Hibakeresés mutatása', 'cm': 'Ellenőrzés megszüntetése'}, 'id': {'dm': 'Mode gelap', 'lm': 'Mode terang', 'sd': 'Tampilkan debugging', 'cm': 'Batalkan audit'}, 'it': {'dm': 'Modalità scura', 'lm': 'Modalità chiara', 'sd': 'Mostra debug', 'cm': 'Annulla verifica'}, 'ja': {'dm': 'ダークモード', 'lm': 'ライトモード', 'sd': 'デバッグを表示', 'cm': '監査をキャンセル'}, 'ka': {'dm': 'ბნელი რეჟიმი', 'lm': 'ნათელი რეჟიმი', 'sd': 'გამოჩენა დებაგი', 'cm': 'ანულირება აუდიტი'}, 'ko': {'dm': '다크 모드', 'lm': '라이트 모드', 'sd': '디버깅 표시', 'cm': '감사 취소'}, 'nb': {'dm': 'Mørk modus', 'lm': 'Lys modus', 'sd': 'Vis feilsøking', 'cm': 'Avbryt revisjonen'}, 'nl': {'dm': 'Donkere modus', 'lm': 'Lichte modus', 'sd': 'Foutopsporing weergeven', 'cm': 'Controle annuleren'}, 'pl': {'dm': 'Tryb ciemny', 'lm': 'Tryb jasny', 'sd': 'Pokaż debugowanie', 'cm': 'Anuluj audyt'}, 'pt-BR': {'dm': 'Modo escuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuração', 'cm': 'Cancelar auditoria'}, 'ro': {'dm': 'Mod întunecat', 'lm': 'Mod luminos', 'sd': 'Afișare depanare', 'cm': 'Anulare audit'}, 'ru': {'dm': 'Темный режим', 'lm': 'Светлый режим', 'sd': 'Показать отладку', 'cm': 'Отменить аудит'}, 'sk': {'dm': 'Tmavý režim', 'lm': 'Svetlý režim', 'sd': 'Zobraziť ladenie', 'cm': 'Zrušiť audit'}, 'sr': {'dm': 'Тамни режим', 'lm': 'Светла тема', 'sd': 'Прикажи отклањање грешака', 'cm': 'Откажи ревизију'}, 'sv': {'dm': 'Mörkt läge', 'lm': 'Ljust läge', 'sd': 'Visa felsökning', 'cm': 'Avbryt revision'}, 'th': {'dm': 'โหมดมืด', 'lm': 'โหมดสว่าง', 'sd': 'แสดงการแก้ไขข้อผิดพลาด', 'cm': 'ยกเลิกการตรวจสอบ'}, 'tr': {'dm': 'Karanlık mod', 'lm': 'Aydınlık mod', 'sd': 'Hata ayıklama göster', 'cm': 'Denetimi İptal Et'}, 'uk': {'dm': 'Темний режим', 'lm': 'Світлий режим', 'sd': 'Показати налагодження', 'cm': 'Скасувати аудит'}, 'ug': {'dm': 'تېما كۆرسىتىش', 'lm': 'ئاچقۇچ كۆرۈنۈش', 'sd': 'كۆرسەتكەن يۇقىرىلاش', 'cm': 'ئەمەلدىن قالدۇرۇش'}, 'vi': {'dm': 'Chế độ tối', 'lm': 'Chế độ sáng', 'sd': 'Hiển thị gỡ lỗi', 'cm': 'Hủy đánh giá'}, 'zh-CN': {'dm': '暗色主题', 'lm': '浅色主题', 'sd': '显示调试', 'cm': '取消审计'}, 'zh-TW': {'dm': '暗黑模式', 'lm': '淺色主題', 'sd': '顯示調試', 'cm': '取消稽核'}}};
+        var i, r;
         try {
             i = lang.index[s];
             r = lang.local[navigator.language][i];
@@ -137,7 +138,7 @@
         ndiv.innerHTML = `<img src='${GM_info.script.icon}' /><a href='${GM_info.script.namespace}'>Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin</a>`;
         var nav = qs('nav');
         nav.insertBefore(ndiv, nav.childNodes[0]);
-        ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li></ul></div>`);
+        ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li></ul></div>`);
 
         setIfr(u);
 
@@ -172,6 +173,17 @@
                 qs('#kcg').style = qs('#kcg').styleOrigin;
                 qs('#nmenuid2').innerText = tl("浅色主题")+"✓";
                 sv("k_theme", "light");
+            }
+        };
+        qs('#nmenuid3').onclick = function() {
+            if (gv("k_closeModer", false) == true) {
+                byeModer(false);
+                qs('#nmenuid3').innerText = tl("取消审计")+"✗";
+                sv("k_closeModer", false);
+            } else {
+                byeModer(true);
+                qs('#nmenuid3').innerText = tl("取消审计")+"✓";
+                sv("k_closeModer", true);
             }
         };
         GM_addStyle(`
@@ -249,6 +261,21 @@ nav {
 }
 `);
     }
+
+    var byeModer = function(action) {
+        if (typeof _fetch == 'undefined') {
+            var _fetch = fetch;
+        }
+        if (action == true) {
+            unsafeWindow.fetch = new Proxy(fetch, {
+                apply: function (target, thisArg, argumentsList) {
+                    return argumentsList[0].includes('moderations') ? Promise.resolve({}) : target.apply(thisArg, argumentsList);
+                }
+            });
+        } else {
+            unsafeWindow.fetch = _fetch;
+        }
+    };
 
     setInterval(function() {
         if (qs("nav a.flex")) {

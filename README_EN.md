@@ -8,16 +8,20 @@
 
 ## Introduction
 
+- If you like this script, please support my GitHub project [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) by giving it a STAR.
 - A UserScript that enables ChatGPT to chat smoothly, never experiencing network errors again, and no need to refresh the webpage anymore.
 - Resolved error: NetworkError when attempting to fetch resource.
-- <img src="./assets/network_error.png" width="750"></img>
 - Resolved error: Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-- <img src="./assets/somthing_wrong.png" width="750"></img>
+- Cancel audit: This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
 - Resolved frequent interruptions during communication
 - Resolved frequent webpage refreshing
 - Supports multiple languages
 - Resolved the issue of accidentally copying user avatars
-- If you like this script, please support my GitHub project [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) by giving it a STAR.
+- After using ```KeepChatGPT```, the following scene will never occur again:
+
+1. <img src="./assets/network_error.png" width="750"></img>
+2. <img src="./assets/somthing_wrong.png" width="750"></img>
+3. <img src="./assets/audit_wrong.png" width="750"></img>
 
 ## Comparison
 
@@ -30,7 +34,7 @@
 - Enjoy the free "Exclusive Gold Label," which represents a dramatic change in your AI experience:
 - <img src="./assets/head.png" width="750"></img>
 - For friends who like dark tones, you can hover over the "Exclusive Gold Label" with your mouse and select "Theme" to change it to "Exclusive Blue Label":
-- <img src="./assets/head_dark.png" width="200"></img>
+- <img src="./assets/head_dark.png" width="750"></img>
 
 ## Explanation
 
