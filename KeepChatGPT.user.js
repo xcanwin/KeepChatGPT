@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
-// @version           7.0
+// @version           7.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -303,6 +303,32 @@ nav {
         }
     };
 
+    var byeConversationNotFound = function(action) {
+        if (typeof _fetch == 'undefined') {
+            var _fetch = fetch;
+        }
+        if (action == true) {
+            unsafeWindow.fetch = new Proxy(_fetch, {
+                apply: function (target, thisArg, argumentsList) {
+                    try {
+                        if (argumentsList[0].includes('conversation')) {
+                            var post_body = JSON.parse(argumentsList[1].body);
+                            post_body.conversation_id=location.href.match(/\/c\/(.*)/)[1];
+                            argumentsList[1].body=JSON.stringify(post_body);
+                            return target.apply(thisArg, argumentsList);
+                        } else {
+                            return target.apply(thisArg, argumentsList);
+                        }
+                    } catch (e) {
+                        return target.apply(thisArg, argumentsList);
+                    }
+                }
+            });
+        } else {
+            unsafeWindow.fetch = _fetch;
+        }
+    };
+
     setInterval(function() {
         if (qs("nav a.flex")) {
             loadhead();
@@ -316,5 +342,6 @@ nav {
     }, 1000 * 30);
 
     var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
+    byeConversationNotFound(true);
 
 })();

@@ -17,6 +17,7 @@
 - Resolved frequent webpage refreshing
 - Supports multiple languages
 - Resolved the issue of accidentally copying user avatars
+- Resolved error: Conversation not found
 
 | Num | After using ```KeepChatGPT```, the following scene will never occur again |
 | --- | --- |
