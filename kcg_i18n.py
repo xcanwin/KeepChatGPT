@@ -56,49 +56,49 @@ def lang_del(lang, del_str, del_str_min):
 	return lang
 
 def main():
-	lang = {"index":{"暗色主题":"dm","浅色主题":"lm","隐藏调试":"hd","显示调试":"sd"},"local":{"ar":{"dm":"الوضع الداكن","lm":"وضع فاتح","hd":"إخفاء التصحيح","sd":"إظهار التصحيح"},"bg":{"dm":"Тъмна тема","lm":"Светла тема","hd":"Скриване на отстраняване на грешки","sd":"Показване на отстраняване на грешки"},"cs":{"dm":"Tmavý režim","lm":"Světlý režim","hd":"Skrýt ladění","sd":"Zobrazit ladění"},"da":{"dm":"Mørk tilstand","lm":"Lys tilstand","hd":"Skjul fejlfinding","sd":"Vis fejlfinding"},"de":{"dm":"Dunkler Modus","lm":"Heller Modus","hd":"Debugging ausblenden","sd":"Fehlerbehebung anzeigen"},"el":{"dm":"Σκοτεινή θεματολογία","lm":"Φωτεινή θεματολογία","hd":"Απόκρυψη αποσφαλμάτωσης","sd":"Εμφάνιση αποσφαλμάτωσης"},"en":{"dm":"Dark mode","lm":"Light mode","hd":"Hide debugging","sd":"Show debugging"},"eo":{"dm":"Malhela moduso","lm":"Hela moduso","hd":"Kaŝi la korektadon","sd":"Montri depuradon"},"es":{"dm":"Modo oscuro","lm":"Modo claro","hd":"Ocultar depuración","sd":"Mostrar depuración"},"fi":{"dm":"Tumma tila","lm":"Vaalea tila","hd":"Piilota virheenkorjaus","sd":"Näytä virheenkorjaus"},"fr":{"dm":"Mode sombre","lm":"Mode clair","hd":"Masquer le débogage","sd":"Afficher le débogage"},"fr-CA":{"dm":"Mode nuit","lm":"Mode jour","hd":"Masquer le débogage","sd":"Afficher le débogage"},"he":{"dm":"מצב כהה","lm":"מצב בהיר","hd":"הסתרת תיקון באגים","sd":"הצגת התיקון"},"hu":{"dm":"Sötét mód","lm":"Világos mód","hd":"Hibakeresés elrejtése","sd":"Hibakeresés mutatása"},"id":{"dm":"Mode gelap","lm":"Mode terang","hd":"Sembunyikan debugging","sd":"Tampilkan debugging"},"it":{"dm":"Modalità scura","lm":"Modalità chiara","hd":"Nascondi il debug","sd":"Mostra debug"},"ja":{"dm":"ダークモード","lm":"ライトモード","hd":"デバッグを非表示","sd":"デバッグを表示"},"ka":{"dm":"ბნელი რეჟიმი","lm":"ნათელი რეჟიმი","hd":"ბრძანების მართვა დამალვა","sd":"გამოჩენა დებაგი"},"ko":{"dm":"다크 모드","lm":"라이트 모드","hd":"디버깅 숨기기","sd":"디버깅 표시"},"nb":{"dm":"Mørk modus","lm":"Lys modus","hd":"Skjul feilsøking","sd":"Vis feilsøking"},"nl":{"dm":"Donkere modus","lm":"Lichte modus","hd":"Foutopsporing verbergen","sd":"Foutopsporing weergeven"},"pl":{"dm":"Tryb ciemny","lm":"Tryb jasny","hd":"Ukryj debugowanie","sd":"Pokaż debugowanie"},"pt-BR":{"dm":"Modo escuro","lm":"Modo claro","hd":"Ocultar depuração","sd":"Mostrar depuração"},"ro":{"dm":"Mod întunecat","lm":"Mod luminos","hd":"Ascunde depanarea","sd":"Afișare depanare"},"ru":{"dm":"Темный режим","lm":"Светлый режим","hd":"Скрыть отладку","sd":"Показать отладку"},"sk":{"dm":"Tmavý režim","lm":"Svetlý režim","hd":"Skryť ladenie","sd":"Zobraziť ladenie"},"sr":{"dm":"Тамни режим","lm":"Светла тема","hd":"Сакриј отклањање грешака","sd":"Прикажи отклањање грешака"},"sv":{"dm":"Mörkt läge","lm":"Ljust läge","hd":"Dölj felsökning","sd":"Visa felsökning"},"th":{"dm":"โหมดมืด","lm":"โหมดสว่าง","hd":"ซ่อนการตรวจจับข้อผิดพลาด","sd":"แสดงการแก้ไขข้อผิดพลาด"},"tr":{"dm":"Karanlık mod","lm":"Aydınlık mod","hd":"Hata ayıklamayı gizle","sd":"Hata ayıklama göster"},"uk":{"dm":"Темний режим","lm":"Світлий режим","hd":"Приховати налагодження","sd":"Показати налагодження"},"ug":{"dm":"تېما كۆرسىتىش","lm":"ئاچقۇچ كۆرۈنۈش","hd":"خاتا تۈزۈملىكنى يوشۇرۇش","sd":"كۆرسەتكەن يۇقىرىلاش"},"vi":{"dm":"Chế độ tối","lm":"Chế độ sáng","hd":"Ẩn gỡ lỗi","sd":"Hiển thị gỡ lỗi"},"zh-CN":{"dm":"暗色主题","lm":"浅色主题","hd":"隐藏调试","sd":"显示调试"},"zh-TW":{"dm":"暗黑模式","lm":"淺色主題","hd":"隱藏除錯","sd":"顯示調試"}}}
+	lang = {'index': {'暗色主题': 'dm', '浅色主题': 'lm', '显示调试': 'sd', '取消审计': 'cm'}, 'local': {'ar': {'dm': 'الوضع الداكن', 'lm': 'وضع فاتح', 'sd': 'إظهار التصحيح', 'cm': 'إلغاء التدقيق'}, 'bg': {'dm': 'Тъмна тема', 'lm': 'Светла тема', 'sd': 'Показване на отстраняване на грешки', 'cm': 'Отказ от одит'}, 'cs': {'dm': 'Tmavý režim', 'lm': 'Světlý režim', 'sd': 'Zobrazit ladění', 'cm': 'Zrušení auditu'}, 'da': {'dm': 'Mørk tilstand', 'lm': 'Lys tilstand', 'sd': 'Vis fejlfinding', 'cm': 'Annuller revision'}, 'de': {'dm': 'Dunkler Modus', 'lm': 'Heller Modus', 'sd': 'Fehlerbehebung anzeigen', 'cm': 'Prüfung abbrechen'}, 'el': {'dm': 'Σκοτεινή θεματολογία', 'lm': 'Φωτεινή θεματολογία', 'sd': 'Εμφάνιση αποσφαλμάτωσης', 'cm': 'Ακύρωση ελέγχου'}, 'en': {'dm': 'Dark mode', 'lm': 'Light mode', 'sd': 'Show debugging', 'cm': 'Cancel audit'}, 'eo': {'dm': 'Malhela moduso', 'lm': 'Hela moduso', 'sd': 'Montri depuradon', 'cm': 'Nuligi kontroli'}, 'es': {'dm': 'Modo oscuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuración', 'cm': 'Cancelar auditoría'}, 'fi': {'dm': 'Tumma tila', 'lm': 'Vaalea tila', 'sd': 'Näytä virheenkorjaus', 'cm': 'Peruuta tarkistus'}, 'fr': {'dm': 'Mode sombre', 'lm': 'Mode clair', 'sd': 'Afficher le débogage', 'cm': "Annuler l'audit"}, 'fr-CA': {'dm': 'Mode nuit', 'lm': 'Mode jour', 'sd': 'Afficher le débogage', 'cm': 'Annuler la vérification'}, 'he': {'dm': 'מצב כהה', 'lm': 'מצב בהיר', 'sd': 'הצגת התיקון', 'cm': 'ביטול ביקורת'}, 'hu': {'dm': 'Sötét mód', 'lm': 'Világos mód', 'sd': 'Hibakeresés mutatása', 'cm': 'Ellenőrzés megszüntetése'}, 'id': {'dm': 'Mode gelap', 'lm': 'Mode terang', 'sd': 'Tampilkan debugging', 'cm': 'Batalkan audit'}, 'it': {'dm': 'Modalità scura', 'lm': 'Modalità chiara', 'sd': 'Mostra debug', 'cm': 'Annulla verifica'}, 'ja': {'dm': 'ダークモード', 'lm': 'ライトモード', 'sd': 'デバッグを表示', 'cm': '監査をキャンセル'}, 'ka': {'dm': 'ბნელი რეჟიმი', 'lm': 'ნათელი რეჟიმი', 'sd': 'გამოჩენა დებაგი', 'cm': 'ანულირება აუდიტი'}, 'ko': {'dm': '다크 모드', 'lm': '라이트 모드', 'sd': '디버깅 표시', 'cm': '감사 취소'}, 'nb': {'dm': 'Mørk modus', 'lm': 'Lys modus', 'sd': 'Vis feilsøking', 'cm': 'Avbryt revisjonen'}, 'nl': {'dm': 'Donkere modus', 'lm': 'Lichte modus', 'sd': 'Foutopsporing weergeven', 'cm': 'Controle annuleren'}, 'pl': {'dm': 'Tryb ciemny', 'lm': 'Tryb jasny', 'sd': 'Pokaż debugowanie', 'cm': 'Anuluj audyt'}, 'pt-BR': {'dm': 'Modo escuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuração', 'cm': 'Cancelar auditoria'}, 'ro': {'dm': 'Mod întunecat', 'lm': 'Mod luminos', 'sd': 'Afișare depanare', 'cm': 'Anulare audit'}, 'ru': {'dm': 'Темный режим', 'lm': 'Светлый режим', 'sd': 'Показать отладку', 'cm': 'Отменить аудит'}, 'sk': {'dm': 'Tmavý režim', 'lm': 'Svetlý režim', 'sd': 'Zobraziť ladenie', 'cm': 'Zrušiť audit'}, 'sr': {'dm': 'Тамни режим', 'lm': 'Светла тема', 'sd': 'Прикажи отклањање грешака', 'cm': 'Откажи ревизију'}, 'sv': {'dm': 'Mörkt läge', 'lm': 'Ljust läge', 'sd': 'Visa felsökning', 'cm': 'Avbryt revision'}, 'th': {'dm': 'โหมดมืด', 'lm': 'โหมดสว่าง', 'sd': 'แสดงการแก้ไขข้อผิดพลาด', 'cm': 'ยกเลิกการตรวจสอบ'}, 'tr': {'dm': 'Karanlık mod', 'lm': 'Aydınlık mod', 'sd': 'Hata ayıklama göster', 'cm': 'Denetimi İptal Et'}, 'uk': {'dm': 'Темний режим', 'lm': 'Світлий режим', 'sd': 'Показати налагодження', 'cm': 'Скасувати аудит'}, 'ug': {'dm': 'تېما كۆرسىتىش', 'lm': 'ئاچقۇچ كۆرۈنۈش', 'sd': 'كۆرسەتكەن يۇقىرىلاش', 'cm': 'ئەمەلدىن قالدۇرۇش'}, 'vi': {'dm': 'Chế độ tối', 'lm': 'Chế độ sáng', 'sd': 'Hiển thị gỡ lỗi', 'cm': 'Hủy đánh giá'}, 'zh-CN': {'dm': '暗色主题', 'lm': '浅色主题', 'sd': '显示调试', 'cm': '取消审计'}, 'zh-TW': {'dm': '暗黑模式', 'lm': '淺色主題', 'sd': '顯示調試', 'cm': '取消稽核'}}}
 
-	new_str = "取消审计"
+	new_str = "关于"
 
-	new_str_min = "cm"
+	new_str_min = "ab"
 
 	transle_tmp = """
-	ar: إلغاء التدقيق
-	bg: Отказ от одит
-	cs: Zrušení auditu
-	da: Annuller revision
-	de: Prüfung abbrechen
-	el: Ακύρωση ελέγχου
-	en: Cancel audit
-	eo: Nuligi kontroli
-	es: Cancelar auditoría
-	fi: Peruuta tarkistus
-	fr: Annuler l'audit
-	fr-CA: Annuler la vérification
-	he: ביטול ביקורת
-	hu: Ellenőrzés megszüntetése
-	id: Batalkan audit
-	it: Annulla verifica
-	ja: 監査をキャンセル
-	ka: ანულირება აუდიტი
-	ko: 감사 취소
-	nb: Avbryt revisjonen
-	nl: Controle annuleren
-	pl: Anuluj audyt
-	pt-BR: Cancelar auditoria
-	ro: Anulare audit
-	ru: Отменить аудит
-	sk: Zrušiť audit
-	sr: Откажи ревизију
-	sv: Avbryt revision
-	th: ยกเลิกการตรวจสอบ
-	tr: Denetimi İptal Et
-	uk: Скасувати аудит
-	ug: ئەمەلدىن قالدۇرۇش
-	vi: Hủy đánh giá
-	zh-CN: 取消审计
-	zh-TW: 取消稽核
-	"""
+ar: حول
+bg: за
+cs: o
+da: om
+de: über
+el: για
+en: about
+eo: pri
+es: sobre
+fi: noin
+fr: à propos de
+fr-CA: au sujet de
+he: אודות
+hu: ról
+id: tentang
+it: su
+ja: 約
+ka: შესახებ
+ko: 약
+nb: om
+nl: over
+pl: o
+pt-BR: sobre
+ro: despre
+ru: о
+sk: o
+sr: о
+sv: om
+th: เกี่ยวกับ
+tr: hakkında
+uk: про
+ug: ھەققىدە
+vi: về
+zh-CN: 关于
+zh-TW: 關於
+"""
 
 	lang = lang_add(lang, new_str, new_str_min, transle_tmp)
 	print(lang)
