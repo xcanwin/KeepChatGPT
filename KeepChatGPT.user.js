@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.2
+// @version           7.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -49,6 +49,7 @@
 // @grant             GM_addElement
 // @grant             GM_setValue
 // @grant             GM_getValue
+// @grant             unsafeWindow
 // @run-at            document-idie
 // ==/UserScript==
 
@@ -135,7 +136,12 @@
         var ndiv = document.createElement("div");
         ndiv.id = "kcg";
         ndiv.setAttribute("class", qs("nav a.flex").className);
-        ndiv.innerHTML = `<img src='${GM_info.script.icon}' />Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin`;
+        if (GM_info.script.icon) {
+            var icon = GM_info.script.icon;
+        } else {
+            var icon = `${GM_info.script.namespace}raw/main/assets/logo.svg`;
+        }
+        ndiv.innerHTML = `<img src='${icon}' />Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin`;
         var nav = qs('nav');
         nav.insertBefore(ndiv, nav.childNodes[0]);
         ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>关于</li></a></ul></div>`);
@@ -337,7 +343,7 @@ nav {
         }
     }, 1000 * 30);
 
-    var u = `/api/${GM_info.script.author.slice(2,3)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
+    var u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.name.slice(1, 2)}ssion`;
     byeConversationNotFound(true);
 
 })();
