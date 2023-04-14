@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.4
+// @version           7.5
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -104,7 +104,7 @@
                     console.log(`KeepChatGPT: IFRAME: ERROR: ${e},\nERROR RESPONSE:\n${nIfrText}`);
                 }
             };
-            qs("nav").appendChild(nIfr);
+            qs("main").lastElementChild.appendChild(nIfr);
         } else{
             if (u) {
                 qs("#xcanwin").src = u;
@@ -136,10 +136,11 @@
         var ndiv = document.createElement("div");
         ndiv.id = "kcg";
         ndiv.setAttribute("class", qs("nav a.flex").className);
+        var icon;
         if (GM_info.script.icon) {
-            var icon = GM_info.script.icon;
+            icon = GM_info.script.icon;
         } else {
-            var icon = `${GM_info.script.namespace}raw/main/assets/logo.svg`;
+            icon = `${GM_info.script.namespace}raw/main/assets/logo.svg`;
         }
         ndiv.innerHTML = `<img src='${icon}' />Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin`;
         var nav = qs('nav');
@@ -169,7 +170,7 @@
                 qs('#nmenuid1').innerText = tl("显示调试")+"✗";
                 sv("k_showDebug", false);
             } else {
-                if (qs('#xcanwin')) qs('#xcanwin').style.height = '125px';
+                if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
                 qs('#nmenuid1').innerText = tl("显示调试")+"✓";
                 sv("k_showDebug", true);
             }
