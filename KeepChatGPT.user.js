@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.5
+// @version           7.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -94,7 +94,7 @@
             nIfr.onload = function() {
                 var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
                 try {
-                    qs("#xcanwin").contentWindow.document.documentElement.style = `background: #555; height: 360px; width: 1080px; overflow; auto;`;
+                    qs("#xcanwin").contentWindow.document.documentElement.style = `background: #5499C7; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
@@ -131,38 +131,11 @@
         });
     }
 
-    var loadhead = function() {
-        if (qs("#kcg")!==null) {return;}
-        var ndiv = document.createElement("div");
-        ndiv.id = "kcg";
-        ndiv.setAttribute("class", qs("nav a.flex").className);
-        var icon;
-        if (GM_info.script.icon) {
-            icon = GM_info.script.icon;
-        } else {
-            icon = `${GM_info.script.namespace}raw/main/assets/logo.svg`;
-        }
-        ndiv.innerHTML = `<img src='${icon}' />Keep${ndiv.id.slice(1,2).toUpperCase()}hatGPT by x${ndiv.id.slice(1,2)}anwin`;
-        var nav = qs('nav');
-        nav.insertBefore(ndiv, nav.childNodes[0]);
-        ndiv.insertAdjacentHTML('afterend', `<div><ul class="dropdown-menu"><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>关于</li></a></ul></div>`);
-
-        setIfr(u);
-
-        var dropdownMenu = qs('.dropdown-menu');
-        qs('#kcg').onmouseover = dropdownMenu.onmouseover = function() {
-            dropdownMenu.style.display = 'block';
-        };
-        qs('#kcg').onmouseleave = dropdownMenu.onmouseleave = function() {
-            dropdownMenu.style.display = 'none';
-        };
-        qs('#kcg').onclick = function() {
-            if (dropdownMenu.style.display == 'none') {
-                dropdownMenu.style.display = 'block';
-            } else {
-                dropdownMenu.style.display = 'none';
-            }
-        };
+    var loadMenu = function() {
+        var ndivmenu = document.createElement('div');
+        ndivmenu.setAttribute("class", "kmenu");
+        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>关于</li></a></ul>`;
+        document.body.appendChild(ndivmenu);
 
         qs('#nmenuid1').onclick = function() {
             if (gv("k_showDebug", false) == true) {
@@ -200,6 +173,68 @@
                 sv("k_closeModer", true);
             }
         };
+    };
+
+    var loadKCG = function() {
+        var symbol_prt;
+        if (qs("#kcg")!==null) {
+            return;
+        }
+        if (qs("main").kcg!==undefined) {
+            if (qs(symbol1_class)) {
+                qs("main").kcg.innerHTML = qs("main").kcg._symbol1_innerHTML;
+                symbol_prt = qs(symbol1_class).parentElement;
+            } else if (qs(symbol2_class)) {
+                qs("main").kcg.innerHTML = qs("main").kcg._symbol2_innerHTML;
+                symbol_prt = qs(symbol2_class).parentElement;
+            }
+            symbol_prt.insertBefore(qs("main").kcg, symbol_prt.childNodes[0]);
+            return;
+        }
+
+        loadMenu();
+        setIfr(u);
+
+        var ndivkcg = document.createElement("div");
+        ndivkcg.id = "kcg";
+        ndivkcg.setAttribute("class", "flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
+
+        var ndivmenu = qs(".kmenu");
+        ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
+            ndivmenu.style.display = 'block';
+            ndivmenu.style.left = `${qs("#kcg").getBoundingClientRect().right + 20}px`;
+            ndivmenu.style.top = `${qs("#kcg").getBoundingClientRect().top}px`;
+        };
+        ndivkcg.onmouseleave = ndivmenu.onmouseleave = function() {
+            ndivmenu.style.display = 'none';
+        };
+        ndivkcg.onclick = function() {
+            if (ndivmenu.style.display == 'none') {
+                ndivmenu.style.display = 'block';
+                ndivmenu.style.left = `${qs("#kcg").getBoundingClientRect().right + 20}px`;
+                ndivmenu.style.top = `${qs("#kcg").getBoundingClientRect().top}px`;
+            } else {
+                ndivmenu.style.display = 'none';
+            }
+        };
+        var icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
+        ndivkcg._symbol1_innerHTML = `<img src='${icon}' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
+        ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
+
+        if (qs(symbol1_class)) {
+            ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
+            symbol_prt = qs(symbol1_class).parentElement;
+        } else if (qs(symbol2_class)) {
+            ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
+            symbol_prt = qs(symbol2_class).parentElement;
+        }
+        qs("main").kcg = ndivkcg;
+        symbol_prt.insertBefore(qs("main").kcg, symbol_prt.childNodes[0]);
+
+        addStyle();
+    };
+
+    var addStyle = function() {
         GM_addStyle(`
 #kcg {
     color: #555;
@@ -241,7 +276,7 @@
     }
 }
 
-.dropdown-menu {
+.kmenu {
     background-color: #202123;
     color: #FFFFFF;
     border: 1px solid #4D4D4F;
@@ -252,35 +287,33 @@
     padding: 12px 0;
     position: absolute;
     z-index: 1000;
-    top: 7px;
-    left: calc(100% + 10px);
 }
-.dropdown-menu::before {
-  content: "";
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: -30px;
-  right: 0px;
-  pointer-events: auto;
-  z-index: -1;
+.kmenu::before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: -30px;
+    right: 0px;
+    pointer-events: auto;
+    z-index: -1;
 }
-.dropdown-menu::after {
-  content: "";
-  position: absolute;
-  top: 20px;
-  left: -20px;
-  border-style: solid;
-  border-width: 10px 10px 10px 10px;
-  border-color: transparent #202123 transparent transparent;
+.kmenu::after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: -20px;
+    border-style: solid;
+    border-width: 10px 10px 10px 10px;
+    border-color: transparent #202123 transparent transparent;
 }
-.dropdown-menu li {
+.kmenu li {
     display: block;
     padding: 8px 24px;
     text-align: left;
     user-select: none;
 }
-.dropdown-menu li:hover {
+.kmenu li:hover {
     background-color: #273746;
     cursor: pointer;
 }
@@ -293,7 +326,7 @@ nav {
     position: relative;
 }
 `);
-    }
+    };
 
     var byeModer = function(action) {
         if (typeof _fetch == 'undefined') {
@@ -333,18 +366,20 @@ nav {
     };
 
     setInterval(function() {
-        if (qs("nav a.flex")) {
-            loadhead();
+        if (qs(symbol1_class) || qs(symbol2_class)) {
+            loadKCG();
         }
     }, 300);
 
     setInterval(function() {
-        if (qs("nav a.flex")) {
+        if (qs(symbol1_class) || qs(symbol2_class)) {
             keepChat();
         }
     }, 1000 * 30);
 
     var u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
+    var symbol1_class = 'nav>a.flex';
+    var symbol2_class = 'button.justify-center';
     byeConversationNotFound(true);
 
 })();
