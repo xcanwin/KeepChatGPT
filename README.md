@@ -34,10 +34,15 @@
 | 使用KeepChatGPT插件 | 再也不会出现网络报错，再也不用刷新网页 | 下发指令 | 等待结果 | 得到结果 |  |  |  |  |  |  |  |  |  |  |
 
 - 通过对比可知，足足省去10个多余的步骤，顺畅地聊天
+
+## 展示
+
 - 享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
 - <img src="./assets/head.png" width="750"></img>
 - 喜欢暗调的朋友可以鼠标移到```专属金标```选择```主题```修改为```专属蓝标```：
 - <img src="./assets/head_dark.png" width="750"></img>
+- 移动端：
+- <img src="./assets/head_mobile.png" width="280"></img>
 
 ## 原理
 

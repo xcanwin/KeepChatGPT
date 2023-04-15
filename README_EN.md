@@ -34,10 +34,15 @@
 | Using ```KeepChatGPT``` | There will never be network errors again, and there is no need to refresh the webpage | Issue the prompt | Wait for the result | Obtain the result | | | | | | | | | | |
 
 - By comparison, it can be seen that it saves more than 10 unnecessary steps and enables smooth chatting.
+
+## Show
+
 - Enjoy the free "Exclusive Gold Label," which represents a dramatic change in your AI experience:
 - <img src="./assets/head.png" width="750"></img>
 - For friends who like dark tones, you can hover over the "Exclusive Gold Label" with your mouse and select "Theme" to change it to "Exclusive Blue Label":
 - <img src="./assets/head_dark.png" width="750"></img>
+- Moblie:
+- <img src="./assets/head_mobile.png" width="280"></img>
 
 ## Explanation
 
