@@ -230,7 +230,14 @@
         }
         qs("main").kcg = ndivkcg;
         symbol_prt.insertBefore(qs("main").kcg, symbol_prt.childNodes[0]);
-
+        if (gv("k_theme", "light") == "light") {
+            qs('#kcg').style = qs('#kcg').styleOrigin;
+        } else {
+            qs('#kcg').styleOrigin = qs('#kcg').style;
+            qs('#kcg').style.background = "#2C3E50";
+            qs('#kcg').style.animation = "none";
+            qs('#kcg').style.color = "#ffffff";
+        };
         addStyle();
     };
 
