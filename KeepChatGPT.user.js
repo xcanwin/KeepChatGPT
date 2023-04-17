@@ -183,17 +183,17 @@ var tl = function(s) {
     var loadMenu = function() {
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${gv("k_showDebug", false)?"✅" + tl("显示调试"):"❎" + tl("显示调试")}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?"✅" + tl("浅色主题"):"✅" + tl("暗色主题")}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?"❎" + tl("取消审计"):"✅" + tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
         qs('#nmenuid1').onclick = function() {
             if (gv("k_showDebug", false) == true) {
                 if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
-                qs('#nmenuid1').innerText = tl("显示调试")+"✗";
+                qs('#nmenuid1').innerText = "❎" + tl("显示调试");
                 sv("k_showDebug", false);
             } else {
                 if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
-                qs('#nmenuid1').innerText = tl("显示调试")+"✓";
+                qs('#nmenuid1').innerText = "✅" + tl("显示调试");
                 sv("k_showDebug", true);
             }
         };
@@ -203,22 +203,22 @@ var tl = function(s) {
                 qs('#kcg').style.background = "#2C3E50";
                 qs('#kcg').style.animation = "none";
                 qs('#kcg').style.color = "#ffffff";
-                qs('#nmenuid2').innerText = tl("暗色主题")+"✓";
+                qs('#nmenuid2').innerText = "✅" + tl("暗色主题");
                 sv("k_theme", "dark");
             } else {
                 qs('#kcg').style = qs('#kcg').styleOrigin;
-                qs('#nmenuid2').innerText = tl("浅色主题")+"✓";
+                qs('#nmenuid2').innerText = "✅" + tl("浅色主题");
                 sv("k_theme", "light");
             }
         };
         qs('#nmenuid3').onclick = function() {
             if (gv("k_closeModer", false) == true) {
                 byeModer(false);
-                qs('#nmenuid3').innerText = tl("取消审计")+"✗";
+                qs('#nmenuid3').innerText = "❎" + tl("取消审计");
                 sv("k_closeModer", false);
             } else {
                 byeModer(true);
-                qs('#nmenuid3').innerText = tl("取消审计")+"✓";
+                qs('#nmenuid3').innerText = "✅" + tl("取消审计");
                 sv("k_closeModer", true);
             }
         };
@@ -286,6 +286,7 @@ var tl = function(s) {
             qs('#kcg').style.background = "#2C3E50";
             qs('#kcg').style.animation = "none";
             qs('#kcg').style.color = "#ffffff";
+            qs('#kcg').style.margin-right = "inherit";
         };
         addStyle();
     };
