@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.9.2
+// @version           7.9.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -59,8 +59,7 @@
 
     var qs = document.querySelector.bind(document);
 
-    var tl = function(s) {
-var tl = function(s) {
+        var tl = function(s) {
         var lang = {
             'index': {'暗色主题': 'dm', '浅色主题': 'lm', '显示调试': 'sd', '取消审计': 'cm', '关于': 'ab'},
             'local': {
@@ -183,7 +182,7 @@ var tl = function(s) {
     var loadMenu = function() {
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${gv("k_showDebug", false)?"🗹 " + tl("显示调试"):"🗷 " + tl("显示调试")}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?"◐ " + tl("浅色主题"):"◑ " + tl("暗色主题")}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?"🗷 " + tl("取消审计"):"🗹 " + tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${"🛈 " + tl("关于")}</li></a></ul>`;
+        ndivmenu.innerHTML = `<ul><li class="rounded-md" id=nmenuid1>${gv("k_showDebug", false)?"🗹 " + tl("显示调试"):"🗷 " + tl("显示调试")}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?"◐ " + tl("浅色主题"):"◑ " + tl("暗色主题")}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?"🗷 " + tl("取消审计"):"🗹 " + tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${"🛈 " + tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
         qs('#nmenuid1').onclick = function() {
@@ -286,7 +285,7 @@ var tl = function(s) {
             qs('#kcg').style.background = "#2C3E50";
             qs('#kcg').style.animation = "none";
             qs('#kcg').style.color = "#ffffff";
-            qs('#kcg').style.margin-right = "inherit";
+            qs('#kcg').style.marginRight = "inherit";
         };
         addStyle();
     };
@@ -336,7 +335,7 @@ var tl = function(s) {
 .kmenu {
     background-color: #202123;
     color: #FFFFFF;
-    border: 1px solid #4D4D4F;
+    /*border: 1px solid #4D4D4F;*/
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     display: none;
@@ -366,12 +365,12 @@ var tl = function(s) {
 }
 .kmenu li {
     display: block;
-    padding: 8px 24px;
+    padding: 6px 24px;
     text-align: left;
     user-select: none;
 }
 .kmenu li:hover {
-    background-color: #273746;
+    background-color: rgba(42,43,50,var(--tw-bg-opacity));
     cursor: pointer;
 }
 
