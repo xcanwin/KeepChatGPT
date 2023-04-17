@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.9
+// @version           7.9.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -60,7 +60,51 @@
     var qs = document.querySelector.bind(document);
 
     var tl = function(s) {
-        var lang = {'index': {'暗色主题': 'dm', '浅色主题': 'lm', '显示调试': 'sd', '取消审计': 'cm', '关于': 'ab'}, 'local': {'ar': {'dm': 'الوضع الداكن', 'lm': 'وضع فاتح', 'sd': 'إظهار التصحيح', 'cm': 'إلغاء التدقيق', 'ab': 'حول'}, 'bg': {'dm': 'Тъмна тема', 'lm': 'Светла тема', 'sd': 'Показване на отстраняване на грешки', 'cm': 'Отказ от одит', 'ab': 'за'}, 'cs': {'dm': 'Tmavý režim', 'lm': 'Světlý režim', 'sd': 'Zobrazit ladění', 'cm': 'Zrušení auditu', 'ab': 'o'}, 'da': {'dm': 'Mørk tilstand', 'lm': 'Lys tilstand', 'sd': 'Vis fejlfinding', 'cm': 'Annuller revision', 'ab': 'om'}, 'de': {'dm': 'Dunkler Modus', 'lm': 'Heller Modus', 'sd': 'Fehlerbehebung anzeigen', 'cm': 'Prüfung abbrechen', 'ab': 'über'}, 'el': {'dm': 'Σκοτεινή θεματολογία', 'lm': 'Φωτεινή θεματολογία', 'sd': 'Εμφάνιση αποσφαλμάτωσης', 'cm': 'Ακύρωση ελέγχου', 'ab': 'για'}, 'en': {'dm': 'Dark mode', 'lm': 'Light mode', 'sd': 'Show debugging', 'cm': 'Cancel audit', 'ab': 'about'}, 'eo': {'dm': 'Malhela moduso', 'lm': 'Hela moduso', 'sd': 'Montri depuradon', 'cm': 'Nuligi kontroli', 'ab': 'pri'}, 'es': {'dm': 'Modo oscuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuración', 'cm': 'Cancelar auditoría', 'ab': 'sobre'}, 'fi': {'dm': 'Tumma tila', 'lm': 'Vaalea tila', 'sd': 'Näytä virheenkorjaus', 'cm': 'Peruuta tarkistus', 'ab': 'noin'}, 'fr': {'dm': 'Mode sombre', 'lm': 'Mode clair', 'sd': 'Afficher le débogage', 'cm': "Annuler l'audit", 'ab': 'à propos de'}, 'fr-CA': {'dm': 'Mode nuit', 'lm': 'Mode jour', 'sd': 'Afficher le débogage', 'cm': 'Annuler la vérification', 'ab': 'au sujet de'}, 'he': {'dm': 'מצב כהה', 'lm': 'מצב בהיר', 'sd': 'הצגת התיקון', 'cm': 'ביטול ביקורת', 'ab': 'אודות'}, 'hu': {'dm': 'Sötét mód', 'lm': 'Világos mód', 'sd': 'Hibakeresés mutatása', 'cm': 'Ellenőrzés megszüntetése', 'ab': 'ról'}, 'id': {'dm': 'Mode gelap', 'lm': 'Mode terang', 'sd': 'Tampilkan debugging', 'cm': 'Batalkan audit', 'ab': 'tentang'}, 'it': {'dm': 'Modalità scura', 'lm': 'Modalità chiara', 'sd': 'Mostra debug', 'cm': 'Annulla verifica', 'ab': 'su'}, 'ja': {'dm': 'ダークモード', 'lm': 'ライトモード', 'sd': 'デバッグを表示', 'cm': '監査をキャンセル', 'ab': '約'}, 'ka': {'dm': 'ბნელი რეჟიმი', 'lm': 'ნათელი რეჟიმი', 'sd': 'გამოჩენა დებაგი', 'cm': 'ანულირება აუდიტი', 'ab': 'შესახებ'}, 'ko': {'dm': '다크 모드', 'lm': '라이트 모드', 'sd': '디버깅 표시', 'cm': '감사 취소', 'ab': '약'}, 'nb': {'dm': 'Mørk modus', 'lm': 'Lys modus', 'sd': 'Vis feilsøking', 'cm': 'Avbryt revisjonen', 'ab': 'om'}, 'nl': {'dm': 'Donkere modus', 'lm': 'Lichte modus', 'sd': 'Foutopsporing weergeven', 'cm': 'Controle annuleren', 'ab': 'over'}, 'pl': {'dm': 'Tryb ciemny', 'lm': 'Tryb jasny', 'sd': 'Pokaż debugowanie', 'cm': 'Anuluj audyt', 'ab': 'o'}, 'pt-BR': {'dm': 'Modo escuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuração', 'cm': 'Cancelar auditoria', 'ab': 'sobre'}, 'ro': {'dm': 'Mod întunecat', 'lm': 'Mod luminos', 'sd': 'Afișare depanare', 'cm': 'Anulare audit', 'ab': 'despre'}, 'ru': {'dm': 'Темный режим', 'lm': 'Светлый режим', 'sd': 'Показать отладку', 'cm': 'Отменить аудит', 'ab': 'о'}, 'sk': {'dm': 'Tmavý režim', 'lm': 'Svetlý režim', 'sd': 'Zobraziť ladenie', 'cm': 'Zrušiť audit', 'ab': 'o'}, 'sr': {'dm': 'Тамни режим', 'lm': 'Светла тема', 'sd': 'Прикажи отклањање грешака', 'cm': 'Откажи ревизију', 'ab': 'о'}, 'sv': {'dm': 'Mörkt läge', 'lm': 'Ljust läge', 'sd': 'Visa felsökning', 'cm': 'Avbryt revision', 'ab': 'om'}, 'th': {'dm': 'โหมดมืด', 'lm': 'โหมดสว่าง', 'sd': 'แสดงการแก้ไขข้อผิดพลาด', 'cm': 'ยกเลิกการตรวจสอบ', 'ab': 'เกี่ยวกับ'}, 'tr': {'dm': 'Karanlık mod', 'lm': 'Aydınlık mod', 'sd': 'Hata ayıklama göster', 'cm': 'Denetimi İptal Et', 'ab': 'hakkında'}, 'uk': {'dm': 'Темний режим', 'lm': 'Світлий режим', 'sd': 'Показати налагодження', 'cm': 'Скасувати аудит', 'ab': 'про'}, 'ug': {'dm': 'تېما كۆرسىتىش', 'lm': 'ئاچقۇچ كۆرۈنۈش', 'sd': 'كۆرسەتكەن يۇقىرىلاش', 'cm': 'ئەمەلدىن قالدۇرۇش', 'ab': 'ھەققىدە'}, 'vi': {'dm': 'Chế độ tối', 'lm': 'Chế độ sáng', 'sd': 'Hiển thị gỡ lỗi', 'cm': 'Hủy đánh giá', 'ab': 'về'}, 'zh-CN': {'dm': '暗色主题', 'lm': '浅色主题', 'sd': '显示调试', 'cm': '取消审计', 'ab': '关于'}, 'zh-TW': {'dm': '暗黑模式', 'lm': '淺色主題', 'sd': '顯示調試', 'cm': '取消稽核', 'ab': '關於'}}};
+var tl = function(s) {
+        var lang = {
+            'index': {'暗色主题': 'dm', '浅色主题': 'lm', '显示调试': 'sd', '取消审计': 'cm', '关于': 'ab'},
+            'local': {
+                'ar': {'dm': 'وضع داكن', 'lm': 'وضع فاتح', 'sd': 'إظهار التصحيح', 'cm': 'إلغاء التدقيق', 'ab': 'حول'},
+                'bg': {'dm': 'Тъмна тема', 'lm': 'Светла тема', 'sd': 'Показване на отстраняване на грешки', 'cm': 'Отказ от одит', 'ab': 'за'},
+                'cs': {'dm': 'Tmavý režim', 'lm': 'Světlý režim', 'sd': 'Zobrazit ladění', 'cm': 'Zrušení auditu', 'ab': 'o'},
+                'da': {'dm': 'Mørk tilstand', 'lm': 'Lys tilstand', 'sd': 'Vis fejlfinding', 'cm': 'Annuller revision', 'ab': 'om'},
+                'de': {'dm': 'Dunkler Modus', 'lm': 'Heller Modus', 'sd': 'Fehlerbehebung anzeigen', 'cm': 'Prüfung abbrechen', 'ab': 'über'},
+                'el': {'dm': 'Σκοτεινή θεματολογία', 'lm': 'Φωτεινή θεματολογία', 'sd': 'Εμφάνιση αποσφαλμάτωσης', 'cm': 'Ακύρωση ελέγχου', 'ab': 'για'},
+                'en': {'dm': 'Dark mode', 'lm': 'Light mode', 'sd': 'Show debugging', 'cm': 'Cancel audit', 'ab': 'about'},
+                'eo': {'dm': 'Malhela moduso', 'lm': 'Hela moduso', 'sd': 'Montri depuradon', 'cm': 'Nuligi kontroli', 'ab': 'pri'},
+                'es': {'dm': 'Modo oscuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuración', 'cm': 'Cancelar auditoría', 'ab': 'sobre'},
+                'fi': {'dm': 'Tumma tila', 'lm': 'Vaalea tila', 'sd': 'Näytä virheenkorjaus', 'cm': 'Peruuta tarkistus', 'ab': 'noin'},
+                'fr': {'dm': 'Mode sombre', 'lm': 'Mode clair', 'sd': 'Afficher le débogage', 'cm': "Annuler l'audit", 'ab': 'à propos de'},
+                'fr-CA': {'dm': 'Mode nuit', 'lm': 'Mode jour', 'sd': 'Afficher le débogage', 'cm': 'Annuler la vérification', 'ab': 'au sujet de'},
+                'he': {'dm': 'מצב כהה', 'lm': 'מצב בהיר', 'sd': 'הצגת התיקון', 'cm': 'ביטול ביקורת', 'ab': 'אודות'},
+                'hi': {'dm': 'रात का मोड', 'lm': 'दिन का मोड', 'sd': 'डीबग दिखाएँ', 'cm': 'सत्यापन रद्द करें', 'ab': 'के बारे में'},
+                'hu': {'dm': 'Sötét mód', 'lm': 'Világos mód', 'sd': 'Hibakeresés mutatása', 'cm': 'Ellenőrzés megszüntetése', 'ab': 'ról'},
+                'hr': {'dm': 'Noćni način', 'lm': 'Dnevni način', 'sd': 'Prikaži otklanjanje pogrešaka', 'cm': 'Poništi provjeru valjanosti', 'ab': 'O aplikaciji'},
+                'id': {'dm': 'Mode gelap', 'lm': 'Mode terang', 'sd': 'Tampilkan debugging', 'cm': 'Batalkan audit', 'ab': 'tentang'},
+                'hy': {'dm': 'Գիշերային ռեժիմ', 'lm': 'Օրային ռեժիմ', 'sd': 'Սխալների շնորհիվ ցուցադրել', 'cm': 'Վերցնել վավերացմանը', 'ab': 'Մեր մասին'},
+                'it': {'dm': 'Modalità scura', 'lm': 'Modalità chiara', 'sd': 'Mostra debug', 'cm': 'Annulla verifica', 'ab': 'su'},
+                'ja': {'dm': 'ダークモード', 'lm': 'ライトモード', 'sd': 'デバッグを表示', 'cm': '監査をキャンセル', 'ab': '約'},
+                'ka': {'dm': 'ბნელი რეჟიმი', 'lm': 'ნათელი რეჟიმი', 'sd': 'გამოჩენა დებაგი', 'cm': 'ანულირება აუდიტი', 'ab': 'შესახებ'},
+                'ko': {'dm': '다크 모드', 'lm': '라이트 모드', 'sd': '디버깅 표시', 'cm': '감사 취소', 'ab': '약'},
+                'nb': {'dm': 'Mørk modus', 'lm': 'Lys modus', 'sd': 'Vis feilsøking', 'cm': 'Avbryt revisjonen', 'ab': 'om'},
+                'nl': {'dm': 'Donkere modus', 'lm': 'Lichte modus', 'sd': 'Foutopsporing weergeven', 'cm': 'Controle annuleren', 'ab': 'over'},
+                'pl': {'dm': 'Tryb ciemny', 'lm': 'Tryb jasny', 'sd': 'Pokaż debugowanie', 'cm': 'Anuluj audyt', 'ab': 'o'},
+                'pt-BR': {'dm': 'Modo escuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuração', 'cm': 'Cancelar auditoria', 'ab': 'sobre'},
+                'ro': {'dm': 'Mod întunecat', 'lm': 'Mod luminos', 'sd': 'Afișare depanare', 'cm': 'Anulare audit', 'ab': 'despre'},
+                'ru': {'dm': 'Темный режим', 'lm': 'Светлый режим', 'sd': 'Показать отладку', 'cm': 'Отменить аудит', 'ab': 'о'},
+                'sk': {'dm': 'Tmavý režim', 'lm': 'Svetlý režim', 'sd': 'Zobraziť ladenie', 'cm': 'Zrušiť audit', 'ab': 'o'},
+                'sr': {'dm': 'Тамни режим', 'lm': 'Светла тема', 'sd': 'Прикажи отклањање грешака', 'cm': 'Откажи ревизију', 'ab': 'о'},
+                'sv': {'dm': 'Mörkt läge', 'lm': 'Ljust läge', 'sd': 'Visa felsökning', 'cm': 'Avbryt revision', 'ab': 'om'},
+                'th': {'dm': 'โหมดมืด', 'lm': 'โหมดสว่าง', 'sd': 'แสดงการแก้ไขข้อผิดพลาด', 'cm': 'ยกเลิกการตรวจสอบ', 'ab': 'เกี่ยวกับ'},
+                'tr': {'dm': 'Karanlık mod', 'lm': 'Aydınlık mod', 'sd': 'Hata ayıklama göster', 'cm': 'Denetimi İptal Et', 'ab': 'hakkında'},
+                'uk': {'dm': 'Темний режим', 'lm': 'Світлий режим', 'sd': 'Показати налагодження', 'cm': 'Скасувати аудит', 'ab': 'про'},
+                'ug': {'dm': 'تېما كۆرسىتىش', 'lm': 'ئاچقۇچ كۆرۈنۈش', 'sd': 'كۆرسەتكەن يۇقىرىلاش', 'cm': 'ئەمەلدىن قالدۇرۇش', 'ab': 'ھەققىدە'},
+                'vi': {'dm': 'Chế độ tối', 'lm': 'Chế độ sáng', 'sd': 'Hiển thị gỡ lỗi', 'cm': 'Hủy đánh giá', 'ab': 'về'},
+                'zh-CN': {'dm': '暗色主题', 'lm': '浅色主题', 'sd': '显示调试', 'cm': '取消审计', 'ab': '关于'},
+                'zh-TW': {'dm': '暗黑模式', 'lm': '淺色主題', 'sd': '顯示調試', 'cm': '取消稽核', 'ab': '關於'}
+
+            }
+        }
         var i, r, nl;
         try {
             i = lang.index[s];
