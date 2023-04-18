@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.9.4
+// @version           7.10
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -59,53 +59,52 @@
 
     var qs = document.querySelector.bind(document);
 
-        var tl = function(s) {
-        var lang = {
-            'index': {'暗色主题': 'dm', '浅色主题': 'lm', '显示调试': 'sd', '取消审计': 'cm', '关于': 'ab'},
-            'local': {
-                'ar': {'dm': 'وضع داكن', 'lm': 'وضع فاتح', 'sd': 'إظهار التصحيح', 'cm': 'إلغاء التدقيق', 'ab': 'حول'},
-                'bg': {'dm': 'Тъмна тема', 'lm': 'Светла тема', 'sd': 'Показване на отстраняване на грешки', 'cm': 'Отказ от одит', 'ab': 'за'},
-                'cs': {'dm': 'Tmavý režim', 'lm': 'Světlý režim', 'sd': 'Zobrazit ladění', 'cm': 'Zrušení auditu', 'ab': 'o'},
-                'da': {'dm': 'Mørk tilstand', 'lm': 'Lys tilstand', 'sd': 'Vis fejlfinding', 'cm': 'Annuller revision', 'ab': 'om'},
-                'de': {'dm': 'Dunkler Modus', 'lm': 'Heller Modus', 'sd': 'Fehlerbehebung anzeigen', 'cm': 'Prüfung abbrechen', 'ab': 'über'},
-                'el': {'dm': 'Σκοτεινή θεματολογία', 'lm': 'Φωτεινή θεματολογία', 'sd': 'Εμφάνιση αποσφαλμάτωσης', 'cm': 'Ακύρωση ελέγχου', 'ab': 'για'},
-                'en': {'dm': 'Dark mode', 'lm': 'Light mode', 'sd': 'Show debugging', 'cm': 'Cancel audit', 'ab': 'about'},
-                'eo': {'dm': 'Malhela moduso', 'lm': 'Hela moduso', 'sd': 'Montri depuradon', 'cm': 'Nuligi kontroli', 'ab': 'pri'},
-                'es': {'dm': 'Modo oscuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuración', 'cm': 'Cancelar auditoría', 'ab': 'sobre'},
-                'fi': {'dm': 'Tumma tila', 'lm': 'Vaalea tila', 'sd': 'Näytä virheenkorjaus', 'cm': 'Peruuta tarkistus', 'ab': 'noin'},
-                'fr': {'dm': 'Mode sombre', 'lm': 'Mode clair', 'sd': 'Afficher le débogage', 'cm': "Annuler l'audit", 'ab': 'à propos de'},
-                'fr-CA': {'dm': 'Mode nuit', 'lm': 'Mode jour', 'sd': 'Afficher le débogage', 'cm': 'Annuler la vérification', 'ab': 'au sujet de'},
-                'he': {'dm': 'מצב כהה', 'lm': 'מצב בהיר', 'sd': 'הצגת התיקון', 'cm': 'ביטול ביקורת', 'ab': 'אודות'},
-                'hi': {'dm': 'रात का मोड', 'lm': 'दिन का मोड', 'sd': 'डीबग दिखाएँ', 'cm': 'सत्यापन रद्द करें', 'ab': 'के बारे में'},
-                'hu': {'dm': 'Sötét mód', 'lm': 'Világos mód', 'sd': 'Hibakeresés mutatása', 'cm': 'Ellenőrzés megszüntetése', 'ab': 'ról'},
-                'hr': {'dm': 'Noćni način', 'lm': 'Dnevni način', 'sd': 'Prikaži otklanjanje pogrešaka', 'cm': 'Poništi provjeru valjanosti', 'ab': 'O aplikaciji'},
-                'id': {'dm': 'Mode gelap', 'lm': 'Mode terang', 'sd': 'Tampilkan debugging', 'cm': 'Batalkan audit', 'ab': 'tentang'},
-                'hy': {'dm': 'Գիշերային ռեժիմ', 'lm': 'Օրային ռեժիմ', 'sd': 'Սխալների շնորհիվ ցուցադրել', 'cm': 'Վերցնել վավերացմանը', 'ab': 'Մեր մասին'},
-                'it': {'dm': 'Modalità scura', 'lm': 'Modalità chiara', 'sd': 'Mostra debug', 'cm': 'Annulla verifica', 'ab': 'su'},
-                'ja': {'dm': 'ダークモード', 'lm': 'ライトモード', 'sd': 'デバッグを表示', 'cm': '監査をキャンセル', 'ab': '約'},
-                'ka': {'dm': 'ბნელი რეჟიმი', 'lm': 'ნათელი რეჟიმი', 'sd': 'გამოჩენა დებაგი', 'cm': 'ანულირება აუდიტი', 'ab': 'შესახებ'},
-                'ko': {'dm': '다크 모드', 'lm': '라이트 모드', 'sd': '디버깅 표시', 'cm': '감사 취소', 'ab': '약'},
-                'nb': {'dm': 'Mørk modus', 'lm': 'Lys modus', 'sd': 'Vis feilsøking', 'cm': 'Avbryt revisjonen', 'ab': 'om'},
-                'nl': {'dm': 'Donkere modus', 'lm': 'Lichte modus', 'sd': 'Foutopsporing weergeven', 'cm': 'Controle annuleren', 'ab': 'over'},
-                'pl': {'dm': 'Tryb ciemny', 'lm': 'Tryb jasny', 'sd': 'Pokaż debugowanie', 'cm': 'Anuluj audyt', 'ab': 'o'},
-                'pt-BR': {'dm': 'Modo escuro', 'lm': 'Modo claro', 'sd': 'Mostrar depuração', 'cm': 'Cancelar auditoria', 'ab': 'sobre'},
-                'ro': {'dm': 'Mod întunecat', 'lm': 'Mod luminos', 'sd': 'Afișare depanare', 'cm': 'Anulare audit', 'ab': 'despre'},
-                'ru': {'dm': 'Темный режим', 'lm': 'Светлый режим', 'sd': 'Показать отладку', 'cm': 'Отменить аудит', 'ab': 'о'},
-                'sk': {'dm': 'Tmavý režim', 'lm': 'Svetlý režim', 'sd': 'Zobraziť ladenie', 'cm': 'Zrušiť audit', 'ab': 'o'},
-                'sr': {'dm': 'Тамни режим', 'lm': 'Светла тема', 'sd': 'Прикажи отклањање грешака', 'cm': 'Откажи ревизију', 'ab': 'о'},
-                'sv': {'dm': 'Mörkt läge', 'lm': 'Ljust läge', 'sd': 'Visa felsökning', 'cm': 'Avbryt revision', 'ab': 'om'},
-                'th': {'dm': 'โหมดมืด', 'lm': 'โหมดสว่าง', 'sd': 'แสดงการแก้ไขข้อผิดพลาด', 'cm': 'ยกเลิกการตรวจสอบ', 'ab': 'เกี่ยวกับ'},
-                'tr': {'dm': 'Karanlık mod', 'lm': 'Aydınlık mod', 'sd': 'Hata ayıklama göster', 'cm': 'Denetimi İptal Et', 'ab': 'hakkında'},
-                'uk': {'dm': 'Темний режим', 'lm': 'Світлий режим', 'sd': 'Показати налагодження', 'cm': 'Скасувати аудит', 'ab': 'про'},
-                'ug': {'dm': 'تېما كۆرسىتىش', 'lm': 'ئاچقۇچ كۆرۈنۈش', 'sd': 'كۆرسەتكەن يۇقىرىلاش', 'cm': 'ئەمەلدىن قالدۇرۇش', 'ab': 'ھەققىدە'},
-                'vi': {'dm': 'Chế độ tối', 'lm': 'Chế độ sáng', 'sd': 'Hiển thị gỡ lỗi', 'cm': 'Hủy đánh giá', 'ab': 'về'},
-                'zh-CN': {'dm': '暗色主题', 'lm': '浅色主题', 'sd': '显示调试', 'cm': '取消审计', 'ab': '关于'},
-                'zh-TW': {'dm': '暗黑模式', 'lm': '淺色主題', 'sd': '顯示調試', 'cm': '取消稽核', 'ab': '關於'}
-
-            }
-        }
+    var tl = function(s) {
+        var lang = `
+{
+    "index": {"暗色主题": "dm", "浅色主题": "lm", "显示调试": "sd", "取消审计": "cm", "关于": "ab"},
+    "local": {
+"ar": {"dm": "الوضع الداكن", "lm": "وضع فاتح", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ab": "حول"},
+"bg": {"dm": "Тъмна тема", "lm": "Светла тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ab": "За"},
+"cs": {"dm": "Tmavý režim", "lm": "Světlý režim", "sd": "Zobrazit ladění", "cm": "Zrušení auditu", "ab": "O"},
+"da": {"dm": "Mørk tilstand", "lm": "Lys tilstand", "sd": "Vis fejlfinding", "cm": "Annuller revision", "ab": "Om"},
+"de": {"dm": "Dunkler Modus", "lm": "Heller Modus", "sd": "Fehlerbehebung anzeigen", "cm": "Prüfung abbrechen", "ab": "Über"},
+"el": {"dm": "Σκοτεινή θεματολογία", "lm": "Φωτεινή θεματολογία", "sd": "Εμφάνιση αποσφαλμάτωσης", "cm": "Ακύρωση ελέγχου", "ab": "Σχετικά με"},
+"en": {"dm": "Dark mode", "lm": "Light mode", "sd": "Show debugging", "cm": "Cancel audit", "ab": "About"},
+"eo": {"dm": "Malhela moduso", "lm": "Hela moduso", "sd": "Montri depuradon", "cm": "Nuligi kontroli", "ab": "Pri"},
+"es": {"dm": "Modo oscuro", "lm": "Modo claro", "sd": "Mostrar depuración", "cm": "Cancelar auditoría", "ab": "Acerca de"},
+"fi": {"dm": "Tumma tila", "lm": "Vaalea tila", "sd": "Näytä virheenkorjaus", "cm": "Peruuta tarkistus", "ab": "Tietoa"},
+"fr": {"dm": "Mode sombre", "lm": "Mode clair", "sd": "Afficher le débogage", "cm": "Annuler l'audit", "ab": "À propos de"},
+"fr-CA": {"dm": "Mode nuit", "lm": "Mode jour", "sd": "Afficher le débogage", "cm": "Annuler la vérification", "ab": "À propos de"},
+"he": {"dm": "מצב כהה", "lm": "מצב בהיר", "sd": "הצגת התיקון", "cm": "ביטול ביקורת", "ab": "אודות"},
+"hu": {"dm": "Sötét mód", "lm": "Világos mód", "sd": "Hibakeresés mutatása", "cm": "Ellenőrzés megszüntetése", "ab": "Rólunk"},
+"id": {"dm": "Mode gelap", "lm": "Mode terang", "sd": "Tampilkan debugging", "cm": "Batalkan audit", "ab": "Tentang"},
+"it": {"dm": "Modalità scura", "lm": "Modalità chiara", "sd": "Mostra debug", "cm": "Annulla verifica", "ab": "Riguardo a"},
+"ja": {"dm": "ダークモード", "lm": "ライトモード", "sd": "デバッグを表示", "cm": "監査をキャンセル", "ab": "について"},
+"ka": {"dm": "ბნელი რეჟიმი", "lm": "ნათელი რეჟიმი", "sd": "გამოჩენა დებაგი", "cm": "ანულირება აუდიტი", "ab": "შესახებ"},
+"ko": {"dm": "다크 모드", "lm": "라이트 모드", "sd": "디버깅 표시", "cm": "감사 취소", "ab": "관하여"},
+"nb": {"dm": "Mørk modus", "lm": "Lys modus", "sd": "Vis feilsøking", "cm": "Avbryt revisjonen", "ab": "Om"},
+"nl": {"dm": "Donkere modus", "lm": "Lichte modus", "sd": "Foutopsporing weergeven", "cm": "Controle annuleren", "ab": "Over"},
+"pl": {"dm": "Tryb ciemny", "lm": "Tryb jasny", "sd": "Pokaż debugowanie", "cm": "Anuluj audyt", "ab": "O"},
+"pt-BR": {"dm": "Modo escuro", "lm": "Modo claro", "sd": "Mostrar depuração", "cm": "Cancelar auditoria", "ab": "Sobre"},
+"ro": {"dm": "Mod întunecat", "lm": "Mod luminos", "sd": "Afișare depanare", "cm": "Anulare audit", "ab": "Despre"},
+"ru": {"dm": "Темный режим", "lm": "Светлый режим", "sd": "Показать отладку", "cm": "Отменить аудит", "ab": "О"},
+"sk": {"dm": "Tmavý režim", "lm": "Svetlý režim", "sd": "Zobraziť ladenie", "cm": "Zrušiť audit", "ab": "O"},
+"sr": {"dm": "Тамни режим", "lm": "Светла тема", "sd": "Прикажи отклањање грешака", "cm": "Откажи ревизију", "ab": "О"},
+"sv": {"dm": "Mörkt läge", "lm": "Ljust läge", "sd": "Visa felsökning", "cm": "Avbryt revision", "ab": "Om"},
+"th": {"dm": "โหมดมืด", "lm": "โหมดสว่าง", "sd": "แสดงการแก้ไขข้อผิดพลาด", "cm": "ยกเลิกการตรวจสอบ", "ab": "เกี่ยวกับ"},
+"tr": {"dm": "Karanlık mod", "lm": "Aydınlık mod", "sd": "Hata ayıklama göster", "cm": "Denetimi İptal Et", "ab": "Hakkında"},
+"uk": {"dm": "Темний режим", "lm": "Світлий режим", "sd": "Показати налагодження", "cm": "Скасувати аудит", "ab": "Про"},
+"ug": {"dm": "تېما كۆرسىتىش", "lm": "ئاچقۇچ كۆرۈنۈش", "sd": "كۆرسەتكەن يۇقىرىلاش", "cm": "ئەمەلدىن قالدۇرۇش", "ab": "ئۇچۇرلىق"},
+"vi": {"dm": "Chế độ tối", "lm": "Chế độ sáng", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ab": "Về"},
+"zh-CN": {"dm": "暗色主题", "lm": "浅色主题", "sd": "显示调试", "cm": "取消审计", "ab": "关于"},
+"zh-TW": {"dm": "暗黑模式", "lm": "淺色主題", "sd": "顯示調試", "cm": "取消稽核", "ab": "關於"}
+    }
+}
+`;
         var i, r, nl;
         try {
+            lang = JSON.parse(lang);
             i = lang.index[s];
             nl = navigator.language;
             if (nl in lang.local) {
@@ -182,17 +181,17 @@
     var loadMenu = function() {
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li class="rounded-md" id=nmenuid1>${gv("k_showDebug", false)?"🗹 " + tl("显示调试"):"🗷 " + tl("显示调试")}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?"◐ " + tl("浅色主题"):"◑ " + tl("暗色主题")}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?"🗷 " + tl("取消审计"):"🗹 " + tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${"🛈 " + tl("关于")}</li></a></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
         qs('#nmenuid1').onclick = function() {
             if (gv("k_showDebug", false) == true) {
                 if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
-                qs('#nmenuid1').innerText = "🗷 " + tl("显示调试");
+                qs('#nmenuid1').innerText = tl("显示调试")+"✗";
                 sv("k_showDebug", false);
             } else {
                 if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
-                qs('#nmenuid1').innerText = "🗹 " + tl("显示调试");
+                qs('#nmenuid1').innerText = tl("显示调试")+"✓";
                 sv("k_showDebug", true);
             }
         };
@@ -202,22 +201,22 @@
                 qs('#kcg').style.background = "#2C3E50";
                 qs('#kcg').style.animation = "none";
                 qs('#kcg').style.color = "#ffffff";
-                qs('#nmenuid2').innerText = "◑ " + tl("暗色主题");
+                qs('#nmenuid2').innerText = tl("暗色主题")+"✓";
                 sv("k_theme", "dark");
             } else {
                 qs('#kcg').style = qs('#kcg').styleOrigin;
-                qs('#nmenuid2').innerText = "◐ " + tl("浅色主题");
+                qs('#nmenuid2').innerText = tl("浅色主题")+"✓";
                 sv("k_theme", "light");
             }
         };
         qs('#nmenuid3').onclick = function() {
             if (gv("k_closeModer", false) == true) {
                 byeModer(false);
-                qs('#nmenuid3').innerText = "🗷 " + tl("取消审计");
+                qs('#nmenuid3').innerText = tl("取消审计")+"✗";
                 sv("k_closeModer", false);
             } else {
                 byeModer(true);
-                qs('#nmenuid3').innerText = "🗹 " + tl("取消审计");
+                qs('#nmenuid3').innerText = tl("取消审计")+"✓";
                 sv("k_closeModer", true);
             }
         };
@@ -335,7 +334,7 @@
 .kmenu {
     background-color: #202123;
     color: #FFFFFF;
-    /*border: 1px solid #4D4D4F;*/
+    border: 1px solid #4D4D4F;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     display: none;
@@ -365,12 +364,12 @@
 }
 .kmenu li {
     display: block;
-    padding: 6px 24px;
+    padding: 8px 24px;
     text-align: left;
     user-select: none;
 }
 .kmenu li:hover {
-    background-color: rgba(42,43,50,var(--tw-bg-opacity));
+    background-color: #273746;
     cursor: pointer;
 }
 
