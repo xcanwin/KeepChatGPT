@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           7.11
+// @version           8.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -141,7 +141,7 @@
             nIfr.onload = function() {
                 var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
                 try {
-                    qs("#xcanwin").contentWindow.document.documentElement.style = `background: #5499C7; height: 360px; width: 1080px; overflow; auto;`;
+                    qs("#xcanwin").contentWindow.document.documentElement.style = `background: #FCF3CF; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
@@ -201,6 +201,7 @@
                 qs('#kcg').style.background = "#2C3E50";
                 qs('#kcg').style.animation = "none";
                 qs('#kcg').style.color = "#ffffff";
+                qs('#kcg').style.marginRight = "inherit";
                 qs('#nmenuid2').innerText = tl("暗色主题")+"✓";
                 sv("k_theme", "dark");
             } else {
@@ -277,16 +278,9 @@
         }
         qs("main").kcg = ndivkcg;
         symbol_prt.insertBefore(qs("main").kcg, symbol_prt.childNodes[0]);
-        if (gv("k_theme", "light") == "light") {
-            qs('#kcg').style = qs('#kcg').styleOrigin;
-        } else {
-            qs('#kcg').styleOrigin = qs('#kcg').style;
-            qs('#kcg').style.background = "#2C3E50";
-            qs('#kcg').style.animation = "none";
-            qs('#kcg').style.color = "#ffffff";
-            qs('#kcg').style.marginRight = "inherit";
-        };
+
         addStyle();
+        setUserOptions();
     };
 
     var addStyle = function() {
@@ -381,6 +375,29 @@ nav {
     position: relative;
 }
 `);
+    };
+
+    var setUserOptions = function() {
+        if (gv("k_showDebug", false) == true) {
+            if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
+        } else {
+            if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
+        }
+
+        if (gv("k_theme", "light") == "light") {
+            qs('#kcg').styleOrigin = qs('#kcg').style;
+        } else {
+            qs('#kcg').style.background = "#2C3E50";
+            qs('#kcg').style.animation = "none";
+            qs('#kcg').style.color = "#ffffff";
+            qs('#kcg').style.marginRight = "inherit";
+        }
+
+        if (gv("k_closeModer", false) == true) {
+            byeModer(true);
+        } else {
+            byeModer(false);
+        }
     };
 
     var byeModer = function(action) {
