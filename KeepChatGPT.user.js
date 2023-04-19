@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           8.0
+// @version           8.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -115,6 +115,7 @@
         } catch (e) {
             r = s;
         }
+        if (r == undefined) {r = s;}
         return r;
     };
 
@@ -178,48 +179,60 @@
         });
     }
 
+    var ncheckbox = function() {
+        var nsvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        nsvg.setAttribute("viewBox", "0 0 100 30");
+        nsvg.classList.add("checkbutton");
+        nsvg.innerHTML = `<g fill="none" fill-rule="evenodd"><path fill="#E3E3E3" d="M0 15C0 6.716 6.716 0 15 0h14c8.284 0 15 6.716 15 15s-6.716 15-15 15H15C6.716 30 0 23.284 0 15z"/><circle fill="#FFF" cx="15" cy="15" r="13"/></g>`;
+        return nsvg.cloneNode(true);
+    };
+
     var loadMenu = function() {
+        if (qs(".kmenu")!==null) {
+            return;
+        }
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${gv("k_showDebug", false)?tl("显示调试")+"✓":tl("显示调试")+"✗"}</li><li id=nmenuid2>${gv("k_theme", "light")=="light"?tl("浅色主题")+"✓":tl("暗色主题")+"✓"}</li><li id=nmenuid3>${gv("k_closeModer", false)==false?tl("取消审计")+"✗":tl("取消审计")+"✓"}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${tl("显示调试")}</li><li id=nmenuid2>${tl("暗色主题")}</li><li id=nmenuid3>${tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
+        qs('#nmenuid1').appendChild(ncheckbox());
+        qs('#nmenuid2').appendChild(ncheckbox());
+        qs('#nmenuid3').appendChild(ncheckbox());
+
         qs('#nmenuid1').onclick = function() {
-            if (gv("k_showDebug", false) == true) {
+            if (this.querySelector('.checkbutton').classList.contains('checked')) {
                 if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
-                qs('#nmenuid1').innerText = tl("显示调试")+"✗";
                 sv("k_showDebug", false);
             } else {
                 if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
-                qs('#nmenuid1').innerText = tl("显示调试")+"✓";
                 sv("k_showDebug", true);
             }
+            this.querySelector('.checkbutton').classList.toggle('checked');
         };
         qs('#nmenuid2').onclick = function() {
-            if (gv("k_theme", "light") == "light") {
+            if (this.querySelector('.checkbutton').classList.contains('checked')) {
+                qs('#kcg').style = qs('#kcg').styleOrigin;
+                sv("k_theme", "light");
+            } else {
                 qs('#kcg').styleOrigin = qs('#kcg').style;
                 qs('#kcg').style.background = "#2C3E50";
                 qs('#kcg').style.animation = "none";
                 qs('#kcg').style.color = "#ffffff";
                 qs('#kcg').style.marginRight = "inherit";
-                qs('#nmenuid2').innerText = tl("暗色主题")+"✓";
                 sv("k_theme", "dark");
-            } else {
-                qs('#kcg').style = qs('#kcg').styleOrigin;
-                qs('#nmenuid2').innerText = tl("浅色主题")+"✓";
-                sv("k_theme", "light");
             }
+            this.querySelector('.checkbutton').classList.toggle('checked');
         };
         qs('#nmenuid3').onclick = function() {
-            if (gv("k_closeModer", false) == true) {
+            if (this.querySelector('.checkbutton').classList.contains('checked')) {
                 byeModer(false);
-                qs('#nmenuid3').innerText = tl("取消审计")+"✗";
                 sv("k_closeModer", false);
             } else {
                 byeModer(true);
-                qs('#nmenuid3').innerText = tl("取消审计")+"✓";
                 sv("k_closeModer", true);
             }
+            this.querySelector('.checkbutton').classList.toggle('checked');
         };
     };
 
@@ -249,9 +262,11 @@
 
         var ndivmenu = qs(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
-            ndivmenu.style.display = 'block';
-            ndivmenu.style.left = `${qs("#kcg").getBoundingClientRect().right + 20}px`;
-            ndivmenu.style.top = `${qs("#kcg").getBoundingClientRect().top}px`;
+            if (qs("#kcg")) {
+                ndivmenu.style.display = 'block';
+                ndivmenu.style.left = `${qs("#kcg").getBoundingClientRect().right + 20}px`;
+                ndivmenu.style.top = `${qs("#kcg").getBoundingClientRect().top}px`;
+            }
         };
         ndivkcg.onmouseleave = ndivmenu.onmouseleave = function() {
             ndivmenu.style.display = 'none';
@@ -361,6 +376,8 @@
     padding: 8px 24px;
     text-align: left;
     user-select: none;
+    display: flex;
+    align-items: center;
 }
 .kmenu li:hover {
     background-color: #273746;
@@ -374,11 +391,28 @@
 nav {
     position: relative;
 }
+
+.checkbutton {
+    height: 20px;
+    margin-left: auto;
+    margin-right: -35px;
+}
+.checkbutton:hover {
+    cursor: pointer;
+}
+.checked path {
+    fill: #30D158;
+}
+.checked circle {
+    transform: translateX(14px);
+    transition: transform 0.2s ease-in-out;
+}
 `);
     };
 
     var setUserOptions = function() {
         if (gv("k_showDebug", false) == true) {
+            qs('#nmenuid1').querySelector('.checkbutton').classList.add('checked');
             if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
         } else {
             if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
@@ -387,6 +421,7 @@ nav {
         if (gv("k_theme", "light") == "light") {
             qs('#kcg').styleOrigin = qs('#kcg').style;
         } else {
+            qs('#nmenuid2').querySelector('.checkbutton').classList.add('checked');
             qs('#kcg').style.background = "#2C3E50";
             qs('#kcg').style.animation = "none";
             qs('#kcg').style.color = "#ffffff";
@@ -394,6 +429,7 @@ nav {
         }
 
         if (gv("k_closeModer", false) == true) {
+            qs('#nmenuid3').querySelector('.checkbutton').classList.add('checked');
             byeModer(true);
         } else {
             byeModer(false);
