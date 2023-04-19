@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           8.1
+// @version           8.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -57,7 +57,8 @@
 (function() {
     'use strict';
 
-    var qs = document.querySelector.bind(document);
+    var $ = (Selector, el) => (el || document).querySelector(Selector);
+    var $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
     var tl = function(s) {
         var lang = `
@@ -132,7 +133,7 @@
     };
 
     var setIfr = function(u = "") {
-        if (qs("#xcanwin")==null) {
+        if ($("#xcanwin")==null) {
             var nIfr = document.createElement('iframe');
             nIfr.id = "xcanwin";
             nIfr.style = `height: 0px; width: 100%;`;
@@ -140,9 +141,9 @@
                 nIfr.src = u;
             }
             nIfr.onload = function() {
-                var nIfrText = qs("#xcanwin").contentWindow.document.documentElement.innerText;
+                var nIfrText = $("#xcanwin").contentWindow.document.documentElement.innerText;
                 try {
-                    qs("#xcanwin").contentWindow.document.documentElement.style = `background: #FCF3CF; height: 360px; width: 1080px; overflow; auto;`;
+                    $("#xcanwin").contentWindow.document.documentElement.style = `background: #FCF3CF; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
@@ -152,10 +153,10 @@
                     console.log(`KeepChatGPT: IFRAME: ERROR: ${e},\nERROR RESPONSE:\n${nIfrText}`);
                 }
             };
-            qs("main").lastElementChild.appendChild(nIfr);
+            $("main").lastElementChild.appendChild(nIfr);
         } else{
             if (u) {
-                qs("#xcanwin").src = u;
+                $("#xcanwin").src = u;
             }
         }
     };
@@ -167,7 +168,7 @@
                     var contentType = response.headers.get('Content-Type');
                     if (contentType.indexOf("application/json") > -1 && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        qs("#xcanwin").contentWindow.document.documentElement.innerHTML = data;
+                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = data;
                     } else {
                         setIfr(u);
                     }
@@ -188,7 +189,7 @@
     };
 
     var loadMenu = function() {
-        if (qs(".kmenu")!==null) {
+        if ($(".kmenu")!==null) {
             return;
         }
         var ndivmenu = document.createElement('div');
@@ -196,60 +197,60 @@
         ndivmenu.innerHTML = `<ul><li id=nmenuid1>${tl("显示调试")}</li><li id=nmenuid2>${tl("暗色主题")}</li><li id=nmenuid3>${tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
-        qs('#nmenuid1').appendChild(ncheckbox());
-        qs('#nmenuid2').appendChild(ncheckbox());
-        qs('#nmenuid3').appendChild(ncheckbox());
+        $('#nmenuid1').appendChild(ncheckbox());
+        $('#nmenuid2').appendChild(ncheckbox());
+        $('#nmenuid3').appendChild(ncheckbox());
 
-        qs('#nmenuid1').onclick = function() {
-            if (this.querySelector('.checkbutton').classList.contains('checked')) {
-                if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
+        $('#nmenuid1').onclick = function() {
+            if ($('.checkbutton', this).classList.contains('checked')) {
+                if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
                 sv("k_showDebug", false);
             } else {
-                if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
+                if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
                 sv("k_showDebug", true);
             }
-            this.querySelector('.checkbutton').classList.toggle('checked');
+            $('.checkbutton', this).classList.toggle('checked');
         };
-        qs('#nmenuid2').onclick = function() {
-            if (this.querySelector('.checkbutton').classList.contains('checked')) {
-                qs('#kcg').style = qs('#kcg').styleOrigin;
+        $('#nmenuid2').onclick = function() {
+            if ($('.checkbutton', this).classList.contains('checked')) {
+                $('#kcg').style = $('#kcg').styleOrigin;
                 sv("k_theme", "light");
             } else {
-                qs('#kcg').styleOrigin = qs('#kcg').style;
-                qs('#kcg').style.background = "#2C3E50";
-                qs('#kcg').style.animation = "none";
-                qs('#kcg').style.color = "#ffffff";
-                qs('#kcg').style.marginRight = "inherit";
+                $('#kcg').styleOrigin = $('#kcg').style;
+                $('#kcg').style.background = "#2C3E50";
+                $('#kcg').style.animation = "none";
+                $('#kcg').style.color = "#ffffff";
+                $('#kcg').style.marginRight = "inherit";
                 sv("k_theme", "dark");
             }
-            this.querySelector('.checkbutton').classList.toggle('checked');
+            $('.checkbutton', this).classList.toggle('checked');
         };
-        qs('#nmenuid3').onclick = function() {
-            if (this.querySelector('.checkbutton').classList.contains('checked')) {
+        $('#nmenuid3').onclick = function() {
+            if ($('.checkbutton', this).classList.contains('checked')) {
                 byeModer(false);
                 sv("k_closeModer", false);
             } else {
                 byeModer(true);
                 sv("k_closeModer", true);
             }
-            this.querySelector('.checkbutton').classList.toggle('checked');
+            $('.checkbutton', this).classList.toggle('checked');
         };
     };
 
     var loadKCG = function() {
         var symbol_prt;
-        if (qs("#kcg")!==null) {
+        if ($("#kcg")!==null) {
             return;
         }
-        if (qs("main").kcg!==undefined) {
-            if (qs(symbol1_class)) {
-                qs("main").kcg.innerHTML = qs("main").kcg._symbol1_innerHTML;
-                symbol_prt = qs(symbol1_class).parentElement;
-            } else if (qs(symbol2_class)) {
-                qs("main").kcg.innerHTML = qs("main").kcg._symbol2_innerHTML;
-                symbol_prt = qs(symbol2_class).parentElement;
+        if ($("main").kcg!==undefined) {
+            if ($(symbol1_class)) {
+                $("main").kcg.innerHTML = $("main").kcg._symbol1_innerHTML;
+                symbol_prt = $(symbol1_class).parentElement;
+            } else if ($(symbol2_class)) {
+                $("main").kcg.innerHTML = $("main").kcg._symbol2_innerHTML;
+                symbol_prt = $(symbol2_class).parentElement;
             }
-            symbol_prt.insertBefore(qs("main").kcg, symbol_prt.childNodes[0]);
+            symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
             return;
         }
 
@@ -260,12 +261,12 @@
         ndivkcg.id = "kcg";
         ndivkcg.setAttribute("class", "flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
 
-        var ndivmenu = qs(".kmenu");
+        var ndivmenu = $(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
-            if (qs("#kcg")) {
+            if ($("#kcg")) {
                 ndivmenu.style.display = 'block';
-                ndivmenu.style.left = `${qs("#kcg").getBoundingClientRect().right + 20}px`;
-                ndivmenu.style.top = `${qs("#kcg").getBoundingClientRect().top}px`;
+                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
+                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
             }
         };
         ndivkcg.onmouseleave = ndivmenu.onmouseleave = function() {
@@ -274,8 +275,8 @@
         ndivkcg.onclick = function() {
             if (ndivmenu.style.display == 'none') {
                 ndivmenu.style.display = 'block';
-                ndivmenu.style.left = `${qs("#kcg").getBoundingClientRect().right + 20}px`;
-                ndivmenu.style.top = `${qs("#kcg").getBoundingClientRect().top}px`;
+                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
+                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
             } else {
                 ndivmenu.style.display = 'none';
             }
@@ -284,15 +285,15 @@
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
 
-        if (qs(symbol1_class)) {
+        if ($(symbol1_class)) {
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
-            symbol_prt = qs(symbol1_class).parentElement;
-        } else if (qs(symbol2_class)) {
+            symbol_prt = $(symbol1_class).parentElement;
+        } else if ($(symbol2_class)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
-            symbol_prt = qs(symbol2_class).parentElement;
+            symbol_prt = $(symbol2_class).parentElement;
         }
-        qs("main").kcg = ndivkcg;
-        symbol_prt.insertBefore(qs("main").kcg, symbol_prt.childNodes[0]);
+        $("main").kcg = ndivkcg;
+        symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
 
         addStyle();
         setUserOptions();
@@ -412,24 +413,24 @@ nav {
 
     var setUserOptions = function() {
         if (gv("k_showDebug", false) == true) {
-            qs('#nmenuid1').querySelector('.checkbutton').classList.add('checked');
-            if (qs('#xcanwin')) qs('#xcanwin').style.height = '80px';
+            $('#nmenuid1 .checkbutton').classList.add('checked');
+            if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
         } else {
-            if (qs('#xcanwin')) qs('#xcanwin').style.height = '0px';
+            if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
         }
 
         if (gv("k_theme", "light") == "light") {
-            qs('#kcg').styleOrigin = qs('#kcg').style;
+            $('#kcg').styleOrigin = $('#kcg').style;
         } else {
-            qs('#nmenuid2').querySelector('.checkbutton').classList.add('checked');
-            qs('#kcg').style.background = "#2C3E50";
-            qs('#kcg').style.animation = "none";
-            qs('#kcg').style.color = "#ffffff";
-            qs('#kcg').style.marginRight = "inherit";
+            $('#nmenuid2 .checkbutton').classList.add('checked');
+            $('#kcg').style.background = "#2C3E50";
+            $('#kcg').style.animation = "none";
+            $('#kcg').style.color = "#ffffff";
+            $('#kcg').style.marginRight = "inherit";
         }
 
         if (gv("k_closeModer", false) == true) {
-            qs('#nmenuid3').querySelector('.checkbutton').classList.add('checked');
+            $('#nmenuid3 .checkbutton').classList.add('checked');
             byeModer(true);
         } else {
             byeModer(false);
@@ -476,13 +477,13 @@ nav {
     };
 
     setInterval(function() {
-        if (qs(symbol1_class) || qs(symbol2_class)) {
+        if ($(symbol1_class) || $(symbol2_class)) {
             loadKCG();
         }
     }, 300);
 
     setInterval(function() {
-        if (qs(symbol1_class) || qs(symbol2_class)) {
+        if ($(symbol1_class) || $(symbol2_class)) {
             keepChat();
         }
     }, 1000 * 30);
