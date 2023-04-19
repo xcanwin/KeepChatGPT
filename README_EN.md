@@ -12,20 +12,20 @@
 - A UserScript that enables ChatGPT to chat smoothly, never experiencing network errors again, and no need to refresh the webpage anymore.
 - Resolved error: NetworkError when attempting to fetch resource.
 - Resolved error: Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
+- Resolved error: Conversation not found
 - Cancel audit: This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
 - Resolved frequent interruptions during communication
 - Resolved frequent webpage refreshing
 - Supports multiple languages
 - Resolved the issue of accidentally copying user avatars
-- Resolved error: Conversation not found
 - Mobile-compatible
 
 | Num | After using ```KeepChatGPT```, the following scene will never occur again |
 | --- | --- |
-| 1 | <img src="./assets/network_error.png" width="750"></img> |
-| 2 | <img src="./assets/somthing_wrong.png" width="750"></img> |
-| 3 | <img src="./assets/audit_wrong.png" width="750"></img> |
-| 4 | <img src="./assets/conversation_not_found_error.png" width="750"></img> |
+| 1 | <img src="./assets/error_network.png" width="750"></img> |
+| 2 | <img src="./assets/wrong_somthing.png" width="750"></img> |
+| 3 | <img src="./assets/wrong_audit.png" width="750"></img> |
+| 4 | <img src="./assets/error_conversation_not_found.png" width="750"></img> |
 
 ## Comparison
 
@@ -39,11 +39,11 @@
 ## Show
 
 - Enjoy the free "Exclusive Gold Label," which represents a dramatic change in your AI experience:
-- <img src="./assets/head.png" width="750"></img>
+- <img src="./assets/index_light_en.png" width="750"></img>
 - For friends who like dark tones, you can hover over the "Exclusive Gold Label" with your mouse and select "Theme" to change it to "Exclusive Blue Label":
-- <img src="./assets/head_dark.png" width="750"></img>
+- <img src="./assets/index_dark.png" width="750"></img>
 - Moblie:
-- <img src="./assets/head_mobile.png" width="280"></img>
+- <img src="./assets/index_mobile.png" width="280"></img>
 
 ## Explanation
 

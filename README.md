@@ -12,20 +12,20 @@
 - 这是一款ChatGPT畅聊插件，让你不再遇到网络报错，不再需要刷新网页
 - 解决了报错：NetworkError when attempting to fetch resource.
 - 解决了报错：Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
+- 解决了报错：Conversation not found
 - 自由取消后台监管审计：This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
 - 解决被频繁地打断交流
 - 解决频繁地刷新网页
 - 支持多国语言
 - 解决用户手误复制用户头像里的用户名的问题
-- 解决了报错：Conversation not found
 - 兼容移动端
 
 | 序号 | 使用```KeepChatGPT```插件以后再也不会出现以下场面 |
 | --- | --- |
-| 1 | <img src="./assets/network_error.png" width="750"></img> |
-| 2 | <img src="./assets/somthing_wrong.png" width="750"></img> |
-| 3 | <img src="./assets/audit_wrong.png" width="750"></img> |
-| 4 | <img src="./assets/conversation_not_found_error.png" width="750"></img> |
+| 1 | <img src="./assets/error_network.png" width="750"></img> |
+| 2 | <img src="./assets/wrong_somthing.png" width="750"></img> |
+| 3 | <img src="./assets/wrong_audit.png" width="750"></img> |
+| 4 | <img src="./assets/error_conversation_not_found.png" width="750"></img> |
 
 ## 对比
 
@@ -39,11 +39,11 @@
 ## 展示
 
 - 享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
-- <img src="./assets/head.png" width="750"></img>
+- <img src="./assets/index_light.png" width="750"></img>
 - 喜欢暗调的朋友可以鼠标移到```专属金标```选择```主题```修改为```专属蓝标```：
-- <img src="./assets/head_dark.png" width="750"></img>
+- <img src="./assets/index_dark.png" width="750"></img>
 - 移动端：
-- <img src="./assets/head_mobile.png" width="280"></img>
+- <img src="./assets/index_mobile.png" width="280"></img>
 
 ## 原理
 
