@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           9.0
+// @version           9.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -132,6 +132,15 @@
         return (new Date(d)).toLocaleString();
     };
 
+    var formatJson = function(d) {
+        try {
+            var j = JSON.parse(d);
+            return `<pre>${JSON.stringify(j, null, 2)}</pre>`;
+        } catch (e) {
+            return d;
+        }
+    };
+
     var setIfr = function(u = "") {
         if ($("#xcanwin")==null) {
             var nIfr = document.createElement('iframe');
@@ -146,6 +155,7 @@
                     $("#xcanwin").contentWindow.document.documentElement.style = `background: #FCF3CF; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
+                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = formatJson(nIfrText);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
                         console.log(`KeepChatGPT: IFRAME: BypassCF`);
                     }
@@ -168,7 +178,7 @@
                     var contentType = response.headers.get('Content-Type');
                     if (contentType.indexOf("application/json") > -1 && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = data;
+                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = formatJson(data);
                     } else {
                         setIfr(u);
                     }
