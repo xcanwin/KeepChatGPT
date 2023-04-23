@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           8.6
+// @version           8.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -231,7 +231,7 @@
         }
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${tl("显示调试")}</li><li id=nmenuid2>${tl("暗色主题")}</li><li id=nmenuid3>${tl("取消审计")}</li><li id=nmenuid4>${tl("取消动画")}</li><li id=nmenuid5>${tl("调整频率")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid0>${tl("关于")}</li></a></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${tl("显示调试")}</li><li id=nmenuid2>${tl("暗色主题")}</li><li id=nmenuid3>${tl("取消审计")}</li><li id=nmenuid4>${tl("取消动画")}</li><li id=nmenuid5>${tl("调整频率")}</li><a href='${GM_info.script.namespace}' target="_blank"><li id=nmenuid0>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
         $('#nmenuid1').appendChild(ncheckbox());
