@@ -132,6 +132,12 @@
         return (new Date(d)).toLocaleString();
     };
 
+    var getFormatJsonView = function (text) {
+        return `<textarea readonly style="width: 100%; height: 344px; border: none; outline:none; background: transparent;">
+${JSON.stringify(JSON.parse(text), null, 2)}
+</textarea>`;
+    };
+
     var setIfr = function(u = "") {
         if ($("#xcanwin")==null) {
             var nIfr = document.createElement('iframe');
@@ -146,6 +152,7 @@
                     $("#xcanwin").contentWindow.document.documentElement.style = `background: #FCF3CF; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
+                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = getFormatJsonView(nIfrText);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
                         console.log(`KeepChatGPT: IFRAME: BypassCF`);
                     }
@@ -168,7 +175,7 @@
                     var contentType = response.headers.get('Content-Type');
                     if (contentType.indexOf("application/json") > -1 && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = data;
+                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = getFormatJsonView(data);
                     } else {
                         setIfr(u);
                     }
