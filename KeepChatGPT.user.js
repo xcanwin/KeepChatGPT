@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           8.7
+// @version           8.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -63,43 +63,43 @@
     var tl = function(s) {
         var lang = `
 {
-    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "调整频率": "af", "建议间隔30秒": "si"},
+    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi"},
     "local": {
-"ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "af": "ضبط التردد", "si": "اقتراح فاصل زمني 30 ثانية"},
-"bg": {"dm": "Тъмна тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ca": "Отмяна на анимацията", "ab": "За", "af": "Настройка на честотата", "si": "Предложете интервал от 30 секунди"},
-"cs": {"dm": "Tmavý režim", "sd": "Zobrazit ladění", "cm": "Zrušení auditu", "ca": "Zrušit animaci", "ab": "O", "af": "Nastavit frekvenci", "si": "Navrhnout interval 30 sekund"},
-"da": {"dm": "Mørk tilstand", "sd": "Vis fejlfinding", "cm": "Annuller revision", "ca": "Annuller animation", "ab": "Om", "af": "Juster frekvens", "si": "Forslag interval på 30 sekunder"},
-"de": {"dm": "Dunkler Modus", "sd": "Fehlerbehebung anzeigen", "cm": "Prüfung abbrechen", "ca": "Animation abbrechen", "ab": "Über", "af": "Frequenz anpassen", "si": "Vorschlag für Intervall von 30 Sekunden"},
-"el": {"dm": "Σκοτεινή θεματολογία", "sd": "Εμφάνιση αποσφαλμάτωσης", "cm": "Ακύρωση ελέγχου", "ca": "Ακύρωση κινούμενων σχεδίων", "ab": "Σχετικά με", "af": "Ρύθμιση συχνότητας", "si": "Προτείνετε διάστημα 30 δευτερολέπτων"},
-"en": {"dm": "Dark mode", "sd": "Show debugging", "cm": "Cancel audit", "ca": "Cancel animation", "ab": "About", "af": "Adjust frequency", "si": "Suggest interval of 30 seconds"},
-"eo": {"dm": "Malhela moduso", "sd": "Montri depuradon", "cm": "Nuligi kontroli", "ca": "Nuligi animacion", "ab": "Pri", "af": "Agordi frekvencion", "si": "Sugesti intervalon de 30 sekundoj"},
-"es": {"dm": "Modo oscuro", "sd": "Mostrar depuración", "cm": "Cancelar auditoría", "ca": "Cancelar animación", "ab": "Acerca de", "af": "Ajustar frecuencia", "si": "Sugerir un intervalo de 30 segundos"},
-"fi": {"dm": "Tumma tila", "sd": "Näytä virheenkorjaus", "cm": "Peruuta tarkistus", "ca": "Peruuta animaatio", "ab": "Tietoa", "af": "Säädä taajuutta", "si": "Ehdota 30 sekunnin väliaikaa"},
-"fr": {"dm": "Mode sombre", "sd": "Afficher le débogage", "cm": "Annuler l'audit", "ca": "Annuler l'animation", "ab": "À propos de", "af": "Ajuster la fréquence", "si": "Suggérer un intervalle de 30 secondes"},
-"fr-CA": {"dm": "Mode nuit", "sd": "Afficher le débogage", "cm": "Annuler la vérification", "ca": "Annuler l'animation", "ab": "À propos de", "af": "Ajuster la fréquence", "si": "Suggérer un intervalle de 30 secondes"},
-"he": {"dm": "מצב כהה", "sd": "הצגת התיקון", "cm": "ביטול ביקורת", "ca": "בטל אנימציה", "ab": "אודות", "af": "להתאים תדר", "si": "הצע מרווח של 30 שניות"},
-"hu": {"dm": "Sötét mód", "sd": "Hibakeresés mutatása", "cm": "Ellenőrzés megszüntetése", "ca": "Animáció törlése", "ab": "Rólunk", "af": "Frekvencia beállítása", "si": "Javaslat 30 másodperces időközre"},
-"id": {"dm": "Mode gelap", "sd": "Tampilkan debugging", "cm": "Batalkan audit", "ca": "Batalkan animasi", "ab": "Tentang", "af": "Sesuaikan frekuensi", "si": "Sarankan interval 30 detik"},
-"it": {"dm": "Modalità scura", "sd": "Mostra debug", "cm": "Annulla verifica", "ca": "Annulla animazione", "ab": "Riguardo a", "af": "Regola la frequenza", "si": "Suggerisci un intervallo di 30 secondi"},
-"ja": {"dm": "ダークモード", "sd": "デバッグを表示", "cm": "監査をキャンセル", "ca": "アニメーションのキャンセル", "ab": "について", "af": "周波数を調整する", "si": "30秒間隔を提案する"},
-"ka": {"dm": "ბნელი რეჟიმი", "sd": "გამოჩენა დებაგი", "cm": "ანულირება აუდიტი", "ca": "ანიმაციის გაუქმება", "ab": "შესახებ", "af": "ფრექვენციის შემადგენლობა", "si": "30 წამის ინტერვალის შეტანა"},
-"ko": {"dm": "다크 모드", "sd": "디버깅 표시", "cm": "감사 취소", "ca": "애니메이션 취소", "ab": "관하여", "af": "주파수 조정", "si": "30초 간격 건의"},
-"nb": {"dm": "Mørk modus", "sd": "Vis feilsøking", "cm": "Avbryt revisjonen", "ca": "Avbryt animasjon", "ab": "Om", "af": "Juster frekvens", "si": "Forslag om et intervall på 30 sekunder"},
-"nl": {"dm": "Donkere modus", "sd": "Foutopsporing weergeven", "cm": "Controle annuleren", "ca": "Animatie annuleren", "ab": "Over", "af": "Frequentie aanpassen", "si": "Stel een interval van 30 seconden voor"},
-"pl": {"dm": "Tryb ciemny", "sd": "Pokaż debugowanie", "cm": "Anuluj audyt", "ca": "Anuluj animację", "ab": "O", "af": "Dostosuj częstotliwość", "si": "Zasugeruj interwał 30 sekund"},
-"pt-BR": {"dm": "Modo escuro", "sd": "Mostrar depuração", "cm": "Cancelar auditoria", "ca": "Cancelar animação", "ab": "Sobre", "af": "Ajustar frequência", "si": "Sugira um intervalo de 30 segundos"},
-"ro": {"dm": "Mod întunecat", "sd": "Afișare depanare", "cm": "Anulare audit", "ca": "Anulare animație", "ab": "Despre", "af": "Reglați frecvența", "si": "Sugerați un interval de 30 secunde"},
-"ru": {"dm": "Темный режим", "sd": "Показать отладку", "cm": "Отменить аудит", "ca": "Отменить анимацию", "ab": "О", "af": "Настройте частоту", "si": "Предложить интервал в 30 секунд"},
-"sk": {"dm": "Tmavý režim", "sd": "Zobraziť ladenie", "cm": "Zrušiť audit", "ca": "Zrušiť animáciu", "ab": "O", "af": "Nastavte frekvenciu", "si": "Navrhnúť interval 30 sekúnd"},
-"sr": {"dm": "Тамни режим", "sd": "Прикажи отклањање грешака", "cm": "Откажи ревизију", "ca": "Откажи анимацију", "ab": "О", "af": "Podesi frekvenciju", "si": "Predložiti interval od 30 sekundi"},
-"sv": {"dm": "Mörkt läge", "sd": "Visa felsökning", "cm": "Avbryt revision", "ca": "Avbryt animation", "ab": "Om", "af": "Justera frekvensen", "si": "Föreslå intervall på 30 sekunder"},
-"th": {"dm": "โหมดมืด", "sd": "แสดงการแก้ไขข้อผิดพลาด", "cm": "ยกเลิกการตรวจสอบ", "ca": "ยกเลิกการเคลื่อนไหว", "ab": "เกี่ยวกับ", "af": "ปรับความถี่", "si": "เสนอช่วงเวลา 30 วินาที"},
-"tr": {"dm": "Karanlık mod", "sd": "Hata ayıklama göster", "cm": "Denetimi İptal Et", "ca": "Animasyonu iptal et", "ab": "Hakkında", "af": "Frekans ayarla", "si": "30 saniyelik aralık önerin"},
-"uk": {"dm": "Темний режим", "sd": "Показати налагодження", "cm": "Скасувати аудит", "ca": "Скасувати анімацію", "ab": "Про", "af": "Налаштуйте частоту", "si": "Запропонуйте інтервал у 30 секунд"},
-"ug": {"dm": "تېما كۆرسىتىش", "sd": "كۆرسەتكەن يۇقىرىلاش", "cm": "ئەمەلدىن قالدۇرۇش", "ca": "ئېنىماتىكىنى بىكار قىلىش", "ab": "ئۇچۇرلىق", "af": "تېزلىكنى تەڭشەش", "si": "30 سىكونتلىك ئارىلىقنى سۇنۇشتۇرۇش"},
-"vi": {"dm": "Chế độ tối", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ca": "Hủy hoạt hình", "ab": "Về", "af": "Điều chỉnh tần số", "si": "Đề xuất khoảng thời gian 30 giây"},
-"zh-CN": {"dm": "暗色主题", "sd": "显示调试", "cm": "取消审计", "ca": "取消动画", "ab": "关于", "af": "调整频率", "si": "建议间隔30秒以上，作者平时设置的是150"},
-"zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "af": "調整頻率", "si": "建議間隔30秒"}
+"ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "si": "اقتراح فاصل زمني 30 ثانية", "mi": "تعديل الفاصل"},
+"bg": {"dm": "Тъмна тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ca": "Отмяна на анимацията", "ab": "За", "si": "Предложете интервал от 30 секунди", "mi": "Промяна на интервала"},
+"cs": {"dm": "Tmavý režim", "sd": "Zobrazit ladění", "cm": "Zrušení auditu", "ca": "Zrušit animaci", "ab": "O", "si": "Navrhnout interval 30 sekund", "mi": "Upravit interval"},
+"da": {"dm": "Mørk tilstand", "sd": "Vis fejlfinding", "cm": "Annuller revision", "ca": "Annuller animation", "ab": "Om", "si": "Forslag interval på 30 sekunder", "mi": "Ændre interval"},
+"de": {"dm": "Dunkler Modus", "sd": "Fehlerbehebung anzeigen", "cm": "Prüfung abbrechen", "ca": "Animation abbrechen", "ab": "Über", "si": "Vorschlag für Intervall von 30 Sekunden", "mi": "Intervall bearbeiten"},
+"el": {"dm": "Σκοτεινή θεματολογία", "sd": "Εμφάνιση αποσφαλμάτωσης", "cm": "Ακύρωση ελέγχου", "ca": "Ακύρωση κινούμενων σχεδίων", "ab": "Σχετικά με", "si": "Προτείνετε διάστημα 30 δευτερολέπτων", "mi": "Τροποποίηση διαστήματος"},
+"en": {"dm": "Dark mode", "sd": "Show debugging", "cm": "Cancel audit", "ca": "Cancel animation", "ab": "About", "si": "Suggest interval of 30 seconds", "mi": "Modify interval"},
+"eo": {"dm": "Malhela moduso", "sd": "Montri depuradon", "cm": "Nuligi kontroli", "ca": "Nuligi animacion", "ab": "Pri", "si": "Sugesti intervalon de 30 sekundoj", "mi": "Modifi intervalon"},
+"es": {"dm": "Modo oscuro", "sd": "Mostrar depuración", "cm": "Cancelar auditoría", "ca": "Cancelar animación", "ab": "Acerca de", "si": "Sugerir un intervalo de 30 segundos", "mi": "Modificar intervalo"},
+"fi": {"dm": "Tumma tila", "sd": "Näytä virheenkorjaus", "cm": "Peruuta tarkistus", "ca": "Peruuta animaatio", "ab": "Tietoa", "si": "Ehdota 30 sekunnin väliaikaa", "mi": "Muokkaa väliä"},
+"fr": {"dm": "Mode sombre", "sd": "Afficher le débogage", "cm": "Annuler l'audit", "ca": "Annuler l'animation", "ab": "À propos de", "si": "Suggérer un intervalle de 30 secondes", "mi": "Modifier l'intervalle"},
+"fr-CA": {"dm": "Mode nuit", "sd": "Afficher le débogage", "cm": "Annuler la vérification", "ca": "Annuler l'animation", "ab": "À propos de", "si": "Suggérer un intervalle de 30 secondes", "mi": "Modifier l'intervalle"},
+"he": {"dm": "מצב כהה", "sd": "הצגת התיקון", "cm": "ביטול ביקורת", "ca": "בטל אנימציה", "ab": "אודות", "si": "הצע מרווח של 30 שניות", "mi": "שינוי מרווח"},
+"hu": {"dm": "Sötét mód", "sd": "Hibakeresés mutatása", "cm": "Ellenőrzés megszüntetése", "ca": "Animáció törlése", "ab": "Rólunk", "si": "Javaslat 30 másodperces időközre", "mi": "Időköz módosítása"},
+"id": {"dm": "Mode gelap", "sd": "Tampilkan debugging", "cm": "Batalkan audit", "ca": "Batalkan animasi", "ab": "Tentang", "si": "Sarankan interval 30 detik", "mi": "Modifikasi interval"},
+"it": {"dm": "Modalità scura", "sd": "Mostra debug", "cm": "Annulla verifica", "ca": "Annulla animazione", "ab": "Riguardo a", "si": "Suggerisci un intervallo di 30 secondi", "mi": "Modifica intervallo"},
+"ja": {"dm": "ダークモード", "sd": "デバッグを表示", "cm": "監査をキャンセル", "ca": "アニメーションのキャンセル", "ab": "について", "si": "30秒間隔を提案する", "mi": "間隔を変更する"},
+"ka": {"dm": "ბნელი რეჟიმი", "sd": "გამოჩენა დებაგი", "cm": "ანულირება აუდიტი", "ca": "ანიმაციის გაუქმება", "ab": "შესახებ", "si": "30 წამის ინტერვალის შეტანა", "mi": "ინტერვალის შეცვლა"},
+"ko": {"dm": "다크 모드", "sd": "디버깅 표시", "cm": "감사 취소", "ca": "애니메이션 취소", "ab": "관하여", "si": "30초 간격 건의", "mi": "간격 수정"},
+"nb": {"dm": "Mørk modus", "sd": "Vis feilsøking", "cm": "Avbryt revisjonen", "ca": "Avbryt animasjon", "ab": "Om", "si": "Forslag om et intervall på 30 sekunder", "mi": "Endre intervall"},
+"nl": {"dm": "Donkere modus", "sd": "Foutopsporing weergeven", "cm": "Controle annuleren", "ca": "Animatie annuleren", "ab": "Over", "si": "Stel een interval van 30 seconden voor", "mi": "Interval wijzigen"},
+"pl": {"dm": "Tryb ciemny", "sd": "Pokaż debugowanie", "cm": "Anuluj audyt", "ca": "Anuluj animację", "ab": "O", "si": "Zasugeruj interwał 30 sekund", "mi": "Zmień interwał"},
+"pt-BR": {"dm": "Modo escuro", "sd": "Mostrar depuração", "cm": "Cancelar auditoria", "ca": "Cancelar animação", "ab": "Sobre", "si": "Sugira um intervalo de 30 segundos", "mi": "Modificar intervalo"},
+"ro": {"dm": "Mod întunecat", "sd": "Afișare depanare", "cm": "Anulare audit", "ca": "Anulare animație", "ab": "Despre", "si": "Sugerați un interval de 30 secunde", "mi": "Modificați intervalul"},
+"ru": {"dm": "Темный режим", "sd": "Показать отладку", "cm": "Отменить аудит", "ca": "Отменить анимацию", "ab": "О", "si": "Предложить интервал в 30 секунд", "mi": "Изменить интервал"},
+"sk": {"dm": "Tmavý režim", "sd": "Zobraziť ladenie", "cm": "Zrušiť audit", "ca": "Zrušiť animáciu", "ab": "O", "si": "Navrhnúť interval 30 sekúnd", "mi": "Zmena intervalu"},
+"sr": {"dm": "Тамни режим", "sd": "Прикажи отклањање грешака", "cm": "Откажи ревизију", "ca": "Откажи анимацију", "ab": "О", "si": "Predložiti interval od 30 sekundi", "mi": "Измена интервала"},
+"sv": {"dm": "Mörkt läge", "sd": "Visa felsökning", "cm": "Avbryt revision", "ca": "Avbryt animation", "ab": "Om", "si": "Föreslå intervall på 30 sekunder", "mi": "Ändra intervall"},
+"th": {"dm": "โหมดมืด", "sd": "แสดงการแก้ไขข้อผิดพลาด", "cm": "ยกเลิกการตรวจสอบ", "ca": "ยกเลิกการเคลื่อนไหว", "ab": "เกี่ยวกับ", "si": "เสนอช่วงเวลา 30 วินาที", "mi": "แก้ไขระยะห่าง"},
+"tr": {"dm": "Karanlık mod", "sd": "Hata ayıklama göster", "cm": "Denetimi İptal Et", "ca": "Animasyonu iptal et", "ab": "Hakkında", "si": "30 saniyelik aralık önerin", "mi": "Aralığı değiştir"},
+"uk": {"dm": "Темний режим", "sd": "Показати налагодження", "cm": "Скасувати аудит", "ca": "Скасувати анімацію", "ab": "Про", "si": "Запропонуйте інтервал у 30 секунд", "mi": "Змінити інтервал"},
+"ug": {"dm": "تېما كۆرسىتىش", "sd": "كۆرسەتكەن يۇقىرىلاش", "cm": "ئەمەلدىن قالدۇرۇش", "ca": "ئېنىماتىكىنى بىكار قىلىش", "ab": "ئۇچۇرلىق", "si": "30 سىكونتلىك ئارىلىقنى سۇنۇشتۇرۇش", "mi": "ئارىلىق ئۆزگەرتىش"},
+"vi": {"dm": "Chế độ tối", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ca": "Hủy hoạt hình", "ab": "Về", "si": "Đề xuất khoảng thời gian 30 giây", "mi": "Sửa khoảng cách"},
+"zh-CN": {"dm": "暗色主题", "sd": "显示调试", "cm": "取消审计", "ca": "取消动画", "ab": "关于", "si": "建议间隔30秒以上，作者平时设置的是150", "mi": "调整间隔"},
+"zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "si": "建議間隔30秒", "mi": "調整間隔"}
     }
 }
 `;
@@ -231,15 +231,15 @@
         }
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${tl("显示调试")}</li><li id=nmenuid2>${tl("暗色主题")}</li><li id=nmenuid3>${tl("取消审计")}</li><li id=nmenuid4>${tl("取消动画")}</li><li id=nmenuid5>${tl("调整频率")}</li><a href='${GM_info.script.namespace}' target="_blank"><li id=nmenuid0>${tl("关于")}</li></a></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid_sd>${tl("显示调试")}</li><li id=nmenuid_dm>${tl("暗色主题")}</li><li id=nmenuid_ca>${tl("取消动画")}</li><li id=nmenuid_cm>${tl("取消审计")}</li><li id=nmenuid_af>${tl("调整间隔")}</li><a href='${GM_info.script.namespace}' target="_blank"><li id=nmenuid_ab>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
-        $('#nmenuid1').appendChild(ncheckbox());
-        $('#nmenuid2').appendChild(ncheckbox());
-        $('#nmenuid3').appendChild(ncheckbox());
-        $('#nmenuid4').appendChild(ncheckbox());
+        $('#nmenuid_sd').appendChild(ncheckbox());
+        $('#nmenuid_dm').appendChild(ncheckbox());
+        $('#nmenuid_cm').appendChild(ncheckbox());
+        $('#nmenuid_ca').appendChild(ncheckbox());
 
-        $('#nmenuid1').onclick = function() {
+        $('#nmenuid_sd').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
                 sv("k_showDebug", false);
@@ -249,7 +249,7 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid2').onclick = function() {
+        $('#nmenuid_dm').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 $('#kcg').style = $('#kcg').styleOrigin;
                 sv("k_theme", "light");
@@ -263,7 +263,7 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid3').onclick = function() {
+        $('#nmenuid_cm').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 byeModer(false);
                 sv("k_closeModer", false);
@@ -273,13 +273,13 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid4').onclick = function() {
+        $('#nmenuid_ca').onclick = function() {
             sv("k_cancelAnimation", !$('.checkbutton', this).classList.contains('checked'));
             $('#kcg').classList.toggle('shine');
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid5').onclick = function() {
-            ndialog(`${tl("调整频率")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
+        $('#nmenuid_af').onclick = function() {
+            ndialog(`${tl("调整间隔")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
                 try {
                     interval2Time = parseInt($(".kdialoginput", t).value);
                 } catch (e) {
@@ -472,7 +472,7 @@ nav {
 
     var setUserOptions = function() {
         if (gv("k_showDebug", false) == true) {
-            $('#nmenuid1 .checkbutton').classList.add('checked');
+            $('#nmenuid_sd .checkbutton').classList.add('checked');
             if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
         } else {
             if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
@@ -481,7 +481,7 @@ nav {
         if (gv("k_theme", "light") == "light") {
             $('#kcg').styleOrigin = $('#kcg').style;
         } else {
-            $('#nmenuid2 .checkbutton').classList.add('checked');
+            $('#nmenuid_dm .checkbutton').classList.add('checked');
             $('#kcg').style.background = "#2C3E50";
             $('#kcg').style.animation = "none";
             $('#kcg').style.color = "#ffffff";
@@ -489,13 +489,13 @@ nav {
         }
 
         if (gv("k_closeModer", false) == true) {
-            $('#nmenuid3 .checkbutton').classList.add('checked');
+            $('#nmenuid_cm .checkbutton').classList.add('checked');
             byeModer(true);
         } else {
             byeModer(false);
         }
         if (gv("k_cancelAnimation", false) == true) {
-            $('#nmenuid4 .checkbutton').classList.add('checked');
+            $('#nmenuid_ca .checkbutton').classList.add('checked');
             $('#kcg').classList.toggle('shine');
         } else {
             $('#kcg').classList.add('shine');

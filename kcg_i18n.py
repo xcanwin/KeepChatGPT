@@ -20,7 +20,7 @@ ar,bg,cs,da,de,el,en,eo,es,fi,fr,fr-CA,he,hu,id,it,ja,ka,ko,nb,nl,pl,pt-BR,ro,ru
 按照上述国家顺序翻译一句话，并且按照我要求的格式逐行输出
 格式要求：国家缩写: 翻译后的文字
 冒号后面首字母需要大写
-例如翻译"显示调试"的结果是: en: Hide debug window
+例如翻译"显示调试"的结果是: en: Show debug window
 接下来，请翻译: 建议间隔30秒
 
 ## 第三步、
@@ -28,7 +28,7 @@ ar,bg,cs,da,de,el,en,eo,es,fi,fr,fr-CA,he,hu,id,it,ja,ka,ko,nb,nl,pl,pt-BR,ro,ru
 配置本脚本以下几个变量：
 lang：将KeepChatGPT中的lang变量值复制粘贴到这里
 new_str：填写想要本地化的词汇，例如取消审计，随意填，如果重复了就会覆盖
-new_str_min：填英文缩写，例如cm，随意填，如果重复了就会覆盖
+new_str_min：填本地化词汇的英文缩写，例如cm，随意填，如果重复了就会覆盖
 transle_tmp：将ChatGPT翻译的结果复制粘贴到这里
 
 ## 第四步、
@@ -111,54 +111,54 @@ def main():
     }
 }
 
-    new_str = "取消动画"
+    new_str = "调整间隔"
 
-    new_str_min = "ca"
+    new_str_min = "mi"
 
     transle_tmp = """
-ar: إلغاء الرسوم المتحركة
-bg: Отмяна на анимацията
-cs: Zrušit animaci
-da: Annuller animation
-de: Animation abbrechen
-el: Ακύρωση κινούμενων σχεδίων
-en: Cancel animation
-eo: Nuligi animacion
-es: Cancelar animación
-fi: Peruuta animaatio
-fr: Annuler l'animation
-fr-CA: Annuler l'animation
-he: בטל אנימציה
-hu: Animáció törlése
-id: Batalkan animasi
-it: Annulla animazione
-ja: アニメーションのキャンセル
-ka: ანიმაციის გაუქმება
-ko: 애니메이션 취소
-nb: Avbryt animasjon
-nl: Animatie annuleren
-pl: Anuluj animację
-pt-BR: Cancelar animação
-ro: Anulare animație
-ru: Отменить анимацию
-sk: Zrušiť animáciu
-sr: Откажи анимацију
-sv: Avbryt animation
-th: ยกเลิกการเคลื่อนไหว
-tr: Animasyonu iptal et
-uk: Скасувати анімацію
-ug: ئېنىماتىكىنى بىكار قىلىش
-vi: Hủy hoạt hình
-zh-CN: 取消动画
-zh-TW: 取消動畫
+ar: تعديل الفاصل
+bg: Промяна на интервала
+cs: Upravit interval
+da: Ændre interval
+de: Intervall bearbeiten
+el: Τροποποίηση διαστήματος
+en: Modify interval
+eo: Modifi intervalon
+es: Modificar intervalo
+fi: Muokkaa väliä
+fr: Modifier l'intervalle
+fr-CA: Modifier l'intervalle
+he: שינוי מרווח
+hu: Időköz módosítása
+id: Modifikasi interval
+it: Modifica intervallo
+ja: 間隔を変更する
+ka: ინტერვალის შეცვლა
+ko: 간격 수정
+nb: Endre intervall
+nl: Interval wijzigen
+pl: Zmień interwał
+pt-BR: Modificar intervalo
+ro: Modificați intervalul
+ru: Изменить интервал
+sk: Zmena intervalu
+sr: Измена интервала
+sv: Ändra intervall
+th: แก้ไขระยะห่าง
+tr: Aralığı değiştir
+uk: Змінити інтервал
+ug: ئارىلىق ئۆزگەرتىش
+vi: Sửa khoảng cách
+zh-CN: 调整间隔
+zh-TW: 調整間隔
 """
 
-    lang = lang_add(lang, new_str, new_str_min, transle_tmp)
-    print_json(lang)
-
-    # del_str = "浅色主题"
-    # del_str_min = "lm"
+    # del_str = "调整频率"
+    # del_str_min = "af"
     # lang = lang_del(lang, del_str, del_str_min)
-    # print_json(lang)
+
+    lang = lang_add(lang, new_str, new_str_min, transle_tmp)
+
+    print_json(lang)
 
 main()
