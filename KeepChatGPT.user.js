@@ -293,19 +293,44 @@
             $('.checkbutton', this).classList.toggle('checked');
         };
         $('#nmenuid_af').onclick = function() {
+            let input_content = lowerBoundTimeout;
+            if (lowerBoundTimeout !== upperBoundTimeout) {
+                input_content += '-' + upperBoundTimeout;
+            }
             ndialog(`${tl("调整间隔")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
                 try {
-                    interval2Time = parseInt($(".kdialoginput", t).value);
+                    const input = $(".kdialoginput", t).value;
+                    // check if '-' in input, if so, use it as a range
+                    if (input.indexOf('-') > -1) {
+                        const range = input.split('-');
+                        const lowerBound = parseInt(range[0]);
+                        const upperBound = parseInt(range[1]);
+                        if (lowerBound < 10 || upperBound < 10) {
+                            return;
+                        } else if (upperBound < lowerBound) {
+                            return;
+                        }
+                        lowerBoundTimeout = lowerBound;
+                        upperBoundTimeout = upperBound;
+                    } else {
+                        const value = parseInt(input);
+                        if (value < 10) {
+                            return;
+                        }
+                        lowerBoundTimeout = value;
+                        upperBoundTimeout = value;
+                    }
                 } catch (e) {
-                    interval2Time = parseInt(gv("k_interval", 30));
+                    lowerBoundTimeout = parseInt(gv("k_lower_bound_timeout", 30));
+                    upperBoundTimeout = parseInt(gv("k_upper_bound_timeout", 60));
                 }
-                if (interval2Time < 10) {
+                if (lowerBoundTimeout < 10 || upperBoundTimeout < 10) {
                     return;
                 }
-                clearInterval(nInterval2);
-                nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
-                sv("k_interval", interval2Time);
-            }, `input`, parseInt(gv("k_interval", 30)));
+                restartRandomInterval2();
+                sv("k_lower_bound_timeout", lowerBoundTimeout);
+                sv("k_upper_bound_timeout", upperBoundTimeout);
+            }, `input`, input_content);
         };
         $('#nmenuid_cu').onclick = function() {
             checkForUpdates();
@@ -593,9 +618,35 @@ nav {
         }
     };
 
+    const getRandomInterval = function (lowerBound, upperBound) {
+        if (lowerBound >= upperBound) {
+            return lowerBound;
+        }
+        return Math.floor(Math.random() * (upperBound - lowerBound + 1) + lowerBound);
+    };
+
+    const nRandomInterval2Fun = function () {
+        nInterval2Fun();
+        const randomInterval = getRandomInterval(lowerBoundTimeout, upperBoundTimeout);
+        nRandomTimeout2 = setTimeout(nRandomInterval2Fun, randomInterval * 1000);
+    };
+
+    const restartRandomInterval2 = function () {
+        if (nRandomTimeout2) {
+            clearTimeout(nRandomTimeout2);
+        }
+        nRandomInterval2Fun();
+    };
+
     var nInterval1 = setInterval(nInterval1Fun, 300);
-    var interval2Time = parseInt(gv("k_interval", 30));
-    var nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
+    // var interval2Time = parseInt(gv("k_interval", 30));
+    // var nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
+
+    let lowerBoundTimeout = parseInt(gv("k_lower_bound_timeout", 30));
+    let upperBoundTimeout = parseInt(gv("k_upper_bound_timeout", 60));
+    let nRandomTimeout2 = null;
+
+    nRandomInterval2Fun();
 
     var u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
     var symbol1_class = 'nav>a.flex';
