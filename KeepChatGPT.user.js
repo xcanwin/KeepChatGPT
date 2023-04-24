@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           9.5
+// @version           9.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -595,7 +595,7 @@ nav {
     };
 
     let nInterval1 = setInterval(nInterval1Fun, 300);
-    const interval2Time = parseInt(gv("k_interval", 30));
+    let interval2Time = parseInt(gv("k_interval", 30));
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
