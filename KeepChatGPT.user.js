@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           9.5
+// @version           9.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -239,6 +239,7 @@
         document.body.appendChild(ndivalert);
     };
 
+    let randomTimeRange = 0;
     const loadMenu = function() {
         if ($(".kmenu")!==null) {
             return;
@@ -292,20 +293,32 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid_af').onclick = function() {
-            ndialog(`${tl("调整间隔")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
-                try {
-                    interval2Time = parseInt($(".kdialoginput", t).value);
-                } catch (e) {
-                    interval2Time = parseInt(gv("k_interval", 30));
-                }
-                if (interval2Time < 10) {
-                    return;
-                }
-                clearInterval(nInterval2);
-                nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
-                sv("k_interval", interval2Time);
-            }, `input`, parseInt(gv("k_interval", 30)));
+        $("#nmenuid_af").onclick = function () {
+            ndialog(
+            `${tl("调整间隔")}`,
+            `${tl("建议间隔30秒以上。格式：基础时间,随机范围，如：30,3")}`,
+            `Go`,
+            function (t) {
+              try {
+                const inputValue = $(".kdialoginput", t).value;
+                const [interval, range] = inputValue.split(",").map((x) => parseInt(x));
+                interval2Time = interval;
+                randomTimeRange = range;
+              } catch (e) {
+                interval2Time = parseInt(gv("k_interval", 30));
+                randomTimeRange = 0;
+              }
+              if (interval2Time < 10) {
+                return;
+              }
+              clearInterval(nInterval2);
+              nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
+              sv("k_interval", interval2Time);
+              sv("k_random_time_range", randomTimeRange);
+            },
+            `input`,
+            `${parseInt(gv("k_interval", 30))},${parseInt(gv("k_random_time_range", 0))}`
+            );
         };
         $('#nmenuid_cu').onclick = function() {
             checkForUpdates();
@@ -588,14 +601,16 @@ nav {
         }
     };
 
-    const nInterval2Fun = function() {
+    const nInterval2Fun = function () {
         if ($(symbol1_class) || $(symbol2_class)) {
-            keepChat();
+        const randomTime = Math.floor(Math.random() * (randomTimeRange * 2 + 1)) - randomTimeRange;
+        const actualInterval = 1000 * (interval2Time + randomTime);
+        setTimeout(keepChat, actualInterval);
         }
     };
 
     let nInterval1 = setInterval(nInterval1Fun, 300);
-    const interval2Time = parseInt(gv("k_interval", 30));
+    let interval2Time = parseInt(gv("k_interval", 30));
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
