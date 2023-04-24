@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           9.1
+// @version           9.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -63,7 +63,7 @@
     var tl = function(s) {
         var lang = `
 {
-    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检测更新": "cu"},
+    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检查更新": "cu"},
     "local": {
 "ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "si": "اقتراح فاصل زمني 30 ثانية", "mi": "تعديل الفاصل", "cu": "التحقق من التحديثات"},
 "bg": {"dm": "Тъмна тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ca": "Отмяна на анимацията", "ab": "За", "si": "Предложете интервал от 30 секунди", "mi": "Промяна на интервала", "cu": "Проверка на актуализации"},
@@ -245,7 +245,7 @@
         }
         var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid_sd>${tl("显示调试")}</li><li id=nmenuid_dm>${tl("暗色主题")}</li><li id=nmenuid_ca>${tl("取消动画")}</li><li id=nmenuid_cm>${tl("取消审计")}</li><li id=nmenuid_af>${tl("调整间隔")}</li><li id=nmenuid_cu>${tl("检测更新")}</li><li id=nmenuid_ab>${tl("关于")}</li></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid_sd>${tl("显示调试")}</li><li id=nmenuid_dm>${tl("暗色主题")}</li><li id=nmenuid_ca>${tl("取消动画")}</li><li id=nmenuid_cm>${tl("取消审计")}</li><li id=nmenuid_af>${tl("调整间隔")}</li><li id=nmenuid_cu>${tl("检查更新")}</li><li id=nmenuid_ab>${tl("关于")}</li></ul>`;
         document.body.appendChild(ndivmenu);
 
         $('#nmenuid_sd').appendChild(ncheckbox());
@@ -571,11 +571,11 @@ nav {
                 var m = data.match(/@version\s+(\S+)/);
                 var ltv = m && m[1];
                 if (ltv && ltv > crv) {
-                    ndialog(`${tl("检测更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
+                    ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
                         window.open(updateURL, '_blank');
                     });
                 } else {
-                    ndialog(`${tl("检测更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
+                    ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
                 }
             });
         }).catch(e => console.log(e));
