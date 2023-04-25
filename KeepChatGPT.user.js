@@ -198,7 +198,7 @@
         return nsvg.cloneNode(true);
     };
 
-    const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(){}, inputtype = 'br', inputvalue = '') {
+    const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(t) {return t;}, inputtype = 'br', inputvalue = '') {
         const ndivalert = document.createElement('div');
         ndivalert.setAttribute("class", "kdialog relative z-50");
         ndivalert.innerHTML = `
@@ -351,7 +351,7 @@
             ndivmenu.style.display = 'none';
         };
         ndivkcg.onclick = function() {
-            if (ndivmenu.style.display == 'none') {
+            if (ndivmenu.style.display === 'none') {
                 ndivmenu.style.display = 'block';
                 ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
                 ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
@@ -561,6 +561,15 @@ nav {
         }
     };
 
+    const verInt = function(vs) {
+        const vl = vs.split('.');
+        let vi = 0;
+        for (let i = 0; i < vl.length && i < 3; i++) {
+            vi += parseInt(vl[i]) * (1000 ** (2 - i));
+        }
+        return vi;
+    }
+
     const checkForUpdates = function() {
         const crv = GM_info.script.version;
         let updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || GM_info.script.downloadURL;
@@ -570,8 +579,8 @@ nav {
         }).then((response) => {
             response.text().then((data) => {
                 const m = data.match(/@version\s+(\S+)/);
-                const ltv = m && m[1];
-                if (ltv && parseFloat(ltv) > parseFloat(crv)) {
+                const ltv = m && m[1];console.log(typeof ltv,typeof crv);
+                if (ltv && verInt(ltv) > verInt(crv)) {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
                         window.open(updateURL, '_blank');
                     });
