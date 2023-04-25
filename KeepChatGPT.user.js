@@ -602,4 +602,7 @@ nav {
     const symbol1_class = 'nav>a.flex';
     const symbol2_class = 'button.justify-center';
 
+    // 修复官网样式问题
+    $('button[id^="headlessui-menu"]')?.classList.remove('px-3');
+
 })();
