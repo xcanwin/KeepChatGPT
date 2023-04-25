@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           9.9
+// @version           9.99-rc1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -561,6 +561,15 @@ nav {
         }
     };
 
+    const verInt = function(vs) {
+        const vl = vs.split('.');
+        let vi = 0;
+        for (let i = 0; i < vl.length && i < 3; i++) {
+            vi += parseInt(vl[i]) * (1000 ** (2 - i));
+        }
+        return vi;
+    }
+
     const checkForUpdates = function() {
         const crv = GM_info.script.version;
         let updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || GM_info.script.downloadURL;
@@ -571,7 +580,7 @@ nav {
             response.text().then((data) => {
                 const m = data.match(/@version\s+(\S+)/);
                 const ltv = m && m[1];
-                if (ltv && ltv > crv) {
+                if (ltv && verInt(ltv) > verInt(crv)) {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
                         window.open(updateURL, '_blank');
                     });
