@@ -583,7 +583,7 @@ nav {
     }
 
     const tempFixOpenAI = function() {
-        const account = $('button[id^="headlessui-menu"] > .grow');
+        const account = $('button[id^="headlessui-menu"] > .grow', top.document);
         if (account) {
             account.classList.add('text-ellipsis', 'truncate');
             account.style.maxWidth = '10.3rem';
