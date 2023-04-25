@@ -603,6 +603,10 @@ nav {
     const symbol2_class = 'button.justify-center';
 
     // 修复官网样式问题
-    $('button[id^="headlessui-menu"]')?.classList.remove('px-3');
+    const account = $('button[id^="headlessui-menu"] > .grow');
+    if (account) {
+        account.classList.add('text-ellipsis', 'truncate');
+        account.style.maxWidth = '10.3rem';
+    }
 
 })();
