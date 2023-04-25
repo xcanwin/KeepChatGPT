@@ -579,7 +579,7 @@ nav {
         }).then((response) => {
             response.text().then((data) => {
                 const m = data.match(/@version\s+(\S+)/);
-                const ltv = m && m[1];console.log(typeof ltv,typeof crv);
+                const ltv = m && m[1];
                 if (ltv && verInt(ltv) > verInt(crv)) {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
                         window.open(updateURL, '_blank');
