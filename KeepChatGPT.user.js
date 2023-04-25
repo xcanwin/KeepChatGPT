@@ -116,7 +116,7 @@
         } catch (e) {
             r = s;
         }
-        if (r == undefined) {r = s;}
+        if (r === undefined) {r = s;}
         return r;
     };
 
@@ -142,7 +142,7 @@
     };
 
     const setIfr = function(u = "") {
-        if ($("#xcanwin")==null) {
+        if ($("#xcanwin") === null) {
             const nIfr = document.createElement('iframe');
             nIfr.id = "xcanwin";
             nIfr.style = `height: 0px; width: 100%;`;
@@ -198,7 +198,7 @@
         return nsvg.cloneNode(true);
     };
 
-    const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(t){}, inputtype = 'br', inputvalue = '') {
+    const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(){}, inputtype = 'br', inputvalue = '') {
         const ndivalert = document.createElement('div');
         ndivalert.setAttribute("class", "kdialog relative z-50");
         ndivalert.innerHTML = `
@@ -240,7 +240,7 @@
     };
 
     const loadMenu = function() {
-        if ($(".kmenu")!==null) {
+        if ($(".kmenu") !== null) {
             return;
         }
         const ndivmenu = document.createElement('div');
@@ -317,10 +317,10 @@
 
     const loadKCG = function() {
         let symbol_prt;
-        if ($("#kcg")!==null) {
+        if ($("#kcg") !== null) {
             return;
         }
-        if ($("main").kcg!==undefined) {
+        if ($("main").kcg !== undefined) {
             if ($(symbol1_class)) {
                 $("main").kcg.innerHTML = $("main").kcg._symbol1_innerHTML;
                 symbol_prt = $(symbol1_class).parentElement;
@@ -491,14 +491,14 @@ nav {
     };
 
     const setUserOptions = function() {
-        if (gv("k_showDebug", false) == true) {
+        if (gv("k_showDebug", false) === true) {
             $('#nmenuid_sd .checkbutton').classList.add('checked');
             if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
         } else {
             if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
         }
 
-        if (gv("k_theme", "light") == "light") {
+        if (gv("k_theme", "light") === "light") {
             $('#kcg').styleOrigin = $('#kcg').style;
         } else {
             $('#nmenuid_dm .checkbutton').classList.add('checked');
@@ -508,25 +508,25 @@ nav {
             $('#kcg').style.marginRight = "inherit";
         }
 
-        if (gv("k_closeModer", false) == true) {
+        if (gv("k_closeModer", false) === true) {
             $('#nmenuid_cm .checkbutton').classList.add('checked');
             byeModer(true);
         } else {
             byeModer(false);
         }
-        if (gv("k_cancelAnimation", false) == true) {
+        if (gv("k_cancelAnimation", false) === true) {
             $('#nmenuid_ca .checkbutton').classList.add('checked');
-            $('#kcg').classList.toggle('shine');
+            $('#kcg').classList.remove('shine');
         } else {
             $('#kcg').classList.add('shine');
         }
     };
 
     let byeModer = function(action) {
-        if (typeof _fetch == 'undefined') {
+        if (typeof _fetch === 'undefined') {
             var _fetch = fetch;
         }
-        if (action == true) {
+        if (action === true) {
             unsafeWindow.fetch = new Proxy(fetch, {
                 apply: function (target, thisArg, argumentsList) {
                     const n = {};
@@ -540,10 +540,10 @@ nav {
     };
 
     let byeConversationNotFound = function(action) {
-        if (typeof _fetch == 'undefined') {
+        if (typeof _fetch === 'undefined') {
             var _fetch = fetch;
         }
-        if (action == true) {
+        if (action === true) {
             unsafeWindow.fetch = new Proxy(_fetch, {
                 apply: function (target, thisArg, argumentsList) {
                     try {
