@@ -65,3 +65,18 @@
 | --- | --- |
 | 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
 | 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
+
+## Appreciate
+
+- If this project is helpful to you.
+- If this project improves your work efficiency.
+- If you think this project is useful and easy to use.
+- If you want this project to be maintained continuously, in order to continue to prevent openai from reporting a new round of errors.
+- If you want this project to continue to upgrade more functions.
+- Creation is not easy, maintaining a project requires time, energy, and technology. Welcome to appreciate and appreciate.
+- You can write your user name and ID in the remarks. Thank you
+
+| Thanks |
+| --- |
+| [☕ buymeacoffee](https://www.buymeacoffee.com/xcanwin) |
+| <img src="./assets/appreciate_alipay.png" width="300"></img> |

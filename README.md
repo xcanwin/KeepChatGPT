@@ -157,6 +157,9 @@
 - 如果你希望本项目持续维护，以继续防止openai接下来新的一轮的报错
 - 如果你希望本项目持续升级更多的功能
 - ```创造不易，维护一个项目需要消耗时间、精力、技术，欢迎欣赏与赞赏```
-- 可在备注里```写上你的用户名、ID```，暂时只支持支付宝，谢谢
+- 可在备注里```写上你的用户名、ID```，谢谢
 
-<img src="./assets/appreciate_alipay.png" width="300"></img>
+| Thanks |
+| --- |
+| [☕ buymeacoffee](https://www.buymeacoffee.com/xcanwin) |
+| <img src="./assets/appreciate_alipay.png" width="300"></img> |
