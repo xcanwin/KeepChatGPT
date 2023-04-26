@@ -293,6 +293,7 @@
             $('.checkbutton', this).classList.toggle('checked');
         };
         $('#nmenuid_af').onclick = function() {
+            toggleMenu('hide');
             ndialog(`${tl("调整间隔")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
                 try {
                     interval2Time = parseInt($(".kdialoginput", t).value);
@@ -308,11 +309,25 @@
             }, `input`, parseInt(gv("k_interval", 30)));
         };
         $('#nmenuid_cu').onclick = function() {
+            toggleMenu('hide');
             checkForUpdates();
         };
         $('#nmenuid_ab').onclick = function() {
             window.open(GM_info.script.namespace, '_blank');
         };
+    };
+
+    const toggleMenu = function(action) {
+        const ndivmenu = $(".kmenu");
+        if (action === "show") {
+            ndivmenu.style.display = 'block';
+            if ($("#kcg")) {
+                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
+                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
+            }
+        } else {
+            ndivmenu.style.display = 'none';
+        }
     };
 
     const loadKCG = function() {
@@ -341,22 +356,16 @@
 
         const ndivmenu = $(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
-            if ($("#kcg")) {
-                ndivmenu.style.display = 'block';
-                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
-                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
-            }
+            toggleMenu('show');
         };
         ndivkcg.onmouseleave = ndivmenu.onmouseleave = function() {
-            ndivmenu.style.display = 'none';
+            toggleMenu('hide');
         };
         ndivkcg.onclick = function() {
             if (ndivmenu.style.display === 'none') {
-                ndivmenu.style.display = 'block';
-                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
-                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
+                toggleMenu('show');
             } else {
-                ndivmenu.style.display = 'none';
+                toggleMenu('hide');
             }
         };
         const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
