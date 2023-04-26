@@ -79,4 +79,4 @@
 | Thanks |
 | --- |
 | [☕ buymeacoffee](https://www.buymeacoffee.com/xcanwin) |
-| <img src="./assets/appreciate_alipay.png" width="300"></img> |
+| <img src="./assets/appreciate_wechat.png" width="300"></img> |
