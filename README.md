@@ -6,23 +6,26 @@
 
 <br>
 
-## 简介
+## 项目简介
 
-- 喜欢这个插件的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) 点个STAR支持一下。
-- 这是一款ChatGPT畅聊插件，让你不再遇到网络报错，不再需要刷新网页
-- 解决了报错：NetworkError when attempting to fetch resource.
-- 解决了报错：Something went wrong. If this issue persists please contact us through our help center at help.openai.com.
-- 解决了报错：Conversation not found
-- 解决了报错：This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.
-- 解决被频繁地打断交流
-- 解决频繁地刷新网页
-- 支持多国语言
-- 解决了用户常常手误复制用户头像里的用户名的问题
-- 支持自由地[取消后台监管审计](#关于-取消审计-功能)
-- 支持移动端([鸿蒙](#用法-鸿蒙系统)、[苹果](#用法-苹果系统))
-- 支持自由地[调整时间间隔](#关于-调整间隔-功能)
-- 本文底部的[```其他说明```](#其他说明)介绍了[```关于 为何会出现大规模地网络错误```](#关于-为何会出现大规模地网络错误)、菜单栏功能详情、常见的错误信息的原因和解决方案
-- 创造不易，维护一个项目需要消耗时间、精力、技术，欢迎[```欣赏与赞赏```](#赞赏)
+- 这是一款高效的```ChatGPT```畅聊插件，它可以让你的聊天无比丝滑，一劳永逸摆脱各种```报错```和```警告```，释放双手不再刷新网页，同时还在持续增加更多增强功能
+- 非盈利开源项目依靠大家无价的支持，欢迎各位伙伴在 [GitHub](https://github.com/xcanwin/KeepChatGPT/) 和 [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) 留下微微的⭐️star和👍🏻正面的体验反馈
+
+## 功能简介
+
+1. 解决了报错：```NetworkError when attempting to fetch resource.```
+2. 解决了报错：```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```
+3. 解决了报错：```Conversation not found```
+4. 解决了报错：```This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.```
+5. 解决了聊天中断
+6. 解决了频繁刷新
+7. 支持多国语言
+8. 解决了对话里的用户名会被手误复制的官方BUG
+9. 支持自由地[取消后台监管审计](#关于-取消审计-功能)
+10. 支持移动端([鸿蒙](#用法-鸿蒙系统)、[Android](#用法-鸿蒙系统)、[iOS](#用法-苹果系统))
+11. 支持自由地[调整时间间隔](#关于-调整间隔-功能)
+12. 本文底部的[```其他说明```](#其他说明)介绍了[```关于 为何会出现大规模地网络错误```](#关于-为何会出现大规模地网络错误)、菜单栏功能详情、常见的错误信息的原因和解决方案
+13. 创造不易，维护一个项目需要消耗时间、精力、技术，欢迎[```欣赏与赞赏```](#赞赏)
 
 | 序号 | 使用```KeepChatGPT```插件以后再也不会出现以下场面 |
 | --- | --- |
@@ -161,5 +164,5 @@
 
 | Thanks |
 | --- |
-| [☕ buymeacoffee](https://www.buymeacoffee.com/xcanwin) |
+| [<img src="./assets/appreciate_buycoffee.png" width="300"></img> ](https://www.buymeacoffee.com/xcanwin) |
 | <img src="./assets/appreciate_wechat.png" width="300"></img> |

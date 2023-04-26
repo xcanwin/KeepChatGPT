@@ -78,5 +78,5 @@
 
 | Thanks |
 | --- |
-| [☕ buymeacoffee](https://www.buymeacoffee.com/xcanwin) |
+| [<img src="./assets/appreciate_buycoffee.png" width="300"></img> ](https://www.buymeacoffee.com/xcanwin) |
 | <img src="./assets/appreciate_wechat.png" width="300"></img> |
