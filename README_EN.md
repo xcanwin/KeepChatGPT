@@ -68,15 +68,17 @@
 
 ## Appreciate
 
-- If this project is helpful to you.
-- If this project improves your work efficiency.
-- If you think this project is useful and easy to use.
-- If you want this project to be maintained continuously, in order to continue to prevent openai from reporting a new round of errors.
-- If you want this project to continue to upgrade more functions.
-- Creation is not easy, maintaining a project requires time, energy, and technology. Welcome to appreciate and appreciate.
-- You can write your user name and ID in the remarks. Thank you
+- If you find it useful, awesome, smooth, or nice!
+- If you wish the author's little cat to have better cat food and canned food.
+- If this project has helped you.
+- If this project has improved your work efficiency.
+- If you wish this project to be continuously maintained to prevent a new round of OpenAI error messages.
+- If you wish this project to continue upgrading with more features.
+- Creating is not easy, maintaining a project requires time, energy, and technical skills. Appreciation and support are welcome.
+- You can write your ID in the note, thank you.
 
 | Thanks |
 | --- |
+| <img src="./assets/appreciate_mycat.png" width="300"></img> |
 | [<img src="./assets/appreciate_buycoffee.png" width="300"></img> ](https://www.buymeacoffee.com/xcanwin) |
 | <img src="./assets/appreciate_wechat.png" width="300"></img> |
