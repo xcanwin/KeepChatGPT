@@ -97,6 +97,10 @@
 | 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
 | 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
 
+- 作者只提供插件的安装方式，官方来源只有以上两个。
+- 作者觉得插件比拓展好，大家随时可以审计安全性，有没有偷偷上传数据大家都可以随时发现。
+- ⚠️[Chrome 应用商店](https://chrome.google.com/webstore/category/extensions) 上的同名拓展不是作者提供的。
+
 ## 其他说明
 
 ### 关于 为何会出现大规模地网络错误
