@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           10.1
+// @version           10.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -293,7 +293,7 @@
             $('.checkbutton', this).classList.toggle('checked');
         };
         $('#nmenuid_af').onclick = function() {
-            toggleMenu();
+            toggleMenu('hide');
             ndialog(`${tl("调整间隔")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
                 try {
                     interval2Time = parseInt($(".kdialoginput", t).value);
@@ -309,7 +309,7 @@
             }, `input`, parseInt(gv("k_interval", 30)));
         };
         $('#nmenuid_cu').onclick = function() {
-            toggleMenu();
+            toggleMenu('hide');
             checkForUpdates();
         };
         $('#nmenuid_ab').onclick = function() {
@@ -317,12 +317,14 @@
         };
     };
 
-    const toggleMenu = function() {
+    const toggleMenu = function(action) {
         const ndivmenu = $(".kmenu");
-        if (ndivmenu.style.display === 'none') {
+        if (action === "show") {
             ndivmenu.style.display = 'block';
-            ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
-            ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
+            if ($("#kcg")) {
+                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
+                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
+            }
         } else {
             ndivmenu.style.display = 'none';
         }
@@ -354,16 +356,18 @@
 
         const ndivmenu = $(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
-            if ($("#kcg")) {
-                ndivmenu.style.display = 'block';
-                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
-                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
-            }
+            toggleMenu('show');
         };
         ndivkcg.onmouseleave = ndivmenu.onmouseleave = function() {
-            ndivmenu.style.display = 'none';
+            toggleMenu('hide');
         };
-        ndivkcg.onclick = toggleMenu;
+        ndivkcg.onclick = function() {
+            if (ndivmenu.style.display === 'none') {
+                toggleMenu('show');
+            } else {
+                toggleMenu('hide');
+            }
+        };
         const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
