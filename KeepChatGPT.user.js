@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           10.7
+// @version           10.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -623,7 +623,7 @@ nav {
 
     const tempFixOpenAI = function() {
         const account = $('button[id^="headlessui-menu"] > .grow', top.document);
-        if (account) {
+        if (account && !account.classList.contains('truncate')) {
             account.classList.add('text-ellipsis', 'truncate');
             account.style.maxWidth = '10.3rem';
         }
@@ -651,6 +651,7 @@ nav {
         if ($(symbol1_class) || $(symbol2_class)) {
             loadKCG();
             cloneChat();
+            tempFixOpenAI();
         }
     };
 
@@ -667,7 +668,5 @@ nav {
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
     const symbol1_class = 'nav>a.flex';
     const symbol2_class = 'button.justify-center';
-
-    tempFixOpenAI();
 
 })();
