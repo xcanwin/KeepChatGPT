@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           10.9
+// @version           11.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -61,7 +61,7 @@
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
-    const tl = function(s) {
+    const getLang = function() {
         let lang = `
 {
     "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv", "克隆对话": "cc"},
@@ -104,26 +104,34 @@
     }
 }
 `;
-        let r, nl;
+        lang = JSON.parse(lang);
+        for(let k in lang.local){
+            if (k.length > 2 && !(k.slice(0, 2) in lang.local)) {
+                lang.local[k.slice(0, 2)] = lang.local[k];
+            }
+        }
+        const nls = navigator.languages;
+        let language = "zh-CN";
+        for (let j = 0; j < nls.length; j++) {
+            let nl = nls[j];
+            if (nl in lang.local) {
+                language = nl;
+                break;
+            } else if (nl.length > 2 && nl.slice(0, 2) in lang.local) {
+                language = nl.slice(0, 2);
+                break;
+            }
+        }
+        return [lang.index, lang.local[language]];
+    };
+
+    const [langIndex, langLocal] = getLang();
+
+    const tl = function(s) {
+        let r;
         try {
-            lang = JSON.parse(lang);
-            for(let k in lang.local){
-                if (k.length > 2 && !(k.slice(0, 2) in lang.local)) {
-                    lang.local[k.slice(0, 2)] = lang.local[k];
-                }
-            }
-            const i = lang.index[s];
-            const nls = navigator.languages;
-            for (let j = 0; j < nls.length; j++) {
-                nl = nls[j];
-                if (nl in lang.local) {
-                    r = lang.local[nl][i];
-                    break;
-                } else if (nl.length > 2 && nl.slice(0, 2) in lang.local) {
-                    r = lang.local[nl.slice(0, 2)][i];
-                    break;
-                }
-            }
+            const i = langIndex[s];
+            r = langLocal[i];
         } catch (e) {
             r = s;
         }
