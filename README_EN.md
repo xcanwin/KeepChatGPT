@@ -36,10 +36,22 @@
 
 ## Comparison
 
-| Experimental Environment | Phenomenon | Step 1 | Step 2 | Step 3 | Step 4 | Step 5 | Step 6 | Step 7 | Step 8 | Step 9 | Step 10 | Step 11 | Step 12 | Step 13 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Without using ```KeepChatGPT``` | Frequent red warning boxes NetworkError in the chat, appearing every ten minutes or so, requiring the webpage to be refreshed | Issue the prompt | Wait for the result | Encounter a network error | Attempt to click to resend | Encounter the network error again | Copy the previous prompt | Refresh the webpage | Wait for the webpage to finish loading | Open the previous chat session | Paste the previous prompt | Issue the prompt again | Wait for the result again | Obtain the result |
-| Using ```KeepChatGPT``` | There will never be network errors again, and there is no need to refresh the webpage | Issue the prompt | Wait for the result | Obtain the result | | | | | | | | | | |
+| Experimental Environment |               Without using ```KeepChatGPT```                |                   Using ```KeepChatGPT```                    |
+| :----------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|        Phenomenon        | Frequent red warning boxes NetworkError in the chat, appearing every ten minutes or so, requiring the webpage to be refreshed | There will never be network errors again, and there is no need to refresh the webpage |
+|          Step 1          |                       Issue the prompt                       |                       Issue the prompt                       |
+|          Step 2          |                     Wait for the result                      |                     Wait for the result                      |
+|          Step 3          |                  Encounter a network error                   |                      Obtain the result                       |
+|          Step 4          |                  Attempt to click to resend                  |                                                              |
+|          Step 5          |              Encounter the network error again               |                                                              |
+|          Step 6          |                   Copy the previous prompt                   |                                                              |
+|          Step 7          |                     Refresh the webpage                      |                                                              |
+|          Step 8          |            Wait for the webpage to finish loading            |                                                              |
+|          Step 9          |                Open the previous chat session                |                                                              |
+|         Step 10          |                  Paste the previous prompt                   |                                                              |
+|         Step 11          |                    Issue the prompt again                    |                                                              |
+|         Step 12          |                  Wait for the result again                   |                                                              |
+|         Step 13          |                      Obtain the result                       |                                                              |
 
 - By comparison, it can be seen that it saves more than 10 unnecessary steps and enables smooth chatting.
 
