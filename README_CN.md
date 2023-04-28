@@ -214,8 +214,9 @@
 - 创造不易，维护一个项目需要消耗时间、精力、技术，欢迎欣赏与赞赏
 - 可在备注里写上你的ID，谢谢
 
-| Thanks |
-| --- |
-| <img src="./assets/appreciate_mycat.png" width="300"></img> |
-| [<img src="./assets/appreciate_buycoffee.png" width="300"></img> ](https://www.buymeacoffee.com/xcanwin) |
-| <img src="./assets/appreciate_wechat.png" width="300"></img> |
+| From | Thanks |
+| --- | --- |
+| 我的猫 | <img src="./assets/appreciate_mycat.png" width="300"></img> |
+| buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img> ](https://www.buymeacoffee.com/xcanwin) |
+| 爱发电<br>(推荐通过爱发电，因为支持微信、支付宝) | <img src="./assets/appreciate_afdian.jpg" width="300"></img> |
+| 微信<br>(有bug好像失效了) | <img src="./assets/appreciate_wechat.png" width="300"></img> |
