@@ -61,10 +61,11 @@
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
-    const langStr = `
+    const getLang = function() {
+        let lang = `
 {
-"index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv", "克隆对话": "cc"},
-"local": {
+    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv", "克隆对话": "cc"},
+    "local": {
 "ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "si": "اقتراح فاصل زمني 30 ثانية", "mi": "تعديل الفاصل", "cu": "التحقق من التحديثات", "cv": "الإصدار الحالي", "dl": "اكتشف أحدث إصدار", "lv": "أحدث إصدار", "cc": "استنساخ المحادثة"},
 "bg": {"dm": "Тъмна тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ca": "Отмяна на анимацията", "ab": "За", "si": "Предложете интервал от 30 секунди", "mi": "Промяна на интервала", "cu": "Проверка на актуализации", "cc": "Клониране на разговора"},
 "cs": {"dm": "Tmavý režim", "sd": "Zobrazit ladění", "cm": "Zrušení auditu", "ca": "Zrušit animaci", "ab": "O", "si": "Navrhnout interval 30 sekund", "mi": "Upravit interval", "cu": "Kontrola aktualizací", "cc": "Klonovat konverzaci"},
@@ -100,36 +101,37 @@
 "vi": {"dm": "Chế độ tối", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ca": "Hủy hoạt hình", "ab": "Về", "si": "Đề xuất khoảng thời gian 30 giây", "mi": "Sửa khoảng cách", "cu": "Kiểm tra cập nhật", "cc": "Sao chép cuộc trò chuyện"},
 "zh-CN": {"dm": "暗色主题", "sd": "显示调试", "cm": "取消审计", "ca": "取消动画", "ab": "关于", "si": "建议间隔30秒以上，作者平时设置的是150", "mi": "调整间隔", "cu": "检查更新", "cc": "克隆对话"},
 "zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "si": "建議間隔30秒", "mi": "調整間隔", "cu": "檢查更新", "cc": "複製對話"}
-}
+    }
 }
 `;
-    let lang, langObj = {};
-    try {
-        lang = JSON.parse(langStr);
-    } catch (error) {
-        lang = { index: {}, local: {} };
-    }
-    for(let k in lang.local){
-        if (k.length > 2 && !(k.slice(0, 2) in lang.local)) {
-            lang.local[k.slice(0, 2)] = lang.local[k];
+        lang = JSON.parse(lang);
+        for(let k in lang.local){
+            if (k.length > 2 && !(k.slice(0, 2) in lang.local)) {
+                lang.local[k.slice(0, 2)] = lang.local[k];
+            }
         }
-    }
-    const nls = navigator.languages;
-    for (let j = 0; j < nls.length; j++) {
-        const nl = nls[j];
-        if (nl in lang.local) {
-            langObj = lang.local[nl];
-            break;
-        } else if (nl.length > 2 && nl.slice(0, 2) in lang.local) {
-            langObj = lang.local[nl.slice(0, 2)];
-            break;
+        const nls = navigator.languages;
+        let language = "zh-CN";
+        for (let j = 0; j < nls.length; j++) {
+            let nl = nls[j];
+            if (nl in lang.local) {
+                language = nl;
+                break;
+            } else if (nl.length > 2 && nl.slice(0, 2) in lang.local) {
+                language = nl.slice(0, 2);
+                break;
+            }
         }
-    }
+        return [lang.index, lang.local[language]];
+    };
+
+    const [langIndex, langLocal] = getLang();
+
     const tl = function(s) {
         let r;
         try {
-            const i = lang.index[s];
-            r = langObj[i];
+            const i = langIndex[s];
+            r = langLocal[i];
         } catch (e) {
             r = s;
         }
