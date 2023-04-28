@@ -8,7 +8,7 @@
 
 ## ⚠️Security Alert
 
-- Please ensure that you use the official [installation repositories](#Install) mentioned in this article.
+- Please ensure that you use the official [Installation Repositories](#Install) mentioned in this article.
 - Currently, there are unofficial extensions with the same name found on the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions).
 
 <br>
@@ -74,7 +74,7 @@
 ## Usage
 
 1. Install ```Tampermonkey``` browser extension from [Tampermonkey website](https://www.tampermonkey.net/).
-2. Install ```KeepChatGPT```, you can select a repository from ```Installation repositories```.
+2. Install ```KeepChatGPT```, you can select a repository from [Installation Repositories](#Install).
 3. Open [ChatGPT](https://chat.openai.com/chat) and enjoy the smooth experience.
 4. Additionally, there is a more clever way, which is to ask ChatGPT: "How to install the Tampermonkey extension? How to install the userscript from Greasy Fork?"
 
@@ -83,7 +83,7 @@
 | Num | UserScript repositories |
 | --- | --- |
 | 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
-| 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
+| 2 | [GreasyFork](https://greasyfork.org/en/scripts/462804-keepchatgpt) |
 
 ## Appreciate
 
