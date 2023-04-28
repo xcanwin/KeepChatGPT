@@ -96,8 +96,8 @@
 - Creating is not easy, maintaining a project requires time, energy, and technical skills. Appreciation and support are welcome.
 - You can write your ID in the note, thank you.
 
-| Thanks |
-| --- |
-| <img src="./assets/appreciate_mycat.png" width="300"></img> |
-| [<img src="./assets/appreciate_buycoffee.png" width="300"></img> ](https://www.buymeacoffee.com/xcanwin) |
-| <img src="./assets/appreciate_wechat.png" width="300"></img> |
+| From | Thanks |
+| --- | --- |
+| My cat | <img src="./assets/appreciate_mycat.png" width="300"></img> |
+| Buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin) |
+| Afdian<br>(Support wechat and alipay) | [<img src="./assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan) |
