@@ -1,3 +1,5 @@
+<center><img src="./assets/KeepChatGPT.png" width="600"></img></center>
+
 ## 简介
 
 - 非盈利开源项目依靠大家无价的支持，欢迎各位伙伴在 [GitHub](https://github.com/xcanwin/KeepChatGPT/) 和 [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) 留下微微的⭐️star和👍🏻正面的体验反馈
