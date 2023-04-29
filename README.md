@@ -1,4 +1,4 @@
-<center><img src="./assets/KeepChatGPT.png" width="600"></img></center>
+<p align="center"><img src="./assets/KeepChatGPT.png" width="600"></img></p>
 
 ## 简介
 
