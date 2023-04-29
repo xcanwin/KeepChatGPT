@@ -1,4 +1,4 @@
-<p align="center"><center><img src="./assets/KeepChatGPT.png?v=11.0" width="600"></img></center></p>
+<p align="center"><img src="./assets/KeepChatGPT.png" width="600"></img></p>
 
 <br>
 
