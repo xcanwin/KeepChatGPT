@@ -101,3 +101,4 @@
 | My cat | <img src="./assets/appreciate_mycat.png" width="300"></img> |
 | Buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin) |
 | Afdian<br>(Support wechat and alipay) | [<img src="./assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan) |
+| Wechat<br>(Sometimes it doesn't work) | <img src="./assets/appreciate_wechat.png" width="300"></img> |
