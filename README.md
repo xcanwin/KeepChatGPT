@@ -4,15 +4,12 @@
 
 <br>
 
-## 简介
+## 简介 / Introduction
 
 - 非盈利开源项目依靠大家无价的支持，欢迎各位伙伴在 [GitHub](https://github.com/xcanwin/KeepChatGPT/) 和 [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) 留下微微的⭐️star和👍🏻正面的体验反馈
+- Non-profit open-source projects rely on everyone's invaluable support. We welcome all partners to leave a slight ⭐️star and 👍🏻positive feedback on [GitHub](https://github.com/xcanwin/KeepChatGPT/) and [GreasyFork](https://greasyfork.org/en/scripts/462804-keepchatgpt).
 - 这是一款```ChatGPT```畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。
-
-## Introduction
-
-- Non-profit open source projects rely on everyone's invaluable support, welcome partners to [GitHub](https://github.com/xcanwin/KeepChatGPT/) and [GreasyFork](https://greasyfork.org/zh-CN/ scripts/462804-keepchatgpt) leave a ⭐️ and 👍🏻 positive experience feedback
-- This is a ```ChatGPT``` chat plug-in. Solve all errors and make our AI experience extremely smooth, silky and efficient. Continually updated enhancements like cancel auditing and more.
+- This is a ```ChatGPT``` chat plugin that solves all errors and makes our AI experience incredibly smooth, silky, and efficient. Continuously updated enhanced features such as canceling audits.
 
 ## 详细介绍 / Details
 
