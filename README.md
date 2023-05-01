@@ -11,6 +11,10 @@
 - Non-profit open-source projects rely on everyone's invaluable support. We welcome all partners to leave a slight ⭐️star and 👍🏻positive feedback on [GitHub](https://github.com/xcanwin/KeepChatGPT/) and [GreasyFork](https://greasyfork.org/en/scripts/462804-keepchatgpt).
 - This is a ```ChatGPT``` chat plugin that solves all errors and makes our AI experience incredibly smooth, silky, and efficient. Continuously updated enhanced features such as canceling audits.
 
+## 展示 / Show
+
+<img src="./assets/index_light.png" width="750"></img>
+
 ## 详细介绍 / Details
 
 - [中文文档](https://github.com/xcanwin/KeepChatGPT/blob/main/README_CN.md)
