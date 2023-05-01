@@ -50,6 +50,9 @@
 - 对于好的谢谢大家点赞
 - 对于坏的会持续更新
 
+<img src="./assets/user_feedback_4.png" width="750"></img>
+<img src="./assets/user_feedback_3.png" width="750"></img>
+<img src="./assets/user_feedback_2.png" width="750"></img>
 <img src="./assets/user_feedback_1.png" width="750"></img>
 
 ## 对比
