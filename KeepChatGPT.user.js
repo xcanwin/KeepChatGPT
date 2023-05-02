@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           11.1
+// @version           11.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -691,8 +691,8 @@ nav {
             if ($("main h1") && $("main h1").parentElement.childNodes[1]) {
                 $("main h1").parentElement.childNodes[1].remove();
                 const nSpan = document.createElement('span');
-                nSpan.className = 'rounded-md bg-yellow-200 py-0.5 px-1.5 text-xs font-medium uppercase text-gray-800';
-                nSpan.style = 'font-size: 38%';
+                nSpan.className = 'rounded-md bg-yellow-200 py-1.5 px-1.5 text-xs font-medium uppercase text-gray-800';
+                nSpan.style = 'font-size: 40%';
                 nSpan.textContent = 'KEEP';
                 $("main h1").appendChild(nSpan);
             }
@@ -719,7 +719,7 @@ nav {
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_class = 'nav>a.flex';
+    const symbol1_class = 'nav a.flex';
     const symbol2_class = 'button.justify-center';
 
 })();
