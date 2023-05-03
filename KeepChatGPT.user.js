@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           11.6
+// @version           11.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -166,6 +166,11 @@
             const nIfr = document.createElement('iframe');
             nIfr.id = "xcanwin";
             nIfr.style = `height: 0px; width: 100%;`;
+            if (gv("k_showDebug", false) === true) {
+                nIfr.style.height = '80px';
+            } else {
+                nIfr.style.height = '0px';
+            }
             if (u) {
                 nIfr.src = u;
             }
@@ -289,10 +294,10 @@
 
         $('#nmenuid_sd').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
-                if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
+                $('#xcanwin').style.height = '0px';
                 sv("k_showDebug", false);
             } else {
-                if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
+                $('#xcanwin').style.height = '80px';
                 sv("k_showDebug", true);
             }
             $('.checkbutton', this).classList.toggle('checked');
@@ -552,9 +557,9 @@ nav {
     const setUserOptions = function() {
         if (gv("k_showDebug", false) === true) {
             $('#nmenuid_sd .checkbutton').classList.add('checked');
-            if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
+            $('#xcanwin').style.height = '80px';
         } else {
-            if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
+            $('#xcanwin').style.height = '0px';
         }
 
         if (gv("k_theme", "light") === "light") {
@@ -703,6 +708,7 @@ nav {
     const nInterval1Fun = function() {
         if ($(symbol1_class) || $(symbol2_class)) {
             loadKCG();
+            setIfr();
             cloneChat();
             tempFixOpenAI();
             cleanlyHome();
