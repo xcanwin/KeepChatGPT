@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           11.10
+// @version           11.11
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -62,8 +62,8 @@
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_class = 'nav.flex .transition-colors';
-    const symbol2_class = 'button.justify-center';
+    const symbol1_selector = 'nav.flex .transition-colors';
+    const symbol2_selector = 'button.justify-center';
 
     const getLang = function() {
         let lang = `
@@ -354,8 +354,10 @@
         $('#nmenuid_cc').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 sv("k_clonechat", false);
+                cloneChat(false);
             } else {
                 sv("k_clonechat", true);
+                cloneChat(true);
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
@@ -395,12 +397,12 @@
             return;
         }
         if ($("main").kcg !== undefined) {
-            if ($(symbol1_class)) {
+            if ($(symbol1_selector)) {
                 $("main").kcg.innerHTML = $("main").kcg._symbol1_innerHTML;
-                symbol_prt = findParent($(symbol1_class), "nav.flex", 3);
-            } else if ($(symbol2_class)) {
+                symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
+            } else if ($(symbol2_selector)) {
                 $("main").kcg.innerHTML = $("main").kcg._symbol2_innerHTML;
-                symbol_prt = $(symbol2_class).parentElement;
+                symbol_prt = $(symbol2_selector).parentElement;
             }
             symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
             return;
@@ -431,12 +433,12 @@
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
 
-        if ($(symbol1_class)) {
+        if ($(symbol1_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
-            symbol_prt = findParent($(symbol1_class), "nav.flex", 3);
-        } else if ($(symbol2_class)) {
+            symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
+        } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
-            symbol_prt = $(symbol2_class).parentElement;
+            symbol_prt = $(symbol2_selector).parentElement;
         }
         $("main").kcg = ndivkcg;
         symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
@@ -534,6 +536,7 @@
 div.items-end>div:first-child {
     user-select: none;
     max-width: 30px;
+    cursor: pointer;
 }
 
 nav {
@@ -593,6 +596,7 @@ nav {
 
         if (gv("k_clonechat", false) === true) {
             $('#nmenuid_cc .checkbutton').classList.add('checked');
+            cloneChat(true);
         }
 
         if (gv("k_cleanlyhome", false) === true) {
@@ -677,24 +681,31 @@ nav {
         }
     };
 
-    const cloneChat = function() {
-        $$("div.items-end>div:first-child").forEach(function(e) {
-            if ($('text', this) && $('text', this).innerHTML === "ChatGPT") {
-                $('text', this).remove();
+    const cloneChat = function(action) {
+        if (action === true) {
+            $('body').addEventListener('click', cloneChat.listenClick);
+        } else {
+            $('body').removeEventListener('click', cloneChat.listenClick);
+        }
+    };
+
+    cloneChat.listenClick = function(event) {
+        const avatarSelector = "main div.items-end>div:first-child";
+        let avatarDiv;
+        if (event.target.matches(avatarSelector)) {
+            avatarDiv = event.target;
+        } else {
+            avatarDiv = findParent(event.target, avatarSelector);
+        }
+        if (avatarDiv) {
+            if ($('text', avatarDiv) && $('text', avatarDiv).innerHTML === "ChatGPT") {
+                $('text', avatarDiv).remove();
             }
-            if (gv("k_clonechat", false) === true) {
-                e.style.cursor = "pointer";
-                e.onclick = function() {
-                    const content = findParent(this, "div.text-base", 4).innerText.trim();
-                    $("form.stretch textarea").value = "";
-                    $("form.stretch textarea").focus();
-                    document.execCommand('insertText', false, content);
-                }
-            } else {
-                e.style.cursor = "default";
-                e.onclick = function() {}
-            }
-        });
+            const content = findParent(avatarDiv, "div.text-base", 2).innerText.trim();
+            $("form.stretch textarea").value = "";
+            $("form.stretch textarea").focus();
+            document.execCommand('insertText', false, content);
+        }
     };
 
     const cleanlyHome = function() {
@@ -718,7 +729,7 @@ nav {
         let parent = el.parentNode;
         let count = 1;
         while (parent && count <= level) {
-            if (parent.matches(parentSelector)) {
+            if (parent && parent.constructor !== HTMLDocument && parent.matches(parentSelector)) {
                 return parent;
             }
             parent = parent.parentNode;
@@ -728,17 +739,16 @@ nav {
     };
 
     const nInterval1Fun = function() {
-        if ($(symbol1_class) || $(symbol2_class)) {
+        if ($(symbol1_selector) || $(symbol2_selector)) {
             loadKCG();
             setIfr();
-            cloneChat();
             tempFixOpenAI();
             cleanlyHome();
         }
     };
 
     const nInterval2Fun = function() {
-        if ($(symbol1_class) || $(symbol2_class)) {
+        if ($(symbol1_selector) || $(symbol2_selector)) {
             keepChat();
         }
     };
