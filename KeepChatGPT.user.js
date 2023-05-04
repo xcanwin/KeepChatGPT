@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           11.8
+// @version           11.9
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -60,6 +60,10 @@
 
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
+
+    const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
+    const symbol1_class = 'nav.flex .transition-colors';
+    const symbol2_class = 'button.justify-center';
 
     const getLang = function() {
         let lang = `
@@ -393,7 +397,7 @@
         if ($("main").kcg !== undefined) {
             if ($(symbol1_class)) {
                 $("main").kcg.innerHTML = $("main").kcg._symbol1_innerHTML;
-                symbol_prt = $(symbol1_class).closest("nav.flex");
+                symbol_prt = findParent($(symbol1_class), "nav.flex", 3);
             } else if ($(symbol2_class)) {
                 $("main").kcg.innerHTML = $("main").kcg._symbol2_innerHTML;
                 symbol_prt = $(symbol2_class).parentElement;
@@ -429,7 +433,7 @@
 
         if ($(symbol1_class)) {
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
-            symbol_prt = $(symbol1_class).closest("nav.flex");
+            symbol_prt = findParent($(symbol1_class), "nav.flex", 3);
         } else if ($(symbol2_class)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             symbol_prt = $(symbol2_class).parentElement;
@@ -680,7 +684,7 @@ nav {
             if (gv("k_clonechat", false) === true) {
                 e.style.cursor = "pointer";
                 e.onclick = function() {
-                    const content = this.closest('div.text-base').innerText.trim();
+                    const content = findParent(this, "div.text-base", 4).innerText.trim();
                     $("form.stretch textarea").value = "";
                     $("form.stretch textarea").focus();
                     document.execCommand('insertText', false, content);
@@ -709,6 +713,19 @@ nav {
         }
     };
 
+    const findParent = function(el, parentSelector, level = 5) {
+        let parent = el.parentNode;
+        let count = 1;
+        while (parent && count <= level) {
+            if (parent.matches(parentSelector)) {
+                return parent;
+            }
+            parent = parent.parentNode;
+            count++;
+        }
+        return null;
+    };
+
     const nInterval1Fun = function() {
         if ($(symbol1_class) || $(symbol2_class)) {
             loadKCG();
@@ -726,11 +743,8 @@ nav {
     };
 
     let nInterval1 = setInterval(nInterval1Fun, 300);
+
     let interval2Time = parseInt(gv("k_interval", 30));
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
-
-    const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_class = 'nav.flex a.flex';
-    const symbol2_class = 'button.justify-center';
 
 })();
