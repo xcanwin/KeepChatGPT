@@ -673,14 +673,6 @@ nav {
         }).catch(e => console.log(e));
     }
 
-    const tempFixOpenAI = function() {
-        const account = $('button[id^="headlessui-menu"] > .grow', top.document);
-        if (account && !account.classList.contains('truncate')) {
-            account.classList.add('text-ellipsis', 'truncate');
-            account.style.maxWidth = '10.3rem';
-        }
-    };
-
     const cloneChat = function(action) {
         if (action === true) {
             $('body').addEventListener('click', cloneChat.listenClick);
@@ -742,7 +734,6 @@ nav {
         if ($(symbol1_selector) || $(symbol2_selector)) {
             loadKCG();
             setIfr();
-            tempFixOpenAI();
             cleanlyHome();
         }
     };
