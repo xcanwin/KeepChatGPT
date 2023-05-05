@@ -533,7 +533,7 @@
     cursor: pointer;
 }
 
-.group div.items-end>div:first-child {
+main div.items-end>div:first-child {
     user-select: none;
     max-width: 30px;
     cursor: pointer;
