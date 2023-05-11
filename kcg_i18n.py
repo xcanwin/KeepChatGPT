@@ -37,7 +37,7 @@ transle_tmp：将ChatGPT翻译的结果复制粘贴到这里
 
 """
 
-import json
+import json, os
 
 def lang_add(lang, new_str, new_str_min, transle_tmp):
     lang["index"].update({new_str: new_str_min})
@@ -57,20 +57,28 @@ def lang_del(lang, del_str, del_str_min):
                 del lang["local"][l][del_str_min]
     return lang
 
-def print_json(lang):
-    print('{')
-    print('    "index": %s,' % (json.dumps(lang['index'], ensure_ascii = False)))
-    print('    "local": {')
+def format_json(lang):
+    langStr = ''
+    langStr += '{' + '\n'
+    langStr += '    "index": %s,' % (json.dumps(lang['index'], ensure_ascii = False)) + '\n'
+    langStr += '    "local": {' + '\n'
     lj = []
     for country, langjson in lang['local'].items():
         lj.append('"%s": %s' % (country, json.dumps(langjson, ensure_ascii = False)))
     lj = ',\n'.join(lj)
-    print(lj)
-    print('    }')
-    print('}')
+    langStr += lj + '\n'
+    langStr += '    }' + '\n'
+    langStr += '}'
+    return langStr
+
+def save(langStr):
+    if not os.path.exists('test'):
+        os.mkdir('test')
+    open('test/lang.txt', 'wb').write(langStr.encode())
 
 def main():
-    lang = {
+    lang = '''
+{
     "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv", "克隆对话": "cc", "净化页面": "pp"},
     "local": {
 "ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "si": "اقتراح فاصل زمني 30 ثانية", "mi": "تعديل الفاصل", "cu": "التحقق من التحديثات", "cv": "الإصدار الحالي", "dl": "اكتشف أحدث إصدار", "lv": "أحدث إصدار", "cc": "استنساخ المحادثة", "pp": "تنقية الصفحة"},
@@ -110,55 +118,62 @@ def main():
 "zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "si": "建議間隔30秒", "mi": "調整間隔", "cu": "檢查更新", "cc": "複製對話", "pp": "淨化頁面"}
     }
 }
+'''
 
-    new_str = "净化页面"
+    lang = json.loads(lang)
 
-    new_str_min = "pp"
+    new_str = "展示大屏"
+
+    new_str_min = "ls"
 
     transle_tmp = """
-ar: تنقية الصفحة
-bg: Почистване на страницата
-cs: Očistit stránku
-da: Rensning af siden
-de: Seite bereinigen
-el: Καθαρισμός σελίδας
-en: Purify page
-eo: Pura paĝo
-es: Purificar página
-fi: Puhdista sivu
-fr: Purifier la page
-fr-CA: Purifier la page
-he: טיהור הדף
-hu: Oldal tisztítása
-id: Membersihkan halaman
-it: Purifica pagina
-ja: ページを浄化する
-ka: გვერდის გაწმენდა
-ko: 페이지 정화
-nb: Rens side
-nl: Pagina zuiveren
-pl: Oczyść stronę
-pt-BR: Purificar página
-ro: Purificare pagină
-ru: Очистить страницу
-sk: Očistiť stránku
-sr: Прочисти страницу
-sv: Rensa sidan
-th: ทำความสะอาดหน้า
-tr: Sayfayı temizle
-uk: Очистити сторінку
-ug: چۈشۈرۈش بەت
-vi: Làm sạch trang
-zh-CN: 净化页面
-zh-TW: 淨化頁面
+ar: عرض الشاشة الكبيرة
+bg: Показване на голям екран
+cs: Zobrazení velkého displeje
+da: Vis stor skærm
+de: Großen Bildschirm anzeigen
+el: Εμφάνιση μεγάλης οθόνης
+en: Display large screen
+eo: Montri grandan ekrane
+es: Mostrar pantalla grande
+fi: Näytä suuri näyttö
+fr: Afficher grand écran
+fr-CA: Afficher grand écran
+he: תצוגת מסך גדול
+hu: Nagy képernyő megjelenítése
+id: Tampilkan layar besar
+it: Mostra grande schermo
+ja: ビッグスクリーンを表示する
+ka: დიდი ეკრანის გამოსახულება
+ko: 큰 화면 표시
+nb: Vis stor skjerm
+nl: Groot scherm weergeven
+pl: Wyświetl duży ekran
+pt-BR: Exibir tela grande
+ro: Afișare ecran mare
+ru: Показать большой экран
+sk: Zobraziť veľkú obrazovku
+sr: Прикажи велики екран
+sv: Visa stor skärm
+th: แสดงหน้าจอใหญ่
+tr: Büyük ekranı görüntüle
+uk: Відобразити великий екран
+ug: كۆرسىتىش چوڭ ئېكران
+vi: Hiển thị màn hình lớn
+zh-CN: 展示大屏
+zh-TW: 顯示大螢幕
 """
 
+    # 删除字段
     # del_str = "调整频率"
     # del_str_min = "af"
     # lang = lang_del(lang, del_str, del_str_min)
 
+    # 添加字段
     lang = lang_add(lang, new_str, new_str_min, transle_tmp)
 
-    print_json(lang)
+    langStr = format_json(lang)
+    print(langStr)
+    save(langStr)
 
 main()
