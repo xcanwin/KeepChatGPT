@@ -9,6 +9,20 @@
 
 <br>
 
+## 展示
+
+- PC端，亮色主题，享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
+
+  <img src="./assets/index_light.png" width="750"></img>
+
+- PC端，暗色主题：
+
+  <img src="./assets/index_dark.png" width="750"></img>
+
+- 移动端：
+
+  <img src="./assets/index_mobile.png" width="220"></img>
+
 ## 项目简介
 
 - 喜欢这个插件的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT) 点个⭐️STAR支持一下。
@@ -72,20 +86,6 @@
 |  步骤13  |                           得到结果                           |                                        |
 
 - 通过对比可知，足足省去10个多余的步骤，顺畅地聊天
-
-## 展示
-
-- 享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
-
-  <img src="./assets/index_light.png" width="750"></img>
-
-- 喜欢暗调的朋友可以鼠标移到```专属金标```选择```主题```修改为```专属蓝标```：
-
-  <img src="./assets/index_dark.png" width="750"></img>
-
-- 移动端：
-
-  <img src="./assets/index_mobile.png" width="280"></img>
 
 ## 原理
 
