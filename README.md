@@ -25,9 +25,9 @@
 
   <img src="./assets/index_dark.png" width="750"></img>
 
-- PC端，亮色主题+展示全屏：
+- PC端，暗色主题+展示全屏：
 
-  <img src="./assets/index_light_full.png" width="750"></img>
+  <img src="./assets/index_dark_full.png" width="750"></img>
 
 - 移动端：
 
