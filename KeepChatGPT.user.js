@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           12.5
+// @version           12.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -386,7 +386,7 @@
             } else {
                 sv("k_largescreen", true);
             }
-            $("#__next .overflow-hidden.w-full>:last-child").classList.toggle('largescreen');
+            $("#__next>.overflow-hidden.w-full>div.overflow-hidden").classList.toggle('largescreen');
             $('.checkbutton', this).classList.toggle('checked');
         };
 
@@ -455,7 +455,7 @@
 
         if (gv("k_largescreen", false) === true) {
             $('#nmenuid_ls .checkbutton').classList.add('checked');
-            $("#__next .overflow-hidden.w-full>:last-child").classList.toggle('largescreen');
+            $("#__next>.overflow-hidden.w-full>div.overflow-hidden").classList.toggle('largescreen');
         }
 
         if (gv("k_fullscreen", false) === true) {
@@ -791,26 +791,37 @@ nav {
 
     const fullScreen = function(action) {
         if (action === true) {
-            const ndivkfull = document.createElement("div");
-            ndivkfull.id = "kfull";
-            ndivkfull.setAttribute("class", "btn relative btn-neutral border-0 md:border");
-            ndivkfull.innerHTML = `KEEP`;
-            ndivkfull.onclick = function() {
-                sv("k_fullscreen", false);
-                fullScreen(false);
-                $('#nmenuid_fs .checkbutton').classList.toggle('checked');
-            };
-            const symbol3_selector = `form.stretch .justify-center`;
-            let nInterval3 = setInterval(() => {
-                if ($(symbol3_selector)) {
-                    $(symbol3_selector).insertBefore(ndivkfull, $(symbol3_selector).childNodes[0]);
-                    clearInterval(nInterval3);
-                }
-            }, 300);
+            if ($("#kfull") === null || $('#kfull').style.display === "none") {
+                const ndivkfull = document.createElement("div");
+                ndivkfull.id = "kfull";
+                ndivkfull.setAttribute("class", "btn relative btn-neutral border-0 md:border");
+                ndivkfull.innerHTML = `KEEP`;
+                ndivkfull.onclick = function() {
+                    sv("k_fullscreen", false);
+                    fullScreen(false);
+                    $('#nmenuid_fs .checkbutton').classList.toggle('checked');
+                };
+                const symbol3_selector = `form.stretch .justify-center`;
+                let nInterval3 = setInterval(() => {
+                    if ($(symbol3_selector) && $(symbol2_selector) === null) {
+                        if ($("#kfull") === null) {
+                            $(symbol3_selector).insertBefore(ndivkfull, $(symbol3_selector).childNodes[0]);
+                        } else if ($('#kfull') && $('#kfull').style.display === "none") {
+                            $('#kfull').style.display = '';
+                        }
+                        $("#__next>.overflow-hidden.w-full>div.overflow-x-hidden").classList.add('fullscreen');
+                        clearInterval(nInterval3);
+                    }
+                }, 300);
+            }
         } else {
-            $('#kfull').style.display = 'none';
+            if ($('#kfull') && $('#kfull').style.display === "") {
+                $('#kfull').style.display = 'none';
+            }
+            if ($("#__next>.overflow-hidden.w-full>div.overflow-x-hidden")) {
+                $("#__next>.overflow-hidden.w-full>div.overflow-x-hidden").classList.remove('fullscreen');
+            }
         }
-        $("#__next .overflow-hidden.w-full>:first-child").classList.toggle('fullscreen');
     };
 
     const findParent = function(el, parentSelector, level = 5) {
@@ -824,6 +835,18 @@ nav {
             count++;
         }
         return null;
+    };
+
+    $("body").onresize = function() {
+        if ($('#nmenuid_fs .checkbutton')) {
+            if (gv("k_fullscreen", false) === true) {
+                $('#nmenuid_fs .checkbutton').classList.add('checked');
+                fullScreen(true);
+            } else if (gv("k_fullscreen", false) === false) {
+                $('#nmenuid_fs .checkbutton').classList.remove('checked');
+                fullScreen(false);
+            }
+        }
     };
 
     const nInterval1Fun = function() {
