@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           12.6
+// @version           12.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -63,7 +63,7 @@
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
     const symbol1_selector = 'nav.flex .transition-colors';
-    const symbol2_selector = 'button.justify-center';
+    const symbol2_selector = 'button.justify-center .sr-only';
 
     const getLang = function() {
         let lang = `
@@ -488,7 +488,7 @@
                 symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
             } else if ($(symbol2_selector)) {
                 $("main").kcg.innerHTML = $("main").kcg._symbol2_innerHTML;
-                symbol_prt = $(symbol2_selector).parentElement;
+                symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
             }
             symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
             return;
@@ -524,7 +524,7 @@
             symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
         } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
-            symbol_prt = $(symbol2_selector).parentElement;
+            symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
         }
         $("main").kcg = ndivkcg;
         symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
