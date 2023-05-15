@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       ChatGPT畅聊插件。解决所有报错，让我们的AI体验无比顺畅、丝滑、高效。持续更新的增强功能，如取消审计等。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           12.7
+// @version           12.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -169,11 +169,11 @@
         if ($("#xcanwin") === null) {
             const nIfr = document.createElement('iframe');
             nIfr.id = "xcanwin";
-            nIfr.style = `height: 0px; width: 100%;`;
+            nIfr.style = `height: 80px; width: 100%; display: none;`;
             if (gv("k_showDebug", false) === true) {
-                nIfr.style.height = '80px';
+                nIfr.style.display = '';
             } else {
-                nIfr.style.height = '0px';
+                nIfr.style.display = 'none';
             }
             if (u) {
                 nIfr.src = u;
@@ -302,10 +302,10 @@
 
         $('#nmenuid_sd').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
-                $('#xcanwin').style.height = '0px';
+                $('#xcanwin').style.display = 'none';
                 sv("k_showDebug", false);
             } else {
-                $('#xcanwin').style.height = '80px';
+                $('#xcanwin').style.display = '';
                 sv("k_showDebug", true);
             }
             $('.checkbutton', this).classList.toggle('checked');
@@ -415,9 +415,9 @@
     const setUserOptions = function() {
         if (gv("k_showDebug", false) === true) {
             $('#nmenuid_sd .checkbutton').classList.add('checked');
-            $('#xcanwin').style.height = '80px';
+            $('#xcanwin').style.display = '';
         } else {
-            $('#xcanwin').style.height = '0px';
+            $('#xcanwin').style.display = 'none';
         }
 
         if (gv("k_theme", "light") === "light") {
