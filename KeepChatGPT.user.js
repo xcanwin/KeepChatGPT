@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           13.3
+// @version           13.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -803,17 +803,23 @@ nav {
 
     const cleanlyHome = function() {
         if (location.href.match(/https:\/\/chat\.openai\.com\/\??/) && gv("k_cleanlyhome", false) === true) {
-            if ($("main h1") && $("main h1").innerText === "ChatGPT" && $("main h2").innerText === "Examples") {
-                $("main h1").parentElement.childNodes[1].remove();
+            if ($("main h1") && $("main h1").innerText.match(/^ChatGPT(\nPLUS)?$/)) {
+                $("main h1").classList.add('text-gray-200');
                 const nSpan = document.createElement('span');
-                nSpan.className = 'rounded-md bg-yellow-200 py-1.5 px-1.5 text-xs font-medium uppercase text-gray-800';
-                nSpan.style = 'font-size: 40%';
-                nSpan.textContent = 'KEEP';
+                nSpan.className = 'bg-yellow-200 text-yellow-900 py-0.5 px-1.5 text-xs md:text-sm rounded-md uppercase';
+                nSpan.textContent = `KEEP`;
                 $("main h1").appendChild(nSpan);
+            }
+            if ($("main h2") && $("main h2").innerText === "Examples") {
+                $("main h2").parentElement.parentElement.remove();
             }
             const mainBottom = $("div>span", $("form.stretch").parentElement);
             if (mainBottom && mainBottom.innerText.indexOf("produce inaccurate") > -1) {
                 mainBottom.remove();
+            }
+            const utp_svg = $(`nav.flex path[d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"]`);
+            if (utp_svg && findParent(utp_svg, `a`, 4)) {
+                findParent(utp_svg, `a`, 4).remove();
             }
         }
     };
@@ -863,6 +869,9 @@ nav {
     };
 
     const findParent = function(el, parentSelector, level = 5) {
+        if (el === null) {
+            return null;
+        }
         let parent = el.parentNode;
         let count = 1;
         while (parent && count <= level) {
