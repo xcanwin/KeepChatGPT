@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           13.10
+// @version           13.11
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -155,6 +155,16 @@
     const formatDate = function(d) {
         return (new Date(d)).toLocaleString();
     };
+
+    const formatDate2 = function(d) {
+        const Y = d.getFullYear();
+        const M = (d.getMonth() + 1).toString().padStart(2, '0');
+        const D = d.getDate().toString().padStart(2, '0');
+        const h = d.getHours().toString().padStart(2, '0');
+        const m = d.getMinutes().toString().padStart(2, '0');
+        const formatted_date = `${M}-${D}<br>${h}:${m}`;
+        return formatted_date;
+    }
 
     const formatJson = function(d) {
         try {
@@ -777,25 +787,26 @@ nav {
                         const fetchRspHeaders = clonedResponse.headers;
                         if (gv("k_everchanging", false) && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                             const b = JSON.parse(fetchRspBody).items;
-                            let update_list = {};
+                            if ($("main").kec === undefined) $("main").kec = {};
                             b.forEach(el => {
                                 const date = new Date(el.update_time);
-                                const year = date.getFullYear();
-                                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                                const day = date.getDate().toString().padStart(2, '0');
-                                const hours = date.getHours().toString().padStart(2, '0');
-                                const minutes = date.getMinutes().toString().padStart(2, '0');
-                                const formattedDate = `${month}-${day}<br>${hours}:${minutes}`;
-                                update_list[el.id] = formattedDate;
+                                if ($("main").kec[el.id] && $("main").kec[el.id] >= date) return;
+                                $("main").kec[el.id] = date;
                             });
                             setTimeout(function() {
                                 $$('nav.flex li a.group').forEach(el => {
                                     const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
                                     const a_id = el[keyrf].return.return.memoizedProps.id;
-                                    const nspan = document.createElement("span");
-                                    nspan.classList.add('navdate');
-                                    nspan.innerHTML = update_list[a_id];
-                                    el.appendChild(nspan);
+                                    const date = $("main").kec[a_id] || "";
+                                    if (!date) return;
+                                    if ($('.navdate', el)) {
+                                        $('.navdate', el).innerHTML = formatDate2(date);
+                                    } else {
+                                        const nspan = document.createElement("span");
+                                        nspan.classList.add('navdate');
+                                        nspan.innerHTML = formatDate2(date);
+                                        el.appendChild(nspan);
+                                    }
                                 });
                                 $$(`nav.flex div.overflow-y-auto h3`).forEach(el => {
                                     el.remove();
