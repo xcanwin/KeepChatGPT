@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           13.14
+// @version           13.15
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -57,6 +57,8 @@
 
 (function() {
     'use strict';
+
+    var global = {};
 
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
@@ -242,18 +244,18 @@
         ndivalert.setAttribute("class", "kdialog relative z-50");
         ndivalert.innerHTML = `
 <div class="fixed inset-0 bg-gray-500/90"></div>
-<div class="fixed inset-0 overflow-y-auto z-50">
+<div class="fixed inset-0 overflow-y-auto z-50" style="display: flex; justify-content: center; align-items: center;">
   <div class="flex items-end justify-center min-h-full p-4 sm:items-center sm:p-0 text-center">
     <div class="kdialogwin bg-white dark:bg-gray-900 rounded-lg sm:max-w-lg sm:p-6 text-left">
       <div class="flex items-center justify-between">
-        <div>
+        <div style="min-width: 15rem">
           <div class="flex items-center justify-between">
             <h3 class="dark:text-gray-200 text-gray-900 text-lg">${title}</h3>
-            <p class="kdialogclose" style="cursor: pointer;">X</p>
+            <p class="kdialogclose" style="cursor: pointer; font-weight: bold; color: #aaa;">X</p>
           </div>
-          <p class="dark:text-gray-100 mt-2 text-gray-500 text-sm" style="margin-bottom: 10px;">${content}</p>
+          <p class="dark:text-gray-100 mt-2 text-gray-500 text-sm" style="margin-bottom: 0.6rem;">${content}</p>
           <div class="md:py-3 md:pl-4 border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
-            <${inputtype} class="kdialoginput resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent" style="max-height: 200px; height: 24px; outline: none;" placeholder=""></${inputtype}>
+            <${inputtype} class="kdialoginput resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent" style="max-height: 12.5rem; height: 1.5rem; outline: none;" placeholder=""></${inputtype}>
           </div>
         </div>
       </div>
@@ -267,8 +269,8 @@
             $(".kdialoginput", ndivalert).parentElement.style.display = 'none';
         } else if (inputtype === 'img') {
             $(".kdialoginput", ndivalert).src = inputvalue;
-            $(".kdialoginput", ndivalert).style = `max-height: 300px; height: unset; display: block; margin: 0 auto;`;
-            $(".kdialogwin", ndivalert).style = `max-width: 600px;`;
+            $(".kdialoginput", ndivalert).style = `max-height: 19rem; height: unset; display: block; margin: 0 auto;`;
+            $(".kdialogwin", ndivalert).style = `max-width: 37.5rem;`;
         }else {
             $(".kdialoginput", ndivalert).value = inputvalue;
         }
@@ -550,15 +552,16 @@
         if ($("#kcg") !== null) {
             return;
         }
-        if ($("main").kcg !== undefined) {
+        var kcg_html;
+        if (kcg_html !== undefined) {
             if ($(symbol1_selector)) {
-                $("main").kcg.innerHTML = $("main").kcg._symbol1_innerHTML;
+                kcg_html.innerHTML = kcg_html._symbol1_innerHTML;
                 symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
             } else if ($(symbol2_selector)) {
-                $("main").kcg.innerHTML = $("main").kcg._symbol2_innerHTML;
+                kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
                 symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
             }
-            symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
+            symbol_prt.insertBefore(kcg_html, symbol_prt.childNodes[0]);
             return;
         }
 
@@ -594,8 +597,8 @@
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
         }
-        $("main").kcg = ndivkcg;
-        symbol_prt.insertBefore($("main").kcg, symbol_prt.childNodes[0]);
+        kcg_html = ndivkcg;
+        symbol_prt.insertBefore(kcg_html, symbol_prt.childNodes[0]);
 
         addStyle();
         setUserOptions();
@@ -787,16 +790,15 @@ nav {
                         const fetchRspHeaders = clonedResponse.headers;
                         if (gv("k_everchanging", false) && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                             const b = JSON.parse(fetchRspBody).items;
-                            if ($("main").kec === undefined) $("main").kec = {};
+                            if (!global.kec_object) global.kec_object = {};
                             b.forEach(el => {
                                 const date = new Date(el.update_time);
-                                if ($("main").kec[el.id] && $("main").kec[el.id] >= date) return;
-                                $("main").kec[el.id] = date;
+                                if (global.kec_object[el.id] && global.kec_object[el.id] >= date) return;
+                                global.kec_object[el.id] = date;
                             });
                             setTimeout(function() {
-                                attachTime();
+                                attachDate();
                             }, 300);
-                            sessionStorage.setItem("kec", JSON.stringify($("main").kec));
                         }
                     });
                     return clonedResponse;
@@ -806,23 +808,19 @@ nav {
         });
     };
 
-    const loadConvTime = function() {
+    const everChanging = function() {
         if (!$('.navdate')) {
-            const kec = sessionStorage.getItem('kec');
-            if (kec) {
-                $("main").kec = JSON.parse(kec);
-                attachTime();
-            }
+            attachDate();
         }
     };
 
-    const attachTime = function() {
+    const attachDate = function() {
+        if (!global.kec_object) return;
         $$('nav.flex li a.group').forEach(el => {
             const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
             const a_id = el[keyrf].return.return.memoizedProps.id;
-            let date = $("main").kec[a_id] || "";
+            const date = global.kec_object[a_id] || "";
             if (!date) return;
-            date = new Date(date);
             if ($('.navdate', el)) {
                 $('.navdate', el).innerHTML = formatDate2(date);
             } else {
@@ -995,7 +993,7 @@ nav {
             setIfr();
             cleanlyHome();
             speakCompletely();
-            loadConvTime();
+            everChanging();
         }
     };
 
