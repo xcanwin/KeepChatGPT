@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           14.1
+// @version           14.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -434,8 +434,10 @@
         $('#nmenuid_it').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 sv("k_intercepttracking", false);
+                interceptTracking(false);
             } else {
                 sv("k_intercepttracking", true);
+                interceptTracking(true);
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
@@ -527,6 +529,7 @@
 
         if (gv("k_intercepttracking", false) === true) {
             $('#nmenuid_it .checkbutton').classList.add('checked');
+            interceptTracking(true);
         }
 
         if (gv("k_everchanging", false) === true) {
@@ -781,7 +784,7 @@ nav.flex div.overflow-y-auto a.hover\\:pr-4 {
                         argumentsList[1].body = JSON.stringify(post_body);
                     } else if (gv("k_intercepttracking", false) && fetchReqUrl.match('sentry\.io|sentry_key=|widget\.intercom\.io|featuregates\.org|/v1/initialize|api-iam\.intercom\.io|/messenger/|nexus-websocket-a\.intercom\.io|statsigapi\.net|/rgstr|/v1/sdk_exception')) {
                         fetchRsp = Promise.resolve({
-                            json: () => {return {}}
+                            //json: () => {return {}}
                         });
                         return fetchRsp;
                     }
@@ -809,6 +812,7 @@ nav.flex div.overflow-y-auto a.hover\\:pr-4 {
                 return fetchRsp;
             }
         });
+        navigator.sendBeacon = function(url, data) {};
     };
 
     const everChanging = function() {
@@ -876,13 +880,13 @@ nav.flex div.overflow-y-auto a.hover\\:pr-4 {
 
     const cloneChat = function(action) {
         if (action === true) {
-            $('body').addEventListener('click', cloneChat.listenClick);
+            window.addEventListener('click', cloneChat.listen_Click);
         } else {
-            $('body').removeEventListener('click', cloneChat.listenClick);
+            window.removeEventListener('click', cloneChat.listen_Click);
         }
     };
 
-    cloneChat.listenClick = function(event) {
+    cloneChat.listen_Click = function(event) {
         const avatarSelector = "main div.items-end>div:first-child";
         let avatarDiv;
         if (event.target.matches(avatarSelector)) {
@@ -965,6 +969,23 @@ nav.flex div.overflow-y-auto a.hover\\:pr-4 {
             if ($(continue_svg_selector)) {
                 findParent($(continue_svg_selector), `button`).click();
             }
+        }
+    };
+
+    const interceptTracking = function(action) {
+        if (action === true) {
+            window.addEventListener('beforescriptexecute', interceptTracking.listen_beforescriptexecute);
+        } else {
+            window.removeEventListener('beforescriptexecute', interceptTracking.listen_beforescriptexecute);
+        }
+    };
+
+    interceptTracking.listen_beforescriptexecute = function(event) {
+        const scriptElement = event.target;
+        if (scriptElement.src.match('widget\.intercom\.io')) {
+            event.preventDefault();
+            scriptElement.textContent = ``;
+            scriptElement.remove();
         }
     };
 
