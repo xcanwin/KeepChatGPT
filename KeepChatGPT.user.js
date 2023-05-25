@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           14.5
+// @version           14.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -809,9 +809,11 @@ nav.flex div.overflow-y-auto{
                             const b = JSON.parse(fetchRspBody).items;
                             if (!global.kec_object) global.kec_object = {};
                             b.forEach(el => {
-                                const date = new Date(el.update_time);
-                                if (global.kec_object[el.id] && global.kec_object[el.id] >= date) return;
-                                global.kec_object[el.id] = date;
+                                const update_time = new Date(el.update_time);
+                                if (global.kec_object[el.id] && global.kec_object[el.id].date && global.kec_object[el.id].update_time >= update_time) return;
+                                global.kec_object[el.id] = {};
+                                global.kec_object[el.id].title = el.title;
+                                global.kec_object[el.id].update_time = update_time;
                             });
                             setTimeout(function() {
                                 attachDate();
@@ -837,26 +839,29 @@ nav.flex div.overflow-y-auto{
         $$('nav.flex li a.group').forEach(el => {
             const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
             const a_id = el[keyrf].return.return.memoizedProps.id;
-            const date = global.kec_object[a_id] || "";
-            if (!date) return;
-            if ($('.navdate', el)) {
-                $('.navdate', el).innerHTML = formatDate2(date);
+            const title = global.kec_object[a_id].title || "";
+            const update_time = global.kec_object[a_id].update_time || "";
+            if (!title || !update_time) return;
+            if ($('.navtitle', el) && $('.navdate', el)) {
+                $('.navtitle', el).innerHTML = title;
+                $('.navdate', el).innerHTML = formatDate2(update_time);
             } else {
-                const cdiv = $(`.overflow-hidden`, el);
-                cdiv.style="max-height: unset;";
-                const ctitle = cdiv.childNodes[0];
-                if (ctitle.nodeType === Node.TEXT_NODE) {}
-                cdiv.innerHTML = `
-<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute;">
-    ${ctitle.textContent}
+                const cdiv_old = $(`.overflow-hidden`, el);
+                cdiv_old.style.display = "none";
+                const cdiv_new = document.createElement("div");
+                cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
+                cdiv_new.innerHTML = `
+<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute;" class="navtitle">
+    ${title}
 </div>
 <div style="right: 0;position: absolute;color: grey;font-size: 0.75rem;" class="navdate">
-    ${formatDate2(date)}
+    ${formatDate2(update_time)}
 </div>
 <br>
 <div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: gray; font-size: 0.75rem;">
 </div>
 `;
+                el.insertBefore(cdiv_new, el.childNodes[1]);
             }
         });
         $$(`nav.flex div.overflow-y-auto h3`).forEach(el => {
