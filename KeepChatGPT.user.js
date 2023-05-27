@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           14.7
+// @version           14.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -661,37 +661,37 @@
 .kmenu {
     background-color: #202123;
     color: #FFFFFF;
-    border: 1px solid #4D4D4F;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border: 0.06rem solid #4D4D4F;
+    border-radius: 0.625rem;
+    box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
     display: none;
-    min-width: 200px;
-    padding: 12px 0;
+    min-width: 12.5rem;
+    padding: 0.75rem 0;
     position: absolute;
     z-index: 1000;
 }
 .kmenu::before {
     content: "";
     position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: -30px;
-    right: 0px;
+    top: 0rem;
+    bottom: 0rem;
+    left: -6rem;
+    right: 0rem;
     pointer-events: auto;
     z-index: -1;
 }
 .kmenu::after {
     content: "";
     position: absolute;
-    top: 15px;
-    left: -20px;
+    top: 1rem;
+    left: -1.25rem;
     border-style: solid;
-    border-width: 10px 10px 10px 10px;
+    border-width: 0.625rem 0.625rem 0.625rem 0.625rem;
     border-color: transparent #202123 transparent transparent;
 }
 .kmenu li {
     display: block;
-    padding: 8px 24px;
+    padding: 0.5rem 1.5rem;
     text-align: left;
     user-select: none;
     display: flex;
