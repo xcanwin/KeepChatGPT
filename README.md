@@ -4,8 +4,8 @@
 
 <br>
 
-| [中文文档](https://github.com/xcanwin/KeepChatGPT/blob/main/README.md) | [English README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md) |
-| --- | --- |
+| [中文文档](https://github.com/xcanwin/KeepChatGPT/blob/main/README.md) | [English README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md) | [日本語 README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_JA.md)
+| --- | --- | --- |
 
 <br>
 
