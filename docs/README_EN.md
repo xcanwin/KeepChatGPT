@@ -1,6 +1,6 @@
 <br><br>
 
-<center align="center">
+<center><div align="center">
 
 <img src="/assets/KeepChatGPT.png" width="750"></img>
 
@@ -8,7 +8,7 @@
 
 <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_ES.md">Español</a>
 
-</center>
+</div></center>
 
 <br>
 
