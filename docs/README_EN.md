@@ -14,7 +14,7 @@
 
 ## Project Description
 
-​- If you like this script, please support my GitHub project [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) by giving it a ⭐️
+- If you like this script, please support my GitHub project [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) by giving it a ⭐️
 - This is an open source, free and efficient ```ChatGPT``` chat userscript extension, which can make your chat extremely smooth and get rid of various ```errors``` and ```warnings``` once and for all, save a full 10 extra steps, free your hands from constantly refreshing the page, and the authors are continuing to add more enhancements, including canceling audits, cloning conversations, purifying the page, displaying large screens, displaying full screens, etc.
 - There is no R & D funding, purely with love power, welcome to Donate. Thank you [appreciation cat food](#appreciation)
 
