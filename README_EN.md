@@ -2,7 +2,7 @@
 <center><p align="center"><img src="./assets/KeepChatGPT.png" width="750"></img></p></center>
 
 
-[中文文档](README.md) | [English README](README_EN.md)
+[中文文档](README.md) | [English README](README_EN.md) | [日本語 README](README_JA.md)
 
 
 ### ⚠️ SECURITY ALERT
