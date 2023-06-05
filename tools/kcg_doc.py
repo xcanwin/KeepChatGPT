@@ -21,7 +21,7 @@ def main():
 
     cdn_pre = 'https://raw.gitmirror.com/xcanwin/KeepChatGPT/main'
     version = re.findall(r'// @version\s+(\S*?)\n', kcg_code)[0]
-    # version = '1.0'
+    # version = '14.11.3'
 
     rm_new = re.sub(r'src="(.*?)"', r'src="{}\1?v={}"'.format(cdn_pre, version), rm)
     print(rm_new)
