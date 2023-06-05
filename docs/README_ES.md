@@ -1,18 +1,22 @@
-<center><p align="center"><img src="./assets/KeepChatGPT.png" width="750"></img></p></center>
+<br><br>
 
-[中文文档](README.md) | [Español README](README_EN.md)
+<center align="center">
 
-### ⚠️ ALERTA DE SEGURIDAD
+<img src="/assets/KeepChatGPT.png" width="750"></img>
 
-*   Por favor, asegúrese de utilizar el oficial [Repositorios de instalación](#install) mencionado en este artículo.
-*   Actualmente, hay extensiones no oficiales con el mismo nombre que se encuentran en el [Chrome Web Store](https://chrome.google.com/webstore/category/extensions).
+<br>
+
+<a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_ES.md">Español</a>
+
+</center>
+
+<br>
 
 ## Descripción del proyecto
 
-\- Si te gusta este script, por favor apoya mi proyecto GitHub [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) dándole un ⭐️
-
-*   Este es un código abierto, gratuito y eficiente `ChatGPT` Extensión de script de usuario de chat, que puede hacer que su chat sea extremadamente fluido y deshacerse de varios `errors` y `warnings` De una vez por todas, guarde 10 pasos adicionales completos, libere sus manos de actualizar constantemente la página, y los autores continúan agregando más mejoras, incluida la cancelación de auditorías, la clonación de conversaciones, la purificación de la página, la visualización de pantallas grandes, la visualización de pantallas completas, etc.
-*   No hay financiación de investigación y desarrollo, puramente con poder de amor, bienvenido a Donar. Gracias [Apreciación de la comida para gatos](#appreciation)
+- Si te gusta este script, por favor apoya mi proyecto GitHub [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) dándole un ⭐️
+- Este es un código abierto, gratuito y eficiente `ChatGPT` Extensión de script de usuario de chat, que puede hacer que su chat sea extremadamente fluido y deshacerse de varios `errors` y `warnings` De una vez por todas, guarde 10 pasos adicionales completos, libere sus manos de actualizar constantemente la página, y los autores continúan agregando más mejoras, incluida la cancelación de auditorías, la clonación de conversaciones, la purificación de la página, la visualización de pantallas grandes, la visualización de pantallas completas, etc.
+- No hay financiación de investigación y desarrollo, puramente con poder de amor, bienvenido a Donar. Gracias [Apreciación de la comida para gatos](#appreciation)
 
 ## Introducción a las características
 
@@ -38,10 +42,10 @@ Y al final de este artículo [Otras instrucciones](#other-instructions), el auto
 
 | Num | Después de usar `KeepChatGPT`, la siguiente escena nunca volverá a aparecer |
 | --- | --- |
-| 1 | <img src="./assets/error_network.png" width="750"></img> |
-| 2 | <img src="./assets/wrong_somthing.png" width="750"></img> |
-| 3 | <img src="./assets/wrong_audit.png" width="750"></img> |
-| 4 | <img src="./assets/error_conversation_not_found.png" width="750"></img> |
+| 1 | <img src="/assets/error_network.png" width="750"></img> |
+| 2 | <img src="/assets/wrong_somthing.png" width="750"></img> |
+| 3 | <img src="/assets/wrong_audit.png" width="750"></img> |
+| 4 | <img src="/assets/error_conversation_not_found.png" width="750"></img> |
 
 ## Comentarios de los usuarios
 
@@ -49,7 +53,7 @@ Y al final de este artículo [Otras instrucciones](#other-instructions), el auto
 *   Gracias por sus elogios
 *   Seguirá actualizándose para los malos
 
-<img src="./assets/user_feedback_4.png" width="750"></img> <img src="./assets/user_feedback_3.png" width="750"></img> <img src="./assets/user_feedback_2.png" width="750"></img> <img src="./assets/user_feedback_1.png" width="750"></img>
+<img src="/assets/user_feedback_4.png" width="750"></img> <img src="/assets/user_feedback_3.png" width="750"></img> <img src="/assets/user_feedback_2.png" width="750"></img> <img src="/assets/user_feedback_1.png" width="750"></img>
 
 ## Comparación
 
@@ -75,11 +79,11 @@ Y al final de este artículo [Otras instrucciones](#other-instructions), el auto
 ## Mostrar
 
 *   Disfrute de la "Etiqueta de oro exclusiva" gratuita, que representa un cambio dramático en su experiencia de IA:
-*   <img src="./assets/index_light_en.png" width="750"></img>
+*   <img src="/assets/index_light_en.png" width="750"></img>
 *   Para los amigos a los que les gustan los tonos oscuros, puede pasar el cursor sobre la "Etiqueta dorada exclusiva" con el mouse y seleccionar "Tema" para cambiarla a "Etiqueta azul exclusiva":
-*   <img src="./assets/index_dark.png" width="750"></img>
+*   <img src="/assets/index_dark.png" width="750"></img>
 *   Moblie:
-*   <img src="./assets/index_mobile.png" width="280"></img>
+*   <img src="/assets/index_mobile.png" width="280"></img>
 
 ## Explicación
 
@@ -209,7 +213,7 @@ Si se produce el siguiente mensaje de error, consulte la solución oficial: [Có
 
 | Desde | Gracias |
 | --- | --- |
-| Mi gato | <img src="./assets/appreciate_mycat.jpg" width="300"></img> |
-| Buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin) |
-| Afdian<br>(Soporte wechat y alipay) | [<img src="./assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan) |
-| Wechat<br>(A veces no funciona) | <img src="./assets/appreciate_wechat.png" width="300"></img> |
+| Mi gato | <img src="/assets/appreciate_mycat.jpg" width="300"></img> |
+| Buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin) |
+| Afdian<br>(Soporte wechat y alipay) | [<img src="/assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan) |
+| Wechat<br>(A veces no funciona) | <img src="/assets/appreciate_wechat.png" width="300"></img> |

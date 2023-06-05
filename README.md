@@ -1,11 +1,14 @@
 <br><br>
 
-<center><p align="center"><img src="./assets/KeepChatGPT.png" width="750"></img></p></center>
+<center align="center">
+
+<img src="/assets/KeepChatGPT.png" width="750"></img>
 
 <br>
 
-| [中文文档](https://github.com/xcanwin/KeepChatGPT/blob/main/README.md) | [English README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md) |
-| --- | --- |
+<a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_ES.md">Español</a>
+
+</center>
 
 <br>
 
@@ -19,19 +22,19 @@
 
 - PC端，亮色主题，享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
 
-  <img src="./assets/index_light.png" width="750"></img>
+  <img src="/assets/index_light.png" width="750"></img>
 
 - PC端，暗色主题+展示大屏：
 
-  <img src="./assets/index_dark.png" width="750"></img>
+  <img src="/assets/index_dark.png" width="750"></img>
 
 - PC端，暗色主题+展示全屏：
 
-  <img src="./assets/index_dark_full.png" width="750"></img>
+  <img src="/assets/index_dark_full.png" width="750"></img>
 
 - 移动端：
 
-  <img src="./assets/index_mobile.png" width="220"></img>
+  <img src="/assets/index_mobile.png" width="220"></img>
 
 ## 功能简介
 
@@ -58,10 +61,10 @@
 
 | 序号 | 使用```KeepChatGPT```插件以后再也不会出现以下场面 |
 | --- | --- |
-| 1 | <img src="./assets/error_network.png" width="750"></img> |
-| 2 | <img src="./assets/wrong_somthing.png" width="750"></img> |
-| 3 | <img src="./assets/error_conversation_not_found.png" width="750"></img> |
-| 4 | <img src="./assets/wrong_audit.png" width="750"></img> |
+| 1 | <img src="/assets/error_network.png" width="750"></img> |
+| 2 | <img src="/assets/wrong_somthing.png" width="750"></img> |
+| 3 | <img src="/assets/error_conversation_not_found.png" width="750"></img> |
+| 4 | <img src="/assets/wrong_audit.png" width="750"></img> |
 
 ## 用户反馈
 
@@ -69,10 +72,10 @@
 - 对于好的谢谢大家点赞
 - 对于坏的会持续更新
 
-<img src="./assets/user_feedback_4.png" width="750"></img>
-<img src="./assets/user_feedback_3.png" width="750"></img>
-<img src="./assets/user_feedback_2.png" width="750"></img>
-<img src="./assets/user_feedback_1.png" width="750"></img>
+<img src="/assets/user_feedback_4.png" width="750"></img>
+<img src="/assets/user_feedback_3.png" width="750"></img>
+<img src="/assets/user_feedback_2.png" width="750"></img>
+<img src="/assets/user_feedback_1.png" width="750"></img>
 
 ## 对比
 
@@ -273,7 +276,7 @@
 
 | From | Thanks |
 | --- | --- |
-| 我的猫 | <img src="./assets/appreciate_mycat.jpg" width="300"></img> |
-| buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
-| 爱发电<br>(支持微信、支付宝) | [<img src="./assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
-| 微信<br>(偶尔失效) | <img src="./assets/appreciate_wechat.png" width="300"></img> |
+| 我的猫 | <img src="/assets/appreciate_mycat.jpg" width="300"></img> |
+| buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
+| 爱发电<br>(支持微信、支付宝) | [<img src="/assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
+| 微信<br>(偶尔失效) | <img src="/assets/appreciate_wechat.png" width="300"></img> |
