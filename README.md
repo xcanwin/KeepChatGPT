@@ -6,7 +6,7 @@
 
 <br>
 
-<a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README_ES.md">Español</a>
+<a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_ES.md">Español</a>
 
 </div></center>
 
