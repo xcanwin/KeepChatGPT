@@ -71,10 +71,10 @@ def format_json(lang):
     langStr += '}'
     return langStr
 
-def save(langStr):
+def save(data, outfile):
     if not os.path.exists('test'):
         os.mkdir('test')
-    open('test/lang.txt', 'wb').write(langStr.encode())
+    open(outfile, 'wb').write(data.encode())
 
 def main():
     lang = '''
@@ -174,6 +174,6 @@ zh-TW: 讚賞鼓勵
 
     langStr = format_json(lang)
     print(langStr)
-    save(langStr)
+    save(langStr, 'test/lang.txt')
 
 main()
