@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           14.9
+// @version           14.10
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -158,21 +158,19 @@
         return (new Date(d)).toLocaleString();
     };
 
-    const formatDate2 = function(datetime) {
-        const Y = datetime.getFullYear();
-        const M = (datetime.getMonth() + 1).toString().padStart(2, '0');
-        const D = datetime.getDate().toString().padStart(2, '0');
-        const h = datetime.getHours().toString().padStart(2, '0');
-        const m = datetime.getMinutes().toString().padStart(2, '0');
+    const formatDate2 = function(dt) {
+        const [Y, M, D, h, m, s] = [dt.getFullYear(), dt.getMonth() + 1, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds()].map(el => el.toString().padStart(2, '0'));
+        const dtTmp = dt.toLocaleDateString();
         const currentDate = new Date();
+        const currentDateTmp = currentDate.toLocaleDateString();
         let formatted_date;
-        if (currentDate.toISOString().split('T')[0] === (datetime).toISOString().split('T')[0]) {
+        if (dtTmp === currentDateTmp) {
             formatted_date = `${h}:${m}`;
-        } else if (Math.floor(Math.abs(datetime - currentDate) / (24 * 60 * 60 * 1000)) < 6) {
+        } else if (Math.floor(Math.abs((new Date(dtTmp)) - (new Date(currentDateTmp))) / (24 * 60 * 60 * 1000)) < 7) {
             const weekday = language.slice(0, 2) === "zh" ? ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            formatted_date = weekday[datetime.getDay()];
+            formatted_date = weekday[dt.getDay()];
         } else {
-            formatted_date = `${M}-${D}`;
+            formatted_date = `${M}/${D}`;
         }
         return formatted_date;
     }
