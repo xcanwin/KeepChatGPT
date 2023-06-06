@@ -14,9 +14,9 @@
 
 ## Descripción del proyecto
 
-- Si te gusta este script, por favor apoya mi proyecto GitHub [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) dándole un ⭐️
-- Este es un código abierto, gratuito y eficiente `ChatGPT` Extensión de script de usuario de chat, que puede hacer que su chat sea extremadamente fluido y deshacerse de varios `errors` y `warnings` De una vez por todas, guarde 10 pasos adicionales completos, libere sus manos de actualizar constantemente la página, y los autores continúan agregando más mejoras, incluida la cancelación de auditorías, la clonación de conversaciones, la purificación de la página, la visualización de pantallas grandes, la visualización de pantallas completas, etc.
-- No hay financiación de investigación y desarrollo, puramente con poder de amor, bienvenido a Donar. Gracias [Apreciación de la comida para gatos](#appreciation)
+- Si te gusta este script, por favor apoya mi proyecto en GitHub KeepChatGPT dándole una ⭐️.
+- Este es un código abierto, gratuito y eficiente script de extensión de usuario para ChatGPT, que puede hacer que tus chats sean extremadamente fluidos y eliminar de una vez por todas varios errores y advertencias. Ahorrarás 10 pasos adicionales completos y te liberarás de la constante necesidad de actualizar la página. Los autores continúan añadiendo más mejoras, incluyendo la cancelación de auditorías, la clonación de conversaciones, la purificación de la página, la visualización en pantallas grandes, la visualización a pantalla completa, entre otras.
+- No hay financiación para la investigación y el desarrollo, esto se realiza puramente con el poder del amor. ¡Eres bienvenido/a a hacer una donación! Gracias por tu apoyo Patrocinadores.
 
 ## Introducción a las características
 
@@ -94,12 +94,12 @@ Y al final de este artículo [Otras instrucciones](#other-instructions), el auto
 
 ## Uso
 
-Los navegadores preferidos son `Chrome`, `Firefox`, `Edge`, y otros navegadores que sean compatibles con estos tres navegadores;
+Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores compatibles con estos tres.
 
-1.  Instalar `Tampermonkey` extensión del navegador desde [Sitio web de Tampermonkey](https://www.tampermonkey.net/).
-2.  Instalar `KeepChatGPT`, puede seleccionar un repositorio de [Repositorios de instalación](#install).
-3.  Abrir [ChatGPT](https://chat.OpenAI.com/chat) y disfrutar de la experiencia sin problemas.
-4.  Además, hay una forma más inteligente, que es preguntar a ChatGPT: `How to install the Tampermonkey extension? How to install the userscript from Greasy Fork?`
+1. Instala la extensión del navegador `Tampermonkey` desde el sitio web de [Tampermonkey](https://www.tampermonkey.net/).
+2. Instala `KeepChatGPT` seleccionando uno de los repositorios de [Instalación de repositorios](#install).
+3. Abre [ChatGPT](https://chat.OpenAI.com/chat) y disfruta de una experiencia sin problemas.
+4. Además, hay una forma más inteligente de hacerlo, que es preguntarle a ChatGPT: "¿Cómo instalar la extensión Tampermonkey? ¿Cómo instalar el script de usuario desde Greasy Fork?"
 
 ## Uso del sistema HarmonyOS
 
@@ -200,16 +200,16 @@ Si se produce el siguiente mensaje de error, consulte la solución oficial: [Có
 
 *   Los usuarios PLUS están condenados al igual que los usuarios comunes.
 
-## Apreciar
+## El patrocinador
 
-*   ¡Si lo encuentras útil, increíble, suave o agradable!
-*   Si desea que el pequeño gato del autor tenga mejor comida para gatos y comida enlatada.
-*   Si este proyecto te ha ayudado.
-*   Si este proyecto ha mejorado la eficiencia de su trabajo.
-*   Si desea que este proyecto se mantenga continuamente para evitar una nueva ronda de mensajes de error de OpenAI.
-*   Si desea que este proyecto continúe actualizando con más funciones.
-*   Crear no es fácil, mantener un proyecto requiere tiempo, energía y habilidades técnicas. El aprecio y el apoyo son bienvenidos.
-*   Puedes escribir tu DNI en la nota, gracias.
+* ¡Si lo encuentras útil, increíble, suave o agradable!
+* Si deseas que el pequeño gato del autor pueda tener una mejor comida para gatos y comida enlatada.
+* Si este proyecto te ha sido útil.
+* Si este proyecto ha mejorado la eficiencia de tu trabajo.
+* Si deseas que este proyecto se mantenga continuamente para evitar una nueva ronda de mensajes de error de OpenAI.
+* Si deseas que este proyecto continúe actualizándose con más funciones.
+* Crear no es fácil, mantener un proyecto requiere tiempo, energía y habilidades técnicas. Se agradece el aprecio y el apoyo.
+* Puedes dejar tu DNI en la nota, gracias.
 
 | Desde | Gracias |
 | --- | --- |
