@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           14.11
+// @version           15.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -50,7 +50,7 @@
 // @grant             GM_setValue
 // @grant             GM_getValue
 // @grant             unsafeWindow
-// @run-at            document-idle
+// @run-at            document-body
 // @noframes
 // ==/UserScript==
 
@@ -152,6 +152,117 @@
 
     const gv = function(key, value = "") {
         return GM_getValue(key, value);
+    };
+
+    class IndexedDB {
+        constructor(dbName, storeName) {
+            this.dbName = dbName;
+            this.storeName = storeName;
+        }
+
+        async open() {
+            return new Promise((resolve, reject) => {
+                let openRequest = indexedDB.open(this.dbName, 1);
+
+                openRequest.onupgradeneeded = function(e) {
+                    let db = e.target.result;
+                    console.log(db.objectStoreNames,this.storeName);
+                    if (!db.objectStoreNames.contains(this.storeName)) {
+                        let objectStore = db.createObjectStore(this.storeName, {keyPath: 'id'});
+                        objectStore.createIndex('name', 'name', {unique: false});
+                    }
+                }.bind(this);
+
+                openRequest.onsuccess = function(e) {
+                    resolve(e.target.result);
+                };
+
+                openRequest.onerror = function(e) {
+                    reject('Error opening db');
+                };
+            });
+        }
+
+        async operate(operation, item) {
+            let db = await this.open();
+            return new Promise((resolve, reject) => {
+                let tx = db.transaction(this.storeName, 'readwrite');
+                let store = tx.objectStore(this.storeName);
+                let request;
+
+                switch(operation) {
+                    case 'add':
+                        request = store.add(item);
+                        break;
+                    case 'put':
+                        request = store.put(item);
+                        break;
+                    case 'delete':
+                        request = store.delete(item.id);
+                        break;
+                    default:
+                        db.close();
+                        reject('Invalid operation');
+                        return;
+                }
+
+                request.onsuccess = function() {
+                    resolve(request.result);
+                };
+
+                request.onerror = function() {
+                    reject('Error', request.error);
+                };
+
+                tx.oncomplete = function() {
+                    db.close();
+                };
+            });
+        }
+
+        async operate_get(id) {
+            let db = await this.open();
+            return new Promise((resolve, reject) => {
+                let tx = db.transaction(this.storeName, 'readonly');
+                let store = tx.objectStore(this.storeName);
+                let request = store.get(id);
+
+                request.onsuccess = function() {
+                    resolve(request.result);
+                };
+
+                request.onerror = function() {
+                    reject('Error', request.error);
+                };
+
+                tx.oncomplete = function() {
+                    db.close();
+                };
+            });
+        }
+
+        async store() {
+            let db = await this.open();
+            let tx = db.transaction(this.storeName, 'readonly');
+            let store = tx.objectStore(this.storeName);
+            return store;
+        }
+
+        async get(id) {
+            return await this.operate_get(id);
+        }
+
+        async add(item) {
+            return await this.operate('add', item);
+        }
+
+        async put(item) {
+            return await this.operate('put', item);
+        }
+
+        async delete(item) {
+            return await this.operate('delete', item);
+        }
     };
 
     const formatDate = function(d) {
@@ -767,7 +878,7 @@ nav {
 nav.flex div.overflow-y-auto a.hover\\:pr-4 {
     padding-right: unset;
 }
-nav.flex div.overflow-y-auto{
+nav.flex div.overflow-y-auto {
     scrollbar-width: thin;
 }
 
@@ -801,19 +912,22 @@ nav.flex div.overflow-y-auto{
                 fetchRsp = target.apply(thisArg, argumentsList);
                 fetchRsp.then(response => {
                     let clonedResponse = response.clone();
-                    clonedResponse.text().then(fetchRspBody => {
+                    clonedResponse.text().then(async fetchRspBody => {
                         const fetchRspHeaders = clonedResponse.headers;
-                        if (gv("k_everchanging", false) && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
+                        if (fetchReqUrl.match('/api/auth/session(\\?|$)') && !global.st_ec) {
+                            const email = JSON.parse(fetchRspBody).user.email;
+                            global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
+                            cacheEC();
+                        } else if (gv("k_everchanging", false) && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                             const b = JSON.parse(fetchRspBody).items;
-                            if (!global.kec_object) global.kec_object = {};
-                            b.forEach(el => {
+                            b.forEach(async el => {
                                 const update_time = new Date(el.update_time);
-                                if (global.kec_object[el.id] && global.kec_object[el.id].date && global.kec_object[el.id].update_time >= update_time) return;
-                                global.kec_object[el.id] = {};
-                                global.kec_object[el.id].title = el.title;
-                                global.kec_object[el.id].update_time = update_time;
+                                const ec_tmp = await global.st_ec.get(el.id) || {};
+                                await global.st_ec.put({id: el.id, title: el.title, update_time: update_time, last: ec_tmp.last});
+
                             });
                             setTimeout(function() {
+                                cacheEC();
                                 attachDate();
                             }, 300);
                         }
@@ -827,23 +941,29 @@ nav.flex div.overflow-y-auto{
     };
 
     const everChanging = function() {
-        if (!$('.navdate')) {
-            attachDate();
+        if (!global.everChangingOnce) {
+            global.everChangingOnce = 1;
+            GM_addStyle(`
+nav.flex div.overflow-y-auto h3 {
+    display: none;
+}
+`);
         }
+        attachDate();
     };
 
-    const attachDate = function() {
+    const attachDate = async function() {
         if (!global.kec_object) return;
         $$('nav.flex li a.group').forEach(el => {
             const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
             const a_id = el[keyrf].return.return.memoizedProps.id;
-            const title = global.kec_object[a_id].title || "";
-            const update_time = global.kec_object[a_id].update_time || "";
+            const kec_obj_el = global.kec_object[a_id];
+            const title = kec_obj_el && kec_obj_el.title || "";
+            const update_time = kec_obj_el && kec_obj_el.update_time || "";
+            const last = kec_obj_el && kec_obj_el.last || "";
+
             if (!title || !update_time) return;
-            if ($('.navtitle', el) && $('.navdate', el)) {
-                $('.navtitle', el).innerHTML = title;
-                $('.navdate', el).innerHTML = formatDate2(update_time);
-            } else {
+            if (!$('.navtitle', el) || !$('.navdate', el) || !$('.navlast', el)) {
                 const cdiv_old = $(`.overflow-hidden`, el);
                 cdiv_old.style.display = "none";
                 const cdiv_new = document.createElement("div");
@@ -852,19 +972,22 @@ nav.flex div.overflow-y-auto{
 <div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute;" class="navtitle">
     ${title}
 </div>
-<div style="right: 0;position: absolute;color: grey;font-size: 0.75rem;" class="navdate">
+<div style="right: 0;position: absolute;color: grey;font-size: 0.71rem;" class="navdate">
     ${formatDate2(update_time)}
 </div>
 <br>
-<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: gray; font-size: 0.75rem;">
+<div style="max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: gray; font-size: 0.75rem;" class="navlast">
+    ${last}
 </div>
 `;
                 el.insertBefore(cdiv_new, el.childNodes[1]);
+            } else if ($('.navtitle', el).innerHTML !== title || $('.navdate', el).innerHTML !== formatDate2(update_time) || $('.navlast', el).innerHTML !== last) {
+                $('.navtitle', el).innerHTML = title;
+                $('.navdate', el).innerHTML = formatDate2(update_time);
+                $('.navlast', el).innerHTML = last;
             }
         });
-        $$(`nav.flex div.overflow-y-auto h3`).forEach(el => {
-            el.remove();
-        });
+
         const sidebar_chat = $("nav.flex div.overflow-y-auto");
         if (sidebar_chat) {
             if (sidebar_chat.scrollHeight > sidebar_chat.clientHeight) {
@@ -873,6 +996,48 @@ nav.flex div.overflow-y-auto{
                 sidebar_chat.classList.remove("-mr-2");
             }
         }
+
+        const crt_con_a = $('nav.flex li a.group.bg-gray-800');
+        let crt_con_id = "";
+        if (crt_con_a) {
+            const crt_con_a_keyrf = Object.keys(crt_con_a).find(key => key.startsWith("__reactFiber"));
+            crt_con_id = crt_con_a[crt_con_a_keyrf].return.return.memoizedProps.id;
+        }
+        const m = location.href.match('/c/(.*?)(\\?|$)');
+        const crt_con_id2 = m && m[1];
+        let crt_con_last = "";
+        const crt_con_speak = $$("main div.text-base .markdown");
+        const crt_con_speak_last = crt_con_speak && crt_con_speak[crt_con_speak.length - 1];
+        if (crt_con_id && crt_con_id2 && crt_con_id === crt_con_id2 && crt_con_speak_last) {
+            crt_con_last = [...$$("main div.text-base .markdown")].pop().innerText.trim().replace(/[\r\n]/g, ``).substr(0, 100);
+        }
+        if (crt_con_id && global.kec_object[crt_con_id] && crt_con_last && global.kec_object[crt_con_id].last !== crt_con_last) {
+            const crt_st_ec = await global.st_ec.get(crt_con_id);
+            await global.st_ec.put({id: crt_con_id, title: crt_st_ec.title, update_time: crt_st_ec.update_time, last: crt_con_last});
+            global.kec_object[crt_con_id].last = crt_con_last;
+        }
+    };
+
+    const cacheEC = async function() {
+        if (!global.kec_object) global.kec_object = {};
+        let store = await global.st_ec.store();
+        let request = store.openCursor();
+        request.onsuccess = function(e) {
+            let cursor = e.target.result;
+            if (cursor) {
+                const id = cursor.value.id || "";
+                const title = cursor.value.title || "";
+                const update_time = cursor.value.update_time || "";
+                const last = cursor.value.last || "";
+                if (!global.kec_object[id]) {
+                    global.kec_object[id] = {};
+                }
+                global.kec_object[id].title = title;
+                global.kec_object[id].update_time = update_time;
+                global.kec_object[id].last = last;
+                cursor.continue();
+            }
+        };
     };
 
     const verInt = function(vs) {
