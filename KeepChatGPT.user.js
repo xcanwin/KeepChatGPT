@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           15.0
+// @version           15.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -563,11 +563,11 @@
         $('#nmenuid_ec').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 sv("k_everchanging", false);
+                location.reload();
             } else {
                 sv("k_everchanging", true);
             }
             $('.checkbutton', this).classList.toggle('checked');
-            location.reload();
         };
 
         $('#nmenuid_cu').onclick = function() {
@@ -918,7 +918,7 @@ nav.flex div.overflow-y-auto {
                             const email = JSON.parse(fetchRspBody).user.email;
                             global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
                             cacheEC();
-                        } else if (gv("k_everchanging", false) && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
+                        } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                             const b = JSON.parse(fetchRspBody).items;
                             b.forEach(async el => {
                                 const update_time = new Date(el.update_time);
@@ -941,15 +941,13 @@ nav.flex div.overflow-y-auto {
     };
 
     const everChanging = function() {
-        if (!global.everChangingOnce) {
-            global.everChangingOnce = 1;
-            GM_addStyle(`
-nav.flex div.overflow-y-auto h3 {
-    display: none;
-}
-`);
+        if (gv("k_everchanging", false) === true) {
+            if (!global.everChangingOnce) {
+                global.everChangingOnce = 1;
+                GM_addStyle(`nav.flex div.overflow-y-auto h3 {display: none;}`);
+            }
+            attachDate();
         }
-        attachDate();
     };
 
     const attachDate = async function() {
