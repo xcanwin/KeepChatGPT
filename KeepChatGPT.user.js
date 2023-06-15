@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           15.6
+// @version           15.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1023,7 +1023,7 @@ nav.flex div.overflow-y-auto {
             const crt_con_a_keyrf2 = Object.keys(crt_con_speak_last).find(key => key.startsWith("__reactFiber"));
             crt_con_model = crt_con_speak_last[crt_con_a_keyrf2].return.return.memoizedProps.currentModelId;
         }
-        if (crt_con_id && global.kec_object[crt_con_id] && crt_con_last && global.kec_object[crt_con_id].last !== crt_con_last) {
+        if (crt_con_id && global.kec_object[crt_con_id] && ((crt_con_last && global.kec_object[crt_con_id].last !== crt_con_last) || (crt_con_model && global.kec_object[crt_con_id].model !== crt_con_model))) {
             global.kec_object[crt_con_id].last = crt_con_last;
             global.kec_object[crt_con_id].model = crt_con_model;
             const crt_st_ec = await global.st_ec.get(crt_con_id);
