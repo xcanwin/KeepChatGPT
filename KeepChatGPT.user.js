@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           15.2
+// @version           15.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -923,8 +923,7 @@ nav.flex div.overflow-y-auto {
                             b.forEach(async el => {
                                 const update_time = new Date(el.update_time);
                                 const ec_tmp = await global.st_ec.get(el.id) || {};
-                                await global.st_ec.put({id: el.id, title: el.title, update_time: update_time, last: ec_tmp.last});
-
+                                await global.st_ec.put({id: el.id, title: el.title, update_time: update_time, last: ec_tmp.last, model: ec_tmp.model});
                             });
                             setTimeout(function() {
                                 cacheEC();
@@ -959,6 +958,7 @@ nav.flex div.overflow-y-auto {
             const title = kec_obj_el && kec_obj_el.title || "";
             const update_time = kec_obj_el && kec_obj_el.update_time || "";
             const last = kec_obj_el && kec_obj_el.last || "";
+            const model = kec_obj_el && kec_obj_el.model || "";
 
             if (!title || !update_time) return;
             if (!$('.navtitle', el) || !$('.navdate', el) || !$('.navlast', el)) {
@@ -984,6 +984,10 @@ nav.flex div.overflow-y-auto {
                 $('.navdate', el).innerHTML = formatDate2(update_time);
                 $('.navlast', el).innerHTML = last;
             }
+            if (model.match('gpt-4')) {
+                el.style.color = `fuchsia`;
+                $('.navlast', el).style.color = `#c86ac8`;
+            }
         });
 
         const sidebar_chat = $("nav.flex div.overflow-y-auto");
@@ -1004,15 +1008,19 @@ nav.flex div.overflow-y-auto {
         const m = location.href.match('/c/(.*?)(\\?|$)');
         const crt_con_id2 = m && m[1];
         let crt_con_last = "";
-        const crt_con_speak = $$("main div.text-base .markdown");
+        let crt_con_model = "";
+        const crt_con_speak = $$("main .group");
         const crt_con_speak_last = crt_con_speak && crt_con_speak[crt_con_speak.length - 1];
         if (crt_con_id && crt_con_id2 && crt_con_id === crt_con_id2 && crt_con_speak_last) {
-            crt_con_last = [...$$("main div.text-base .markdown")].pop().innerText.trim().replace(/[\r\n]/g, ``).substr(0, 100);
+            crt_con_last = $("div.text-base .markdown", crt_con_speak_last).innerText.trim().replace(/[\r\n]/g, ``).substr(0, 100);
+            const crt_con_a_keyrf2 = Object.keys(crt_con_speak_last).find(key => key.startsWith("__reactFiber"));
+            crt_con_model = crt_con_speak_last[crt_con_a_keyrf2].return.return.memoizedProps.currentModelId;
         }
         if (crt_con_id && global.kec_object[crt_con_id] && crt_con_last && global.kec_object[crt_con_id].last !== crt_con_last) {
             global.kec_object[crt_con_id].last = crt_con_last;
+            global.kec_object[crt_con_id].model = crt_con_model;
             const crt_st_ec = await global.st_ec.get(crt_con_id);
-            await global.st_ec.put({id: crt_con_id, title: crt_st_ec.title, update_time: crt_st_ec.update_time, last: crt_con_last});
+            await global.st_ec.put({id: crt_con_id, title: crt_st_ec.title, update_time: crt_st_ec.update_time, last: crt_con_last, model: crt_con_model});
             $('.navlast', crt_con_a).innerHTML = crt_con_last;
         }
     };
@@ -1028,12 +1036,14 @@ nav.flex div.overflow-y-auto {
                 const title = cursor.value.title || "";
                 const update_time = cursor.value.update_time || "";
                 const last = cursor.value.last || "";
+                const model = cursor.value.model || "";
                 if (!global.kec_object[id]) {
                     global.kec_object[id] = {};
                 }
                 global.kec_object[id].title = title;
                 global.kec_object[id].update_time = update_time;
                 global.kec_object[id].last = last;
+                global.kec_object[id].model = model;
                 cursor.continue();
             }
         };
