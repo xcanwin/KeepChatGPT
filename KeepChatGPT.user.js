@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           15.8
+// @version           15.9
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -890,8 +890,8 @@ nav.flex div.overflow-y-auto {
 }
 .gptm {
     position: absolute;
-    top: 1.2rem;
-    left: 1rem;
+    top: 1.15rem;
+    left: 0.95rem;
     font-size: 0.7rem;
     font-weight: bold;
     color: white;
@@ -1004,7 +1004,7 @@ nav.flex div.overflow-y-auto {
                 $('svg:first-child', el).setAttribute("fill", `#FF4CFF`);
                 const ndiv = document.createElement("div");
                 ndiv.classList.add("gptm");
-                const gptab = {"gpt-4": "", "gpt-4-plugins": "P", "gpt-4-browsing": "b", "gpt-4-mobile": "m"};
+                const gptab = {"gpt-4": "", "gpt-4-plugins": "p", "gpt-4-browsing": "w", "gpt-4-mobile": "m"};
                 ndiv.innerHTML = gptab[model] || "";
                 el.insertBefore(ndiv, $('svg:first-child', el).nextSibling);
             }
