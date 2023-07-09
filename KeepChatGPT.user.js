@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           16.1
+// @version           16.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -574,6 +574,7 @@
                 location.reload();
             } else {
                 sv("k_everchanging", true);
+                $('nav.flex').classList.add('knav');
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
@@ -660,6 +661,7 @@
 
         if (gv("k_everchanging", false) === true) {
             $('#nmenuid_ec .checkbutton').classList.add('checked');
+            $('nav.flex').classList.add('knav');
         }
     };
 
@@ -897,7 +899,7 @@ nav.flex div.overflow-y-auto {
     font-weight: bold;
     color: white;
 }
-nav.flex li::after {
+.knav li::after {
     content: "";
     display: block;
     height: 1px;
