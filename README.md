@@ -128,7 +128,7 @@
 
 | 序号 | UserScript源 |
 | --- | --- |
-| 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
+| 1 | [GitHub](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
 | 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
 
 - 作者只提供插件的安装方式，官方来源只有以上两个，请认准官方来源。
