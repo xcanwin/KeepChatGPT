@@ -1,22 +1,22 @@
-<br><br>
 
-<center><div align="center">
+<center><p align="center"><img src="./assets/KeepChatGPT.png" width="750"></img></p></center>
 
-<img src="/assets/KeepChatGPT.png" width="750"></img>
 
-<br>
+[中文文档](README.md) | [English README](README_EN.md) | [日本語 README](README_JA.md)
 
-<a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_ES.md">Español</a>
 
-</div></center>
+### ⚠️ SECURITY ALERT
 
-<br>
+- Please ensure that you use the official [Installation Repositories](#install) mentioned in this article.
+- Currently, there are unofficial extensions with the same name found on the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions).
+
 
 ## Project Description
 
-- If you like this script, please support my GitHub project [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) by giving it a ⭐️
+​- If you like this script, please support my GitHub project [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT/) by giving it a ⭐️
+
 - This is an open source, free and efficient ```ChatGPT``` chat userscript extension, which can make your chat extremely smooth and get rid of various ```errors``` and ```warnings``` once and for all, save a full 10 extra steps, free your hands from constantly refreshing the page, and the authors are continuing to add more enhancements, including canceling audits, cloning conversations, purifying the page, displaying large screens, displaying full screens, etc.
-- There is no R & D funding, purely with love power, welcome to Donate. Thank you [sponsor cat food](#sponsor)
+- There is no R & D funding, purely with love power, welcome to Donate. Thank you [appreciation cat food](#appreciation)
 
 ## Features introduction
 
@@ -42,10 +42,10 @@ And at the bottom of this article [Other instructions](#other-instructions), the
 
 | Num | After using ```KeepChatGPT```, the following scene will never occur again |
 | --- | --- |
-| 1 | <img src="/assets/error_network.png" width="750"></img> |
-| 2 | <img src="/assets/wrong_somthing.png" width="750"></img> |
-| 3 | <img src="/assets/wrong_audit.png" width="750"></img> |
-| 4 | <img src="/assets/error_conversation_not_found.png" width="750"></img> |
+| 1 | <img src="./assets/error_network.png" width="750"></img> |
+| 2 | <img src="./assets/wrong_somthing.png" width="750"></img> |
+| 3 | <img src="./assets/wrong_audit.png" width="750"></img> |
+| 4 | <img src="./assets/error_conversation_not_found.png" width="750"></img> |
 
 ## Users' feedback
 
@@ -53,10 +53,10 @@ And at the bottom of this article [Other instructions](#other-instructions), the
 - Thank you for your praise
 - Will keep updating for bad ones
 
-<img src="/assets/user_feedback_4.png" width="750"></img>
-<img src="/assets/user_feedback_3.png" width="750"></img>
-<img src="/assets/user_feedback_2.png" width="750"></img>
-<img src="/assets/user_feedback_1.png" width="750"></img>
+<img src="./assets/user_feedback_4.png" width="750"></img>
+<img src="./assets/user_feedback_3.png" width="750"></img>
+<img src="./assets/user_feedback_2.png" width="750"></img>
+<img src="./assets/user_feedback_1.png" width="750"></img>
 
 ## Comparison
 
@@ -82,11 +82,11 @@ And at the bottom of this article [Other instructions](#other-instructions), the
 ## Show
 
 - Enjoy the free "Exclusive Gold Label," which represents a dramatic change in your AI experience:
-- <img src="/assets/index_light_en.png" width="750"></img>
+- <img src="./assets/index_light_en.png" width="750"></img>
 - For friends who like dark tones, you can hover over the "Exclusive Gold Label" with your mouse and select "Theme" to change it to "Exclusive Blue Label":
-- <img src="/assets/index_dark.png" width="750"></img>
+- <img src="./assets/index_dark.png" width="750"></img>
 - Moblie:
-- <img src="/assets/index_mobile.png" width="280"></img>
+- <img src="./assets/index_mobile.png" width="280"></img>
 
 ## Explanation
 
@@ -204,7 +204,7 @@ The preferred browsers are ```Chrome```, ```Firefox```, ```Edge```, and other br
 
 - PLUS users are doomed just like ordinary users.
 
-## Sponsor
+## Appreciate
 
 - If you find it useful, awesome, smooth, or nice!
 - If you wish the author's little cat to have better cat food and canned food.
@@ -217,7 +217,7 @@ The preferred browsers are ```Chrome```, ```Firefox```, ```Edge```, and other br
 
 | From | Thanks |
 | --- | --- |
-| My cat | <img src="/assets/appreciate_mycat.jpg" width="300"></img> |
-| Buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin) |
-| Afdian<br>(Support wechat and alipay) | [<img src="/assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan) |
-| Wechat<br>(Sometimes it doesn't work) | <img src="/assets/appreciate_wechat.png" width="300"></img> |
+| My cat | <img src="./assets/appreciate_mycat.jpg" width="300"></img> |
+| Buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin) |
+| Afdian<br>(Support wechat and alipay) | [<img src="./assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan) |
+| Wechat<br>(Sometimes it doesn't work) | <img src="./assets/appreciate_wechat.png" width="300"></img> |
