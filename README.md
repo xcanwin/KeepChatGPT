@@ -1,14 +1,11 @@
 <br><br>
 
-<center><div align="center">
-
-<img src="/assets/KeepChatGPT.png" width="750"></img>
+<center><p align="center"><img src="./assets/KeepChatGPT.png" width="750"></img></p></center>
 
 <br>
 
-<a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_ES.md">Español</a>
-
-</div></center>
+| [中文文档](https://github.com/xcanwin/KeepChatGPT/blob/main/README.md) | [English README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_EN.md) | [日本語 README](https://github.com/xcanwin/KeepChatGPT/blob/main/README_JA.md)
+| --- | --- | --- |
 
 <br>
 
@@ -22,19 +19,19 @@
 
 - PC端，亮色主题，享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
 
-  <img src="/assets/index_light.png" width="750"></img>
+  <img src="./assets/index_light.png" width="750"></img>
 
 - PC端，暗色主题+展示大屏：
 
-  <img src="/assets/index_dark.png" width="750"></img>
+  <img src="./assets/index_dark.png" width="750"></img>
 
 - PC端，暗色主题+展示全屏：
 
-  <img src="/assets/index_dark_full.png" width="750"></img>
+  <img src="./assets/index_dark_full.png" width="750"></img>
 
 - 移动端：
 
-  <img src="/assets/index_mobile.png" width="220"></img>
+  <img src="./assets/index_mobile.png" width="220"></img>
 
 ## 功能简介
 
@@ -51,8 +48,8 @@
 11. 支持自由地[调整时间间隔](#关于-调整间隔-功能)
 12. 支持[便捷地克隆并且无损地编辑指定对话](#关于-克隆对话-功能)
 13. 支持[净化页面](#关于-净化页面-功能)
-14. 支持[展示大屏](#关于-展示大屏-功能)
-15. 支持[展示全屏](#关于-展示全屏-功能)
+14. 支持展示大屏
+15. 支持展示全屏
 16. 支持[言无不尽](#关于-言无不尽-功能)
 17. 支持[拦截跟踪](#关于-拦截跟踪-功能)
 18. 支持[日新月异](#关于-日新月异-功能)
@@ -61,10 +58,10 @@
 
 | 序号 | 使用```KeepChatGPT```插件以后再也不会出现以下场面 |
 | --- | --- |
-| 1 | <img src="/assets/error_network.png" width="750"></img> |
-| 2 | <img src="/assets/wrong_somthing.png" width="750"></img> |
-| 3 | <img src="/assets/error_conversation_not_found.png" width="750"></img> |
-| 4 | <img src="/assets/wrong_audit.png" width="750"></img> |
+| 1 | <img src="./assets/error_network.png" width="750"></img> |
+| 2 | <img src="./assets/wrong_somthing.png" width="750"></img> |
+| 3 | <img src="./assets/error_conversation_not_found.png" width="750"></img> |
+| 4 | <img src="./assets/wrong_audit.png" width="750"></img> |
 
 ## 用户反馈
 
@@ -72,10 +69,10 @@
 - 对于好的谢谢大家点赞
 - 对于坏的会持续更新
 
-<img src="/assets/user_feedback_4.png" width="750"></img>
-<img src="/assets/user_feedback_3.png" width="750"></img>
-<img src="/assets/user_feedback_2.png" width="750"></img>
-<img src="/assets/user_feedback_1.png" width="750"></img>
+<img src="./assets/user_feedback_4.png" width="750"></img>
+<img src="./assets/user_feedback_3.png" width="750"></img>
+<img src="./assets/user_feedback_2.png" width="750"></img>
+<img src="./assets/user_feedback_1.png" width="750"></img>
 
 ## 对比
 
@@ -131,7 +128,7 @@
 
 | 序号 | UserScript源 |
 | --- | --- |
-| 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
+| 1 | [GitHub](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
 | 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
 
 - 作者只提供插件的安装方式，官方来源只有以上两个，请认准官方来源。
@@ -206,18 +203,6 @@
 1. 对于普通用户，常常会看到ChatGPT首页```https://chat.openai.com/```堆积了满屏的无用的提示词。
 2. 勾选```净化页面```以后，可以让首页焕然一新，享受类似PLUS用户的金标，提升体验感。
 
-### 关于 展示大屏 功能
-
-1. 由于官方的聊天页面过于狭窄，导致屏幕大的用户，在阅读代码或者长篇内容时需要频繁地上下滚动鼠标。
-2. 勾选```展示大屏```以后，可以大幅减少鼠标滚动球的滚动，大部分对话可以一目了然，提升体验感。
-
-### 关于 展示全屏 功能
-
-1. 在用户需要专注地进行AI对话的时候，侧边栏并不是用户需要使用的。
-2. 勾选```展示全屏```以后，可以沉浸式体验GPT聊天，提升体验感。
-3. 取消```展示全屏```的方法：点击```Regenerate response```左边的```KEEP```按钮即可。
-4. 虽然官方最近推出了```Hide sidebar```功能，但是作者还是继续保留```展示全屏```功能，因为点击官方的```Hide sidebar```功能以后左上角会多出一个按钮，导致截图时遮挡了用户头像，显得不美观。
-
 ### 关于 言无不尽 功能
 
 1. 顾名思义，就是指一个人在发言时不要停下，尽情地表达，没有遗漏。
@@ -258,12 +243,7 @@
 
 1. 顾名思义，指随着大家每天都用chatgpt聊天学习，大家的技术和能力每天都在进步，提示词越来越丰富，答案越来越满意，聊天记录开始不舍得删除。
 2. 随着新建的聊天项目越来越多，用户也难以区分侧边栏的聊天项目。
-3. 勾选```日新月异```以后，侧边栏会出现```最后一条消息```、```日期```、```星期```、```模型高亮```等，帮助用户快速定位历史的优质的聊天项目。
-4. 关于```模型高亮```，```黑色```代表```GPT3.5```，```紫色```代表```GPT4```，```只有紫色```代表```默认的GPT4```模型，```m```代表```Mobile```模型，```w```代表```Web Browsing```模型，```p```代表```Plugins```模型。
-
-| 不勾选日新月异 | 勾选日新月异 |
-| --- | --- |
-| <img src="/assets/index_sidebar.png" width="200"></img> | <img src="/assets/index_sidebar_everchanging.png" width="200"></img> |
+3. 勾选```日新月异```以后，侧边栏会出现日期和时间，帮助用户快速定位历史的优质的聊天项目。
 
 ### 关于 其他错误 的原因和解决方案
 
@@ -293,7 +273,7 @@
 
 | From | Thanks |
 | --- | --- |
-| 我的猫 | <img src="/assets/appreciate_mycat.jpg" width="300"></img> |
-| buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
-| 爱发电<br>(支持微信、支付宝) | [<img src="/assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
-| 微信<br>(偶尔失效) | <img src="/assets/appreciate_wechat.png" width="300"></img> |
+| 我的猫 | <img src="./assets/appreciate_mycat.jpg" width="300"></img> |
+| buymeacoffee | [<img src="./assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
+| 爱发电<br>(支持微信、支付宝) | [<img src="./assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
+| 微信<br>(偶尔失效) | <img src="./assets/appreciate_wechat.png" width="300"></img> |

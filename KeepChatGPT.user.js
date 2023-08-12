@@ -940,31 +940,42 @@ nav.flex .transition-all {
                         return fetchRsp;
                     }
                 } catch (e) {}
-                fetchRsp = target.apply(thisArg, argumentsList);
-                fetchRsp.then(response => {
-                    let clonedResponse = response.clone();
-                    clonedResponse.text().then(async fetchRspBody => {
-                        const fetchRspHeaders = clonedResponse.headers;
-                        if (fetchReqUrl.match('/api/auth/session(\\?|$)') && !global.st_ec) {
-                            const email = JSON.parse(fetchRspBody).user.email;
-                            global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
-                            cacheEC();
-                        } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
-                            const b = JSON.parse(fetchRspBody).items;
-                            b.forEach(async el => {
-                                const update_time = new Date(el.update_time);
-                                const ec_tmp = await global.st_ec.get(el.id) || {};
-                                await global.st_ec.put({id: el.id, title: el.title, update_time: update_time, last: ec_tmp.last, model: ec_tmp.model});
-                            });
-                            setTimeout(function() {
+                let retryCount = 0;
+                const retry = async () => {
+                    fetchRsp = target.apply(thisArg, argumentsList);
+                    console.log('fetch', thisArg)
+                    const response =  await fetchRsp;
+                    if (fetchReqUrl.match('/backend-api/conversation$') && response.status === 429 && retryCount < 20) { // solve 429 status_code, retry 20 times
+                        retryCount++;
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // wait 1 second
+                        return retry()
+                    }
+                    fetchRsp.then(response => {
+                        let clonedResponse = response.clone();
+                        clonedResponse.text().then(async fetchRspBody => {
+                            const fetchRspHeaders = clonedResponse.headers;
+                            if (fetchReqUrl.match('/api/auth/session(\\?|$)') && !global.st_ec) {
+                                const email = JSON.parse(fetchRspBody).user.email;
+                                global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
                                 cacheEC();
-                                attachDate();
-                            }, 300);
-                        }
-                    });
-                    return clonedResponse;
-                }).catch(error => {});
-                return fetchRsp;
+                            } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
+                                const b = JSON.parse(fetchRspBody).items;
+                                b.forEach(async el => {
+                                    const update_time = new Date(el.update_time);
+                                    const ec_tmp = await global.st_ec.get(el.id) || {};
+                                    await global.st_ec.put({id: el.id, title: el.title, update_time: update_time, last: ec_tmp.last, model: ec_tmp.model});
+                                });
+                                setTimeout(function() {
+                                    cacheEC();
+                                    attachDate();
+                                }, 300);
+                            }
+                        });
+                        return clonedResponse;
+                    }).catch(error => {});
+                    return fetchRsp;
+                }
+                return retry();
             }
         });
         navigator.sendBeacon = function(url, data) {};
