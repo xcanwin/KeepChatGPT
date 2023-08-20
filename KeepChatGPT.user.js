@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           16.6
+// @version           17.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -66,6 +66,8 @@
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
     const symbol1_selector = 'nav.flex .transition-colors';
     const symbol2_selector = 'button.justify-center .sr-only';
+
+    const datasec_blocklist_default = "18888888888\nhttps://公司域名.com\n银行卡号\n([\\w-]+(\\.[\\w-]+)*)@163\.com\n";
 
     const getLang = function() {
         let lang = `
@@ -374,7 +376,7 @@
   <div class="flex items-end justify-center min-h-full p-4 sm:items-center sm:p-0 text-center">
     <div class="kdialogwin bg-white dark:bg-gray-900 rounded-lg sm:max-w-lg sm:p-6 text-left">
       <div class="flex items-center justify-between">
-        <div style="min-width: 15rem">
+        <div class="kwidth" style="min-width: 15rem">
           <div class="flex items-center justify-between">
             <h3 class="dark:text-gray-200 text-gray-900 text-lg">${title}</h3>
             <p class="kdialogclose" style="cursor: pointer; font-weight: bold; color: #aaa;">X</p>
@@ -397,6 +399,11 @@
             $(".kdialoginput", ndivalert).src = inputvalue;
             $(".kdialoginput", ndivalert).style = `max-height: 19rem; height: unset; display: block; margin: 0 auto;`;
             $(".kdialogwin", ndivalert).style = `max-width: 37.5rem;`;
+        } else if (inputtype === 'textarea') {
+            $(".kdialoginput", ndivalert).value = inputvalue;
+            $(".kdialoginput", ndivalert).style = `max-height: 19rem; height: 10rem; display: block; margin: 0 auto; width: 100%; white-space: pre;`;
+            $(".kdialogwin", ndivalert).style = `max-width: 100%;`;
+            $(".kdialogwin .kwidth", ndivalert).style = `min-width: 28rem;`;
         }else {
             $(".kdialoginput", ndivalert).value = inputvalue;
         }
@@ -419,6 +426,7 @@
         ndivmenu.innerHTML = `
 <ul>
     <li id=nmenuid_af>${tl("调整间隔")}</li>
+    <li id=nmenuid_ds>${tl("数据安全")}</li>
     <li id=nmenuid_cm>${tl("取消审计")}</li>
     <li id=nmenuid_cc>${tl("克隆对话")}</li>
     <li id=nmenuid_sc>${tl("言无不尽")}</li>
@@ -448,6 +456,19 @@
         $('#nmenuid_sc').appendChild(ncheckbox());
         $('#nmenuid_it').appendChild(ncheckbox());
         $('#nmenuid_ec').appendChild(ncheckbox());
+
+        $('#nmenuid_ds').onclick = function() {
+            toggleMenu('hide');
+            ndialog(`${tl("数据安全")}`, `${tl("本功能会将聊天输入框里的敏感信息进行脱敏和警告<br>请根据正则表达式语法编写敏感词汇")}`, `Save`, function(t) {
+                let datasecblocklist;
+                try {
+                    datasecblocklist = `${$(".kdialoginput", t).value}\n`.replace(/\r/g,`\n`).replace(/\n+/g, `\n`);
+                } catch (e) {
+                    datasecblocklist = gv("k_datasecblocklist", datasec_blocklist_default);
+                }
+                sv("k_datasecblocklist", datasecblocklist);
+            }, `textarea`, gv("k_datasecblocklist", datasec_blocklist_default));
+        };
 
         $('#nmenuid_sd').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
@@ -1209,6 +1230,30 @@ nav.flex .transition-all {
         }
     };
 
+    const dataSec = function() {
+        if (gv("k_datasecblocklist", datasec_blocklist_default)) {
+            $("form.stretch textarea").addEventListener('input', dataSec.listen_input);
+        } else {
+            $("form.stretch textarea").removeEventListener('input', dataSec.listen_input);
+        }
+    };
+
+    dataSec.listen_input = function(event) {
+        let ms = [];
+        gv("k_datasecblocklist", datasec_blocklist_default).split(`\n`).forEach(e => {
+            if (e) {
+                const m = $("form.stretch textarea").value.match(e);
+                if (m && m[0]) {
+                    $("form.stretch textarea").value = $("form.stretch textarea").value.replaceAll(m[0], ``);
+                    ms.push(m[0]);
+                }
+            }
+        });
+        if (ms.join(`\n`).trim()) {
+            ndialog(`${tl("警告")}`, `${tl("提示词里发现以下敏感信息，已自动化脱敏")}`, `谢谢提示`, function(t) {}, `textarea`, ms.join(`\n`));
+        }
+    };
+
     const interceptTracking = function(action) {
         if (action === true) {
             window.addEventListener('beforescriptexecute', interceptTracking.listen_beforescriptexecute);
@@ -1261,6 +1306,7 @@ nav.flex .transition-all {
             cleanlyHome();
             speakCompletely();
             everChanging();
+            dataSec();
         }
     };
 
