@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
-// @description       这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           17.0
+// @description       这是一款ChatGPT的畅聊、增强、数据安全插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异、数据安全等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁、安全。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
+// @version           17.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -40,7 +40,7 @@
 // @description:uk    Це плагін ChatGPT для безперебійного спілкування. Відкритий код та безкоштовний. Він не лише вирішує всі помилки без оновлення, але також надає багато передових функцій, таких як підтримка активності, скасування аудиту, клонування розмов, очищення головної сторінки, відображення на великому екрані, відображення в повноекранному режимі та багато іншого. Давайте зробимо наше AI-враження надзвичайно плавним, шовковистим, ефективним і лаконічним.
 // @description:ug    بۇ چۇشتۇرما ChatGPT ئەھۋالغا تەپسىلىتىرەش ئېلانى بولۇپ سانىلغەن. ئېچىلگەن تەڭشەك ۋە تەھرىر ەمەس. بۇلىڭىز تازىلانماي قالمايدىغان ھەممە بىلەن قوشۇمچە ئۆزىگە قاچاقلاش، تىزىملىك كۆپىيىپ بېرىش، سۆڭكەرتكەن بەتتە تىزىملىك چىقىرىش، چوڭ ئېكراندا كۆرسەتكۈچ، توپ كۆرسەتكۈچدە كۆرسىتىش، پۈتۈن ئېكراندا كۆرسىتىش قاتارلىق ئالىي-ئاستى ئىقتىدارلارنى بېرىدۇ. بىز قىلىمىز AI ئۆز تەجرىبىمىزنى ئاچچىق، سىلكىم، ياخشى ۋە توقۇتقۇچ بولۇشقا قۇشلاش.
 // @description:vi    Đây là một plugin ChatGPT cho việc trò chuyện liên tục. Mã nguồn mở và miễn phí. Không chỉ giải quyết tất cả các lỗi mà không cần làm mới, mà còn cung cấp nhiều tính năng nâng cao như duy trì hoạt động, hủy kiểm toán, sao chép cuộc trò chuyện, làm sạch trang chủ, hiển thị trên màn hình lớn, hiển thị toàn màn hình và nhiều hơn nữa. Hãy biến trải nghiệm AI của chúng ta trở nên mượt mà, nhẹ nhàng, hiệu quả và ngắn gọn.
-// @description:zh-CN 这是一个ChatGPT的畅聊与增强插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁。
+// @description:zh-CN 这是一款ChatGPT的畅聊、增强、数据安全插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异、数据安全等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁、安全。
 // @description:zh-TW 這是一個ChatGPT的暢聊與增強插件。開源免費。不僅能解決所有報錯不再刷新，還有保持活躍、取消審計、克隆對話、淨化首頁、展示大屏、展示全屏、言無不盡等多個高級功能。讓我們的AI體驗無比順暢、絲滑、高效、簡潔。
 // @icon              data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" stroke-width="2" fill="none" stroke="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
 // @license           GPL-2.0-only
@@ -371,7 +371,7 @@
         const ndivalert = document.createElement('div');
         ndivalert.setAttribute("class", "kdialog relative z-50");
         ndivalert.innerHTML = `
-<div class="fixed inset-0 bg-gray-500/90"></div>
+<div class="fixed inset-0 bg-gray-300/70 dark:bg-gray-600/70"></div>
 <div class="fixed inset-0 overflow-y-auto z-50" style="display: flex; justify-content: center; align-items: center;">
   <div class="flex items-end justify-center min-h-full p-4 sm:items-center sm:p-0 text-center">
     <div class="kdialogwin bg-white dark:bg-gray-900 rounded-lg sm:max-w-lg sm:p-6 text-left">
@@ -459,7 +459,7 @@
 
         $('#nmenuid_ds').onclick = function() {
             toggleMenu('hide');
-            ndialog(`${tl("数据安全")}`, `${tl("本功能会将聊天输入框里的敏感信息进行脱敏和警告<br>请根据正则表达式语法编写敏感词汇")}`, `Save`, function(t) {
+            ndialog(`${tl("数据安全")}`, `${tl("本功能会将聊天输入框里的敏感信息进行脱敏和警告<br>请根据正则表达式语法编写数据安全规则，不同的规则用换行间隔")}`, `Save`, function(t) {
                 let datasecblocklist;
                 try {
                     datasecblocklist = `${$(".kdialoginput", t).value}\n`.replace(/\r/g,`\n`).replace(/\n+/g, `\n`);
@@ -1250,7 +1250,7 @@ nav.flex .transition-all {
             }
         });
         if (ms.join(`\n`).trim()) {
-            ndialog(`${tl("警告")}`, `${tl("提示词里发现以下敏感信息，已自动化脱敏")}`, `谢谢提示`, function(t) {}, `textarea`, ms.join(`\n`));
+            ndialog(`${tl("警告")}`, `${tl("你输入的内容里存在以下敏感信息，已为你自动化脱敏")}`, `谢谢提示`, function(t) {}, `textarea`, ms.join(`\n`));
         }
     };
 
