@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款ChatGPT的畅聊、增强、数据安全插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异、数据安全等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁、安全。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           17.3
+// @version           17.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1172,12 +1172,11 @@ nav.flex .transition-all {
                 nSpan.textContent = `KEEP`;
                 $("main h1").appendChild(nSpan);
             }
-            if ($("main h2") && $("main h2").innerText === "Examples") {
-                $("main h2").parentElement.parentElement.remove();
+            if ($('form.stretch .grow .bottom-full')) {
+                $('form.stretch .grow .bottom-full').remove();
             }
-            const mainBottom = $("div>span", $("form.stretch").parentElement);
-            if (mainBottom && mainBottom.innerText.indexOf("produce inaccurate") > -1) {
-                mainBottom.remove();
+            if ($('main .underline') && $("main .underline").parentElement.innerText.match("produce inaccurate")) {
+                $("main .underline").parentElement.remove();
             }
             const utp_svg = $(`nav.flex path[d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"]`);
             if (utp_svg && findParent(utp_svg, `a`, 4)) {
