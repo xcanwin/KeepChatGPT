@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款ChatGPT的畅聊、增强、数据安全插件。开源免费。不仅能解决所有报错不再刷新，还有保持活跃、取消审计、克隆对话、净化首页、展示大屏、展示全屏、言无不尽、拦截跟踪、日新月异、数据安全等多个高级功能。让我们的AI体验无比顺畅、丝滑、高效、简洁、安全。解决的报错如下: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) Conversation not found. (4) This content may violate our content policy.
-// @version           17.5
+// @version           17.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -937,6 +937,10 @@ nav.flex div.overflow-y-auto {
 nav.flex .transition-all {
     position: unset;
 }
+
+.hide {
+    display: none;
+}
 `);
     };
 
@@ -1173,14 +1177,14 @@ nav.flex .transition-all {
                 $("main h1").appendChild(nSpan);
             }
             if ($('form.stretch .grow .bottom-full')) {
-                $('form.stretch .grow .bottom-full').remove();
+                $('form.stretch .grow .bottom-full').classList.add('hide');
             }
             if ($('main .underline') && $("main .underline").parentElement.innerText.match("produce inaccurate")) {
-                $("main .underline").parentElement.remove();
+                $("main .underline").parentElement.classList.add('hide');
             }
             const utp_svg = $(`nav.flex path[d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"]`);
             if (utp_svg && findParent(utp_svg, `a`, 4)) {
-                findParent(utp_svg, `a`, 4).remove();
+                findParent(utp_svg, `a`, 4).classList.add('hide');
             }
         }
     };
