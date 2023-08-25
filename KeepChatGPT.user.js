@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化首页、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           17.9
+// @version           17.10
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -554,7 +554,7 @@
             } else {
                 sv("k_largescreen", true);
             }
-            $("main").classList.toggle('largescreen');
+            $("#__next .overflow-hidden.w-full>div.overflow-hidden").classList.toggle('largescreen');
             $('.checkbutton', this).classList.toggle('checked');
         };
 
@@ -663,7 +663,7 @@
 
         if (gv("k_largescreen", false) === true) {
             $('#nmenuid_ls .checkbutton').classList.add('checked');
-            $("main").classList.toggle('largescreen');
+            $("#__next .overflow-hidden.w-full>div.overflow-hidden").classList.toggle('largescreen');
         }
 
         if (gv("k_fullscreen", false) === true) {
@@ -1209,7 +1209,7 @@ nav.flex .transition-all {
                         } else if ($('#kfull') && $('#kfull').style.display === "none") {
                             $('#kfull').style.display = '';
                         }
-                        $("#__next>.overflow-hidden.w-full>div.overflow-x-hidden").classList.add('fullscreen');
+                        $("#__next .overflow-hidden.w-full>div.overflow-x-hidden").classList.add('fullscreen');
                         clearInterval(nInterval3);
                     }
                 }, 300);
@@ -1218,8 +1218,8 @@ nav.flex .transition-all {
             if ($('#kfull') && $('#kfull').style.display === "") {
                 $('#kfull').style.display = 'none';
             }
-            if ($("#__next>.overflow-hidden.w-full>div.overflow-x-hidden")) {
-                $("#__next>.overflow-hidden.w-full>div.overflow-x-hidden").classList.remove('fullscreen');
+            if ($("#__next .overflow-hidden.w-full>div.overflow-x-hidden")) {
+                $("#__next .overflow-hidden.w-full>div.overflow-x-hidden").classList.remove('fullscreen');
             }
         }
     };
