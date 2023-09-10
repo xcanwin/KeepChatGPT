@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化首页、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           17.10
+// @version           17.11
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -844,7 +844,7 @@
 
 main div.items-end>div:first-child {
     user-select: none;
-    max-width: 30px;
+    max-width: 2.25rem !important;
     cursor: pointer;
 }
 
@@ -1045,7 +1045,7 @@ nav.flex .transition-all {
                 $('svg:first-child', el).setAttribute("fill", `#FF4CFF`);
                 const ndiv = document.createElement("div");
                 ndiv.classList.add("gptm");
-                const gptab = {"gpt-4": "", "gpt-4-plugins": "p", "gpt-4-browsing": "w", "gpt-4-mobile": "m", "gpt-4-code-interpreter": "c"};
+                const gptab = {"gpt-4": "", "gpt-4-plugins": "p", "gpt-4-browsing": "w", "gpt-4-mobile": "m", "gpt-4-code-interpreter": "d"};
                 ndiv.innerHTML = gptab[model] || "";
                 el.insertBefore(ndiv, $('svg:first-child', el).nextSibling);
             }
