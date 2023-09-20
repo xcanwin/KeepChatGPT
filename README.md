@@ -6,12 +6,12 @@
 
 <br>
 
-![version](https://img.shields.io/greasyfork/v/462804?style=for-the-badge&label=版本&color=7B68EE)
-![download](https://img.shields.io/greasyfork/dt/462804?style=for-the-badge&label=用户安装量)
-![stars](https://img.shields.io/github/stars/xcanwin/KeepChatGPT?style=for-the-badge&label=Stars&logo=undertale&logoColor=red&color=orange)
-![forks](https://img.shields.io/github/forks/xcanwin/KeepChatGPT?style=for-the-badge&label=Forks&logo=stackshare&logoColor=green&color=0AC18E)
-![python](https://img.shields.io/badge/Python-%3E%3D3.11-green?style=for-the-badge&label=Python&logo=Python&logoColor=00AEF0&color=blue)
-![javascript](https://img.shields.io/badge/JavaScript-%3E%3DES13-green?style=for-the-badge&label=JavaScript&logo=JavaScript&color=FDEE21)
+<img alt="version" src="https://img.shields.io/greasyfork/v/462804?style=for-the-badge&label=%E7%89%88%E6%9C%AC&color=7B68EE"></img>
+<img alt="download" src="https://img.shields.io/greasyfork/dt/462804?style=for-the-badge&label=%E7%94%A8%E6%88%B7%E5%AE%89%E8%A3%85%E9%87%8F"></img>
+<img alt="stars" src="https://img.shields.io/github/stars/xcanwin/KeepChatGPT?style=for-the-badge&label=Stars&logo=undertale&logoColor=red&color=orange"></img>
+<img alt="forks" src="https://img.shields.io/github/forks/xcanwin/KeepChatGPT?style=for-the-badge&label=Forks&logo=stackshare&logoColor=green&color=0AC18E"></img>
+<img alt="python" src="https://img.shields.io/badge/Python-%3E%3D3.11-green?style=for-the-badge&label=Python&logo=Python&logoColor=00AEF0&color=blue"></img>
+<img alt="javascript" src="https://img.shields.io/badge/JavaScript-%3E%3DES13-green?style=for-the-badge&label=JavaScript&logo=JavaScript&color=FDEE21"></img>
 
 <br>
 
