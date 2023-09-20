@@ -6,6 +6,15 @@
 
 <br>
 
+![version](https://img.shields.io/greasyfork/v/462804?style=for-the-badge&label=版本&color=7B68EE)
+![download](https://img.shields.io/greasyfork/dt/462804?style=for-the-badge&label=用户安装量)
+![stars](https://img.shields.io/github/stars/xcanwin/KeepChatGPT?style=for-the-badge&label=Stars&logo=undertale&logoColor=red&color=orange)
+![forks](https://img.shields.io/github/forks/xcanwin/KeepChatGPT?style=for-the-badge&label=Forks&logo=stackshare&logoColor=green&color=0AC18E)
+![python](https://img.shields.io/badge/Python-%3E%3D3.11-green?style=for-the-badge&label=Python&logo=Python&logoColor=00AEF0&color=blue)
+![javascript](https://img.shields.io/badge/JavaScript-%3E%3DES13-green?style=for-the-badge&label=JavaScript&logo=JavaScript&color=FDEE21)
+
+<br>
+
 <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_ES.md">Español</a>
 
 </div></center>
