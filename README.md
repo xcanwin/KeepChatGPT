@@ -13,14 +13,12 @@
 <img alt="python" src="https://img.shields.io/badge/Python-%3E%3D3.11-green?style=for-the-badge&label=Python&logo=Python&logoColor=00AEF0&color=blue"></img>
 <img alt="javascript" src="https://img.shields.io/badge/JavaScript-%3E%3DES13-green?style=for-the-badge&label=JavaScript&logo=JavaScript&color=FDEE21"></img>
 
+</div></center>
+
 <br>
 
 | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/README.md">中文</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_EN.md">English</a> | <a href="https://github.com/xcanwin/KeepChatGPT/blob/main/docs/README_ES.md">Español</a> |
 | --- | --- | --- |
-
-</div></center>
-
-<br>
 
 ## 项目简介
 
