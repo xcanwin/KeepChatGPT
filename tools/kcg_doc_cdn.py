@@ -23,7 +23,7 @@ def main():
     version = re.findall(r'// @version\s+(\S*?)\n', kcg_code)[0]
     # version = '14.11.3'
 
-    rm_new = re.sub(r'src="(.*?)"', r'src="{}\1?v={}"'.format(cdn_pre, version), rm)
+    rm_new = re.sub(r'src="(/assets/.*?)"', r'src="{}\1?v={}"'.format(cdn_pre, version), rm)
     print(rm_new)
     save(rm_new, 'test/README_CDN.md')
 

@@ -28,52 +28,37 @@
 
 ## 展示
 
-- PC端，亮色主题，享受免费的```KeepChatGPT畅聊用户专属金标```，它代表着你的AI体验发生了骤变：
-
-  <img src="/assets/index_light.png" width="750"></img>
-
-- PC端，暗色主题+展示大屏：
-
-  <img src="/assets/index_dark.png" width="750"></img>
-
-- PC端，暗色主题+展示全屏：
-
-  <img src="/assets/index_dark_full.png" width="750"></img>
-
-- 移动端：
-
-  <img src="/assets/index_mobile.png" width="220"></img>
+| 序号 | 截图 |
+| --- | --- |
+| 1 | 电脑端，亮色主题<br><img src="/assets/index_light.png" width="750"></img> |
+| 2 | 电脑端，暗色主题+展示大屏<br><img src="/assets/index_dark.png" width="750"></img> |
+| 3 | 电脑端，暗色主题+展示全屏<br><img src="/assets/index_dark_full.png" width="750"></img> |
+| 4 | 移动端<br><img src="/assets/index_mobile.png" width="180"></img> |
 
 ## 功能简介
 
-1. 解决了报错：```NetworkError when attempting to fetch resource.```
-2. 解决了报错：```Something went wrong. If this issue persists please contact us through our help center at help.openai.com.```
-3. 解决了报错：```Conversation not found```
-4. 解决了报错：```This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area.```
-5. 解决了聊天中断
-6. 解决了频繁刷新
-7. 支持多国语言
-8. 解决了对话里的用户名会被手误复制的官方BUG
-9. 支持自由地[取消后台监管审计](#关于-取消审计-功能)
-10. 支持移动端([鸿蒙](#用法-鸿蒙系统)、[Android](#用法-鸿蒙系统)、[iOS](#用法-苹果系统))
-11. 支持自由地[调整时间间隔](#关于-调整间隔-功能)
-12. 支持[便捷地克隆并且无损地编辑指定对话](#关于-克隆对话-功能)
-13. 支持[净化页面](#关于-净化页面-功能)
-14. 支持[展示大屏](#关于-展示大屏-功能)
-15. 支持[展示全屏](#关于-展示全屏-功能)
-16. 支持[言无不尽](#关于-言无不尽-功能)
-17. 支持[拦截跟踪](#关于-拦截跟踪-功能)
-18. 支持[日新月异](#关于-日新月异-功能)
-19. 支持[数据安全](#关于-数据安全-功能)
-20. 以上是功能简介，功能详细介绍在本文底部
-21. 并且本文底部的[其他说明](#其他说明)，作者浅析了[为何会出现大规模地网络错误](#关于-为何会出现大规模地网络错误)、常见错误信息解决方案
+1.  支持[调整间隔](#关于-调整间隔-功能)
+2.  支持[数据安全](#关于-数据安全-功能)
+3.  支持[取消审计](#关于-取消审计-功能)
+4.  支持[克隆对话](#关于-克隆对话-功能)
+5.  支持[言无不尽](#关于-言无不尽-功能)
+6.  支持[净化页面](#关于-净化页面-功能)
+7.  支持[展示大屏](#关于-展示大屏-功能)
+8.  支持[展示全屏](#关于-展示全屏-功能)
+9.  支持[拦截跟踪](#关于-拦截跟踪-功能)
+10. 支持[日新月异](#关于-日新月异-功能)
+11. 支持多国语言
+12. 支持移动系统 ([鸿蒙](#用法-鸿蒙系统)、[苹果](#用法-苹果系统)、[安卓](#用法-鸿蒙系统))
+13. 解决聊天中断
+14. 解决频繁刷新
+15. 解决以下报错
 
-| 序号 | 使用```KeepChatGPT```插件以后再也不会出现以下场面 |
+| 序号 | 解决以下报错 |
 | --- | --- |
-| 1 | <img src="/assets/error_network.png" width="750"></img> |
-| 2 | <img src="/assets/wrong_somthing.png" width="750"></img> |
-| 3 | <img src="/assets/error_conversation_not_found.png" width="750"></img> |
-| 4 | <img src="/assets/wrong_audit.png" width="750"></img> |
+| 1 | <img src="/assets/error_network.png" width="750"></img><br>NetworkError when attempting to fetch resource. |
+| 2 | <img src="/assets/wrong_somthing.png" width="750"></img><br>Something went wrong. If this issue persists please contact us through our help center at help.openai.com. |
+| 3 | <img src="/assets/error_conversation_not_found.png" width="750"></img><br>Conversation not found |
+| 4 | <img src="/assets/wrong_audit.png" width="750"></img><br>This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. |
 
 ## 用户反馈
 
@@ -86,33 +71,23 @@
 <img src="/assets/user_feedback_2.png" width="750"></img>
 <img src="/assets/user_feedback_1.png" width="750"></img>
 
-## 对比
-
-| 实验环境 |                    不使用KeepChatGPT插件                     |          使用KeepChatGPT插件           |
-| :------: | :----------------------------------------------------------: | :------------------------------------: |
-|   现象   | 聊天频频红框警告```NetworkError```，<br>每隔十几分钟出现一次，必须刷新网页。 | 再也不会出现网络报错，<br>再也不用刷新网页。 |
-|  步骤1   |                           下发指令                           |                下发指令                |
-|  步骤2   |                           等待结果                           |                等待结果                |
-|  步骤3   |                         遇到网络报错                         |                得到结果                |
-|  步骤4   |                       尝试点击重新下发                       |                                        |
-|  步骤5   |                       再次遇到网络报错                       |                                        |
-|  步骤6   |                        复制刚刚的指令                        |                                        |
-|  步骤7   |                           刷新页面                           |                                        |
-|  步骤8   |                        等待网页加载完                        |                                        |
-|  步骤9   |                      打开刚刚的聊天会话                      |                                        |
-|  步骤10  |                        粘贴刚刚的指令                        |                                        |
-|  步骤11  |                         再次下发指令                         |                                        |
-|  步骤12  |                         再次等待结果                         |                                        |
-|  步骤13  |                           得到结果                           |                                        |
-
 - 通过对比可知，足足省去10个多余的步骤，顺畅地聊天
 
-## 原理
+## 安装渠道
 
-- 利用Headless绕过打开页面时的Cloudflare爬虫验证
-- 利用non-click绕过不定时的Cloudflare机器人验证
-- 保持流量最小化原则
-- 鼠标移到```专属金标```选择```显示调试```可以查阅绕过过程
+官方渠道✅:
+
+| 序号 | UserScript源 | 备注 |
+| --- | --- | --- |
+| 1 | [Github开源社区](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) | ✅推荐 |
+| 2 | [GreasyFork开源社区](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) | ✅推荐 |
+
+~~虚假渠道~~❌:
+
+| 序号 | UserScript源 | 备注 |
+| --- | --- | --- |
+| 1 | [~~谷歌应用商店~~](https://chrome.google.com/webstore/category/extensions) | ⚠️当心，有人抄袭了KeepChatGPT，并且要求用户付费 |
+| 2 | [~~微软应用商店~~](https://microsoftedge.microsoft.com/) | ⚠️当心，有人抄袭了KeepChatGPT，并且要求用户付费 |
 
 ## 用法 电脑系统
 
@@ -136,18 +111,26 @@
 3. 使用说明参考[Stay官网](https://github.com/shenruisi/Stay)；
 4. 安装```KeepChatGPT```插件，可以从 [安装渠道](#安装渠道) 选一个渠道安装；
 
-## 安装渠道
-
-| 序号 | UserScript源 |
-| --- | --- |
-| 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
-| 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
-
-- 作者只提供插件的安装方式，官方来源只有以上两个，请认准官方来源。
-- 作者觉得插件比拓展好，大家随时可以审计安全性，有没有偷偷上传数据大家都可以随时发现。
-- ⚠️[谷歌应用商店](https://chrome.google.com/webstore/category/extensions) 和 ⚠️[微软应用商店](https://microsoftedge.microsoft.com/) 上的同名拓展不是作者提供的，并且抄袭本项目，居然还向用户收费。
-
 ## 其他说明
+
+### 对比
+
+| 实验环境 |                    不使用KeepChatGPT插件                     |          使用KeepChatGPT插件           |
+| :------: | :----------------------------------------------------------: | :------------------------------------: |
+|   现象   | 聊天频频红框警告```NetworkError```，<br>每隔十几分钟出现一次，必须刷新网页。 | 再也不会出现网络报错，<br>再也不用刷新网页。 |
+|  步骤1   |                           下发指令                           |                下发指令                |
+|  步骤2   |                           等待结果                           |                等待结果                |
+|  步骤3   |                         遇到网络报错                         |                得到结果                |
+|  步骤4   |                       尝试点击重新下发                       |                                        |
+|  步骤5   |                       再次遇到网络报错                       |                                        |
+|  步骤6   |                        复制刚刚的指令                        |                                        |
+|  步骤7   |                           刷新页面                           |                                        |
+|  步骤8   |                        等待网页加载完                        |                                        |
+|  步骤9   |                      打开刚刚的聊天会话                      |                                        |
+|  步骤10  |                        粘贴刚刚的指令                        |                                        |
+|  步骤11  |                         再次下发指令                         |                                        |
+|  步骤12  |                         再次等待结果                         |                                        |
+|  步骤13  |                           得到结果                           |                                        |
 
 ### 关于 为何会出现大规模地网络错误
 
