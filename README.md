@@ -48,10 +48,12 @@
 9.  支持[拦截跟踪](#关于-拦截跟踪-功能)
 10. 支持[日新月异](#关于-日新月异-功能)
 11. 支持多国语言
-12. 支持移动系统 ([鸿蒙](#用法-鸿蒙系统)、[苹果](#用法-苹果系统)、[安卓](#用法-鸿蒙系统))
-13. 解决聊天中断
-14. 解决频繁刷新
-15. 解决以下报错
+12. 支持[电脑系统](#使用方法-电脑系统)
+13. 支持移动系统 ([鸿蒙](#使用方法-鸿蒙系统)、[iOS](#使用方法-iOS系统)、[Android](#使用方法-鸿蒙系统))
+14. 支持[保持活跃](#关于-保持活跃-功能)
+15. 解决聊天中断
+16. 解决频繁刷新
+17. 解决以下报错
 
 | 序号 | 解决以下报错 |
 | --- | --- |
@@ -71,8 +73,6 @@
 <img src="/assets/user_feedback_2.png" width="750"></img>
 <img src="/assets/user_feedback_1.png" width="750"></img>
 
-- 通过对比可知，足足省去10个多余的步骤，顺畅地聊天
-
 ## 安装渠道
 
 官方渠道✅:
@@ -86,10 +86,10 @@
 
 | 序号 | UserScript源 | 备注 |
 | --- | --- | --- |
-| 1 | [~~谷歌应用商店~~](https://chrome.google.com/webstore/category/extensions) | ⚠️当心，有人抄袭了KeepChatGPT，并且要求用户付费 |
-| 2 | [~~微软应用商店~~](https://microsoftedge.microsoft.com/) | ⚠️当心，有人抄袭了KeepChatGPT，并且要求用户付费 |
+| 1 | [~~谷歌应用商店~~](https://chrome.google.com/webstore/category/extensions) | ⚠️当心，这不是作者上传的。有人抄袭了KeepChatGPT，并且要求用户付费 |
+| 2 | [~~微软应用商店~~](https://microsoftedge.microsoft.com/) | ⚠️当心，这不是作者上传的。有人抄袭了KeepChatGPT，并且要求用户付费 |
 
-## 用法 电脑系统
+## 使用方法 电脑系统
 
 1. 浏览器首选```Chrome```、```Firefox```、```Edge```，其他主流浏览器都是主动兼容这3个浏览器的；
 2. 安装```Tampermonkey```浏览器拓展，可以从 [Tampermonkey官网](https://www.tampermonkey.net/) 安装；
@@ -97,14 +97,14 @@
 4. 打开 [ChatGPT](https://chat.openai.com/chat) 尽情享用吧；
 5. 另外，还有一个更巧妙的方法就是问ChatGPT：```如何安装tampermonkey拓展和greasyfork上的插件```
 
-## 用法 鸿蒙系统
+## 使用方法 鸿蒙系统
 
 1. 浏览器首选```Firefox```；
 2. 安装```Firefox```浏览器App，可以从 [华为应用市场](https://appgallery.huawei.com/app/C31765)、[Firefox官网](https://www.mozilla.org/firefox/browsers/mobile/android/) 安装；
 3. 打开```Firefox```浏览器App > 右下角```...``` > 附加组件 > 附加组件管理器 > ```Tampermonkey```右边的```+```；
 4. 安装```KeepChatGPT```插件，可以从 [安装渠道](#安装渠道) 选一个渠道安装；
 
-## 用法 苹果系统
+## 使用方法 iOS系统
 
 1. 浏览器首选```Safari```，其他浏览器受限于苹果的政策少有支持JS插件的；
 2. 安装```Stay```浏览器拓展App，可以从 [App Store](https://apps.apple.com/app/id1591620171) 安装；
@@ -113,7 +113,9 @@
 
 ## 其他说明
 
-### 对比
+### 关于 保持活跃 功能
+
+- 通过以下对比可知，足足省去10个多余的步骤，顺畅地聊天
 
 | 实验环境 |                    不使用KeepChatGPT插件                     |          使用KeepChatGPT插件           |
 | :------: | :----------------------------------------------------------: | :------------------------------------: |
