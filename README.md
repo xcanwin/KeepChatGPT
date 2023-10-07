@@ -91,25 +91,25 @@
 
 ## 使用方法 电脑系统
 
-1. 浏览器首选```Chrome```、```Firefox```、```Edge```，其他主流浏览器都是主动兼容这3个浏览器的；
-2. 安装```Tampermonkey```浏览器拓展，可以从 [Tampermonkey官网](https://www.tampermonkey.net/) 安装；
-3. 安装```KeepChatGPT```插件，可以从 [安装渠道](#安装渠道) 选一个渠道安装；
-4. 打开 [ChatGPT](https://chat.openai.com/chat) 尽情享用吧；
-5. 另外，还有一个更巧妙的方法就是问ChatGPT：```如何安装tampermonkey拓展和greasyfork上的插件```
+1. 安装```Tampermonkey```，通过 [官网](https://www.tampermonkey.net/)；
+2. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
+3. 访问 [ChatGPT](https://chat.openai.com/chat)；
 
 ## 使用方法 鸿蒙系统
 
-1. 浏览器首选```Firefox```；
-2. 安装```Firefox```浏览器App，可以从 [华为应用市场](https://appgallery.huawei.com/app/C31765)、[Firefox官网](https://www.mozilla.org/firefox/browsers/mobile/android/) 安装；
-3. 打开```Firefox```浏览器App > 右下角```...``` > 附加组件 > 附加组件管理器 > ```Tampermonkey```右边的```+```；
-4. 安装```KeepChatGPT```插件，可以从 [安装渠道](#安装渠道) 选一个渠道安装；
+1. 浏览器用```Firefox```；
+2. 安装```Firefox```，通过 [华为应用市场](https://appgallery.huawei.com/app/C31765)、[官网](https://www.mozilla.org/firefox/browsers/mobile/android/)；
+3. 打开```Firefox``` > 右下角```...``` > 附加组件 > 附加组件管理器 > ```Tampermonkey```右边的```+```；
+4. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
+5. 访问 [ChatGPT](https://chat.openai.com/chat)；
 
 ## 使用方法 iOS系统
 
-1. 浏览器首选```Safari```，其他浏览器受限于苹果的政策少有支持JS插件的；
-2. 安装```Stay```浏览器拓展App，可以从 [App Store](https://apps.apple.com/app/id1591620171) 安装；
-3. 使用说明参考[Stay官网](https://github.com/shenruisi/Stay)；
-4. 安装```KeepChatGPT```插件，可以从 [安装渠道](#安装渠道) 选一个渠道安装；
+1. 浏览器用```Safari```；
+2. 安装```Stay```，通过 [App Store](https://apps.apple.com/app/id1591620171)；
+3. 使用说明参考 [官网](https://github.com/shenruisi/Stay)；
+4. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
+5. 访问 [ChatGPT](https://chat.openai.com/chat)；
 
 ## 其他说明
 
@@ -134,41 +134,43 @@
 |  步骤12  |                         再次等待结果                         |                                        |
 |  步骤13  |                           得到结果                           |                                        |
 
-### 关于 为何会出现大规模地网络错误
+### 关于 大量用户网络错误
 
-1. 全球已出现算力荒，openai同样存在。
-2. openai大火，用户量、用户在线时长、用户使用频率同时激增，导致加剧资源紧张。
-3. 衍生出大量AI产品、AI机器人，都在私下调用ChatGPT的API和网页版ChatGPT，甚至调用频率远超所有真实用户的总和。
-4. openai接入```Cloudflare```，开启```强力保护规则```，拦截私下接入openai的AI产品、AI机器人。
-5. 就像图形验证码一样，本意是拦截机器人，可是一旦出现验证码被识别的风险，网站管理员就会把图形验证码开发得更复杂，影响了真实用户，但又确实拦截了机器人。
-6. ```Cloudflare```是公共服务，它服务于所有网站，它的保护规则和风控策略是通用的。很多不希望被爬虫、被机器人访问、被黑客攻击、被大流量访问的网站都会接入Cloudflare，所以Cloudflare有丰富的风控策略。
-7. 大量国外用户是家庭网络，Cloudflare判断他们的网络没有风险，所以他们几乎没报错。
-8. 大量国内用户使用各种```位移魔法```(下面简称```666```)，然而很多```666```的ip曾经或者正在被Cloudflare列入了```强力保护规则```的重点关照名单里。不一定是用户本人导致的，可能是前人乘凉 后人遭殃，也可能是同C段的很多ip此时此刻还在频繁地触发风控，也可能用户本人都不知道自己使用的是共享```666```，触发了风控，Cloudflare判断他们的网络存在风险，于是出现报错，需要验证真实用户。
-9. 原因不仅限以上内容，这里仅仅是抛砖引玉。
+1. 原因：算力紧张、使用量大、Cloudflare风控与误杀。解决方案：使用本插件。
 
-### 关于 使用了本插件依然出现网络错误 的原因和解决方案
+### 关于 依旧报错
 
-1. 原因: 参考 [```关于 调整间隔 功能```](#关于-调整间隔-功能)。解决方案: 适度调整keep的间隔。
-2. 原因: 参考 [```关于 为何会出现大规模地网络错误```](#关于-为何会出现大规模地网络错误)。解决方案: 更换```666```的ip、机房、运营商、渠道，一个人的```666```才是最香的。
+1. 原因: 参考 [```关于 大量用户网络错误```](#关于-大量用户网络错误)。解决方案: 更换网络。
+2. 原因: 参考 [```关于 调整间隔 功能```](#关于-调整间隔-功能)。解决方案: 适度调整keep的间隔。
 
-### 关于 错误信息429 - Too many requests in 1 hour. Try again later 的原因和解决方案
+### 关于 其他错误
 
-1. 首先，429错误有好多种，先确认是不是 [```关于 其他错误 的原因和解决方案```](#关于-其他错误-的原因和解决方案) 里的429错误。如果不是，那以下几种可能:
-2. 原因: 新注册或者同一手机注册的用户，openai不赠送免费额度，查询链接 [openai官网 额度页面](https://platform.openai.com/account/usage)，解决方案: 换邮箱和手机号注册。
-3. 原因: 用完了额度，查询链接 [openai官网 额度页面](https://platform.openai.com/account/usage)，解决方案: 充值变强。
-4. 原因: Cloudflare的bug，解决方案: 使用浏览器的隐私模式等chatgpt，如果发现隐私模式能正常使用，就清理浏览器正常模式的openai.com主域名和子域名的所有cookie和本地存储。
-5. 原因: 可能连你都不知道自己使用的是共享```666```，你有一群```相同ip出口的网上邻居```，他们一直在以各种目的频繁请求，虽然他们的访问量很大但是他们一直控制在临界点不触发429错误，而你使用了本插件以后把他们拖下水了，所以在你懵逼为何429的时候你的网上邻居们也在懵逼为何突然429，解决方案: 更换```666```的ip、机房、运营商、渠道，一个人的```666```才是最香的。
+1. 出现下述错误信息可参考官方的解决方案: [官方-报错](https://openai.com/policies/usage-policies)
+2. 401 - Invalid Authentication
+3. 401 - Incorrect API key provided
+4. 401 - You must be a member of an organization to use the API
+5. 429 - Rate limit reached for requests
+6. 429 - You exceeded your current quota, please check your plan and billing details
+7. 429 - The engine is currently overloaded, please try again later
+8. 500 - The server had an error while processing your request
+
+### 关于 错误信息429 - Too many requests in 1 hour. Try again later
+
+1. 原因: 新注册无免费额度，查询 [官网-额度](https://platform.openai.com/account/usage)。解决方案: 换邮箱和手机号注册。
+2. 原因: 老用户用完了额度，查询 [官网-额度](https://platform.openai.com/account/usage)。解决方案: 充值openai。
+3. 原因: Cloudflare的bug。解决方案: 隐私模式、清理cookie。
+4. 原因: 共享网络导致触发风控。解决方案: 更换网络。
 
 ### 关于 取消审计 功能
 
-1. 默认情况下，你所有的对话都会被openai官方自动化[审计](https://platform.openai.com/docs/guides/moderation/overview)，如果openai审计发现你有过多的违规、违反 [openai政策](https://openai.com/policies/usage-policies) 的对话，你的账号就存在被限制甚至被封号的风险。
-2. 通过```勾选```本插件的```取消审计```功能加上你巧妙的提示词，可以最大程度地免受影响。
+1. openai会 [审计](https://platform.openai.com/docs/guides/moderation/overview) 用户的所有对话，如果频繁违反 [政策](https://openai.com/policies/usage-policies)，可能导致封号。
+2. 勾选了```取消审计```以后，加上你巧妙的提示词（必须），可以最大程度避免封号。
 
 ### 关于 调整间隔 功能
 
-1. 那个值指的是```keep```(保活)的时间间隔，单位是```秒```。
-2. 时间间隔越大，keep的速度就越慢，对网站的影响就越小，你的账号就越安全。
-3. 时间间隔越小，keep的速度就越快，你的网络错误就越不会出现。
+1. 指的是向openai保持在线的时间间隔，单位是```秒```。
+2. 时间间隔越大，则请求越缓和，账号越稳定。
+3. 时间间隔越小，则请求越紧凑，网络错误越少。
 4. 建议间隔```30```秒以上。
 5. 作者平时设置的是```150```秒。
 
@@ -287,17 +289,6 @@
 ```
 
   <img src="/assets/warn_data_security.png" width="750"></img>
-
-### 关于 其他错误 的原因和解决方案
-
-1. 出现下述错误信息可参考官方的解决方案: [openai官方文档 报错代码](https://openai.com/policies/usage-policies)
-2. 401 - Invalid Authentication
-3. 401 - Incorrect API key provided
-4. 401 - You must be a member of an organization to use the API
-5. 429 - Rate limit reached for requests
-6. 429 - You exceeded your current quota, please check your plan and billing details
-7. 429 - The engine is currently overloaded, please try again later
-8. 500 - The server had an error while processing your request
 
 ### 关于 PLUS用户是不是不会报错
 
