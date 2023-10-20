@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化首页、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           18.1
+// @version           18.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -606,14 +606,9 @@
         };
 
         $('#nmenuid_ap').onclick = function() {
-            ndialog(`${tl("赞赏鼓励")}`, `· 本项目没有研发经费，但是功能研发、升级、BUG修复都会消耗很多个人时间、精力，并且有不少技术研究成本。<br>
-<br>· 如果你体验完本项目以后眉开眼笑，觉得好用！NB！神器！好顺畅！感觉很棒！NICE！
-<br>· 如果你觉得本项目打开了你进入AI世界的高速通道
-<br>· 如果你希望作者的小猫吃到更好的猫粮、猫罐头
-<br>· 如果本项目对你有帮助
-<br>· 如果本项目提高了你工作效率
-<br>· 如果你希望本项目持续维护、升级更多的功能
-<br>· 如果你希望鼓励、激励作者投入更多的时间精力提升项目，欢迎各位支持和鼓励本项目`, `更多鼓励方式`, function(t) {
+            ndialog(`${tl("赞赏鼓励")}`, `· 本项目由兴趣驱使，提升自己的体验，并共享世界。
+<br>· 如果你喜欢作者的项目，可以给作者一个免费的Star或者Follow。
+<br>· 如果你希望作者的小猫吃到更好的罐头，欢迎赞赏与激励。`, `更多鼓励方式`, function(t) {
                 window.open(`${GM_info.script.namespace}#赞赏`, '_blank');
             }, `img`, `https://github.com/xcanwin/KeepChatGPT/raw/main/assets/appreciate_wechat.png`);
         };
