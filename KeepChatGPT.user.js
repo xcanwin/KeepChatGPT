@@ -64,7 +64,7 @@
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_selector = 'nav.flex .transition-colors';
+    const symbol1_selector = 'nav.flex .mb-1';
     const symbol2_selector = 'button.justify-center .sr-only';
 
     const datasec_blocklist_default = "18888888888\nhttps://公司域名.com\n银行卡号\n([\\w-]+(\\.[\\w-]+)*)@163\.com\n";
