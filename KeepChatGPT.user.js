@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           18.5
+// @version           18.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -44,11 +44,14 @@
 // @description:zh-TW 這是一個增強ChatGPT數據安全能力和效率的插件。並且免費共享各種創新功能，如：自動刷新、活動持久、數據安全、取消審計、會話克隆、無限對話、主頁整理、大屏幕展示、全屏展示、追踪攔截、持續更新等。讓我們體驗智能、安全、無縫、高效、簡潔的AI。
 // @icon              data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" stroke-width="2" fill="none" stroke="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
 // @license           GPL-2.0-only
-// @match             https://chat.openai.com/*
+// @match             *://chat.openai.com/*
+// @connect           raw.githubusercontent.com
+// @connect           greasyfork.org
 // @grant             GM_addStyle
 // @grant             GM_addElement
 // @grant             GM_setValue
 // @grant             GM_getValue
+// @grant             GM_xmlhttpRequest
 // @grant             unsafeWindow
 // @run-at            document-body
 // @noframes
@@ -679,6 +682,12 @@
             $('#nmenuid_ec .checkbutton').classList.add('checked');
             $('nav.flex').classList.add('knav');
         }
+
+        //检查更新：首次、每3天
+        if (gv("k_lastupdate", 0) === 0 || Date.now() - gv("k_lastupdate", 0) >= 1000 * 60 * 60 * 24 * 3) {
+            sv("k_lastupdate", Date.now());
+            checkForUpdates();
+        }
     };
 
     const toggleMenu = function(action) {
@@ -1119,11 +1128,11 @@ nav.flex .transition-all {
         const crv = GM_info.script.version;
         let updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || GM_info.script.downloadURL;
         updateURL = `${updateURL}?t=${Date.now()}`;
-        fetch(updateURL, {
-            cache: 'no-cache'
-        }).then((response) => {
-            response.text().then((data) => {
-                const m = data.match(/@version\s+(\S+)/);
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: updateURL,
+            onload: function(response) {
+                const m = response.responseText.match(/@version\s+(\S+)/);
                 const ltv = m && m[1];
                 if (ltv && verInt(ltv) > verInt(crv)) {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
@@ -1132,8 +1141,8 @@ nav.flex .transition-all {
                 } else {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
                 }
-            });
-        }).catch(e => console.log(e));
+            }
+        });
     };
 
     const cloneChat = function(action) {
