@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           18.7
+// @version           18.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -961,6 +961,7 @@ nav.flex .transition-all {
                 const fetchReqUrl = argumentsList[0];
                 let fetchRsp;
                 try {
+                    const block_url = 'gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|/v1/initialize|/messenger/|statsigapi\.net|/rgstr|/v1/sdk_exception';
                     if (gv("k_closeModer", false) && fetchReqUrl.match('/backend-api/moderations(\\?|$)')) {
                         fetchRsp = Promise.resolve({
                             json: () => {return {}}
@@ -970,7 +971,8 @@ nav.flex .transition-all {
                         const post_body = JSON.parse(argumentsList[1].body);
                         post_body.supports_modapi = false;
                         argumentsList[1].body = JSON.stringify(post_body);
-                    } else if (gv("k_intercepttracking", false) && fetchReqUrl.match('sentry\.io|sentry_key=|widget\.intercom\.io|featuregates\.org|/v1/initialize|api-iam\.intercom\.io|/messenger/|nexus-websocket-a\.intercom\.io|statsigapi\.net|/rgstr|/v1/sdk_exception')) {
+                    } else if (gv("k_intercepttracking", false) && fetchReqUrl.match(block_url)) {
+                        console.log(`KeepChatGPT: ${tl("拦截跟踪")}: ${fetchReqUrl}`);
                         fetchRsp = Promise.resolve({
                         });
                         return fetchRsp;
