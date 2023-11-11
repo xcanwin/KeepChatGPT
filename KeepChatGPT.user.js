@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           18.6
+// @version           18.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -47,6 +47,7 @@
 // @match             *://chat.openai.com/*
 // @connect           raw.githubusercontent.com
 // @connect           greasyfork.org
+// @connect           chat.openai.com
 // @grant             GM_addStyle
 // @grant             GM_addElement
 // @grant             GM_setValue
@@ -344,13 +345,18 @@
     };
 
     const keepChat = function() {
-        fetch(u).then((response) => {
-            response.text().then((data) => {
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: u,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            onload: function(response) {
+                const data = response.responseText;
                 try {
-                    const contentType = response.headers.get('Content-Type');
-                    if (contentType.indexOf("application/json") > -1 && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
+                    if (response.responseHeaders.match(/content-type:\s*application\/json/i) && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = formatJson(data);
+                        //$("#xcanwin").contentWindow.document.documentElement.innerHTML = formatJson(data);
                     } else {
                         setIfr(u);
                     }
@@ -358,7 +364,7 @@
                     console.log(`KeepChatGPT: FETCH: ERROR: ${e},\nERROR RESPONSE:\n${data}`);
                     setIfr(u);
                 }
-            })
+            }
         });
     }
 
