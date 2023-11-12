@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           19.2
+// @version           19.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -42,7 +42,7 @@
 // @description:vi    Đây là một tiện ích bổ sung cải thiện khả năng bảo mật dữ liệu của ChatGPT và hiệu suất, chia sẻ nhiều tính năng đổi mới miễn phí, như làm mới tự động, bảo tồn hoạt động, bảo mật dữ liệu, hủy kiểm toán, sao chép cuộc trò chuyện, ký tự không giới hạn, làm sạch trang chủ, hiển thị trên màn hình lớn, hiển thị toàn màn hình, chặn theo dõi và phát triển liên tục và hơn nữa.
 // @description:zh-CN 这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
 // @description:zh-TW 這是一個增強ChatGPT數據安全能力和效率的插件。並且免費共享各種創新功能，如：自動刷新、活動持久、數據安全、取消審計、會話克隆、無限對話、主頁整理、大屏幕展示、全屏展示、追踪攔截、持續更新等。讓我們體驗智能、安全、無縫、高效、簡潔的AI。
-// @icon              data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAMAAAANxBKoAAAANlBMVEUAAAAAAAAAAAAAAAAAAAAAAAACAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABLr0ykAAAAEXRSTlMAIvfj1qM4lGeCzbxIdxWwVEqISJgAAAEvSURBVEjHzdTbboUgEIXhmQFBDh7W+79sEcMGbNGm2U373frHxGUyVESPER/pYsGdhToMQPTXBABTywGK6Wusri+3wEQjE2D/oLZTZR9rQSVvrudWrf/pgjMgOxd04GIXYKbWKkgkgzgicoJKrdSJgoYlizY2dMHW65MCoI9Gn7xlurHhsNE3TWgmembbyZ5FeiO+17dBcEdC23s88Zdrom50F8UAwjTGApiuXmlsbevnd/+wTmeDudTG2Zmq2TpTauZUEgBTaodEc72WiSu1AdDWOzJNJ41sH9QbEBYBzOtjlgBsgzoA9ngQcx0BYQuEQb0gk7WMnC1t7Zx7beJxmOvVSPxrk1T2ezuvQqQiBuVzwL/4L+lTbXjMdDUDkBGcuL839yZqOK2GtFbaUfYBC3smEUXrHM8AAAAASUVORK5CYII=
+// @icon              data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDUiIGhlaWdodD0iNDUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogPCEtLSBDcmVhdGVkIHdpdGggTWV0aG9kIERyYXcgLSBodHRwOi8vZ2l0aHViLmNvbS9kdW9waXhlbC9NZXRob2QtRHJhdy8gLS0+CiA8Zz4KICA8dGl0bGU+YmFja2dyb3VuZDwvdGl0bGU+CiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9IjQ3IiB3aWR0aD0iNDciIHk9Ii0xIiB4PSItMSIvPgogIDxnIGRpc3BsYXk9Im5vbmUiIG92ZXJmbG93PSJ2aXNpYmxlIiB5PSIwIiB4PSIwIiBoZWlnaHQ9IjEwMCUiIHdpZHRoPSIxMDAlIiBpZD0iY2FudmFzR3JpZCI+CiAgIDxyZWN0IGZpbGw9InVybCgjZ3JpZHBhdHRlcm4pIiBzdHJva2Utd2lkdGg9IjAiIHk9IjAiIHg9IjAiIGhlaWdodD0iMTAwJSIgd2lkdGg9IjEwMCUiLz4KICA8L2c+CiA8L2c+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPGltYWdlIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBQzBBQUFBdENBTUFBQUFOeEJLb0FBQUFObEJNVkVVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQ0FnSUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCTHIweWtBQUFBRVhSU1RsTUFJdmZqMXFNNGxHZUN6YnhJZHhXd1ZFcUlTSmdBQUFFdlNVUkJWRWpIemRUYmJvVWdFSVhobVFGQkRoN1crNzlzRWNNR2JOR20yVTM3M2ZySHhHVXlWRVNQRVIvcFlzR2RoVG9NUVBUWEJBQlR5d0dLNld1c3JpKzN3RVFqRTJEL29MWlRaUjlyUVNWdnJ1ZFdyZi9wZ2pNZ094ZDA0R0lYWUtiV0trZ2tnemdpY29KS3JkU0pnb1lsaXpZMmRNSFc2NU1Db0k5R243eGx1ckhoc05FM1RXZ21lbWJieVo1RmVpTysxN2RCY0VkQzIzczg4WmRyb201MEY4VUF3alRHQXBpdVhtbHNiZXZuZC8rd1RtZUR1ZFRHMlptcTJUcFRhdVpVRWdCVGFvZEVjNzJXaVN1MUFkRFdPekpOSjQxc0g5UWJFQllCek90amxnQnNnem9BOW5nUWN4MEJZUXVFUWIwZ2s3V01uQzF0N1p4N2JlSnhtT3ZWU1B4cmsxVDJlenV2UXFRaUJ1Vnp3TC80TCtsVGJYak1kRFVEa0JHY3VMODM5eVpxT0syR3RGYmFVZllCQzNzbUVVWHJITThBQUFBQVNVVk9SSzVDWUlJPSIgaWQ9InN2Z18xIiBoZWlnaHQ9IjQ1IiB3aWR0aD0iNDUiIHk9IjAiIHg9IjAiLz4KIDwvZz4KPC9zdmc+
 // @license           GPL-2.0-only
 // @match             *://chat.openai.com
 // @match             *://chat.openai.com/*
@@ -446,7 +446,6 @@
     <li id=nmenuid_it>${tl("拦截跟踪")}</li>
     <li id=nmenuid_ec>${tl("日新月异")}</li>
     <li id=nmenuid_dm>${tl("暗色主题")}</li>
-    <li id=nmenuid_ca>${tl("取消动画")}</li>
     <li id=nmenuid_sd>${tl("显示调试")}</li>
     <li id=nmenuid_cu>${tl("检查更新")}</li>
     <li id=nmenuid_ap>${tl("赞赏鼓励")}</li>
@@ -457,7 +456,6 @@
 
         $('#nmenuid_sd').appendChild(ncheckbox());
         $('#nmenuid_dm').appendChild(ncheckbox());
-        $('#nmenuid_ca').appendChild(ncheckbox());
         $('#nmenuid_cm').appendChild(ncheckbox());
         $('#nmenuid_cc').appendChild(ncheckbox());
         $('#nmenuid_pp').appendChild(ncheckbox());
@@ -503,12 +501,6 @@
                 $('#kcg').style.marginRight = "inherit";
                 sv("k_theme", "dark");
             }
-            $('.checkbutton', this).classList.toggle('checked');
-        };
-
-        $('#nmenuid_ca').onclick = function() {
-            sv("k_cancelAnimation", !$('.checkbutton', this).classList.contains('checked'));
-            $('#kcg').classList.toggle('shine');
             $('.checkbutton', this).classList.toggle('checked');
         };
 
@@ -642,13 +634,6 @@
             $('#kcg').style.marginRight = "inherit";
         }
 
-        if (gv("k_cancelAnimation", false) === true) {
-            $('#nmenuid_ca .checkbutton').classList.add('checked');
-            $('#kcg').classList.remove('shine');
-        } else {
-            $('#kcg').classList.add('shine');
-        }
-
         if (gv("k_closeModer", false) === true) {
             $('#nmenuid_cm .checkbutton').classList.add('checked');
         }
@@ -734,7 +719,7 @@
 
         const ndivkcg = document.createElement("div");
         ndivkcg.id = "kcg";
-        ndivkcg.setAttribute("class", "kgold shine flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
+        ndivkcg.setAttribute("class", "kgold flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
 
         const ndivmenu = $(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
@@ -751,7 +736,7 @@
             }
         };
         const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
-        ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
+        ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem;' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
 
         if ($(symbol1_selector)) {
@@ -785,7 +770,7 @@
     100%{background-color:#F0B27A;}
 }
 
-.shine::before {
+#kcg::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -794,20 +779,12 @@
     height: 200%;
     background: linear-gradient(
         to bottom right,
-        rgba(255, 255, 255, 0.3),
-        rgba(255, 255, 255, 0.15),
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0),
         rgba(255, 255, 255, 0)
     );
     transform: rotate(-45deg);
-    animation: shine 2.8s linear infinite;
-}
-@keyframes shine {
-    from {
-        transform: translateX(-50%) translateY(-50%) rotate(-45deg);
-    }
-    to {
-        transform: translateX(150%) translateY(150%) rotate(-45deg);
-    }
 }
 
 .kmenu {
