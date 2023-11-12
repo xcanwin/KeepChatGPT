@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           19.1
+// @version           19.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -42,7 +42,7 @@
 // @description:vi    Đây là một tiện ích bổ sung cải thiện khả năng bảo mật dữ liệu của ChatGPT và hiệu suất, chia sẻ nhiều tính năng đổi mới miễn phí, như làm mới tự động, bảo tồn hoạt động, bảo mật dữ liệu, hủy kiểm toán, sao chép cuộc trò chuyện, ký tự không giới hạn, làm sạch trang chủ, hiển thị trên màn hình lớn, hiển thị toàn màn hình, chặn theo dõi và phát triển liên tục và hơn nữa.
 // @description:zh-CN 这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
 // @description:zh-TW 這是一個增強ChatGPT數據安全能力和效率的插件。並且免費共享各種創新功能，如：自動刷新、活動持久、數據安全、取消審計、會話克隆、無限對話、主頁整理、大屏幕展示、全屏展示、追踪攔截、持續更新等。讓我們體驗智能、安全、無縫、高效、簡潔的AI。
-// @icon              data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" stroke-width="2" fill="none" stroke="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+// @icon              data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAMAAAANxBKoAAAANlBMVEUAAAAAAAAAAAAAAAAAAAAAAAACAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABLr0ykAAAAEXRSTlMAIvfj1qM4lGeCzbxIdxWwVEqISJgAAAEvSURBVEjHzdTbboUgEIXhmQFBDh7W+79sEcMGbNGm2U373frHxGUyVESPER/pYsGdhToMQPTXBABTywGK6Wusri+3wEQjE2D/oLZTZR9rQSVvrudWrf/pgjMgOxd04GIXYKbWKkgkgzgicoJKrdSJgoYlizY2dMHW65MCoI9Gn7xlurHhsNE3TWgmembbyZ5FeiO+17dBcEdC23s88Zdrom50F8UAwjTGApiuXmlsbevnd/+wTmeDudTG2Zmq2TpTauZUEgBTaodEc72WiSu1AdDWOzJNJ41sH9QbEBYBzOtjlgBsgzoA9ngQcx0BYQuEQb0gk7WMnC1t7Zx7beJxmOvVSPxrk1T2ezuvQqQiBuVzwL/4L+lTbXjMdDUDkBGcuL839yZqOK2GtFbaUfYBC3smEUXrHM8AAAAASUVORK5CYII=
 // @license           GPL-2.0-only
 // @match             *://chat.openai.com
 // @match             *://chat.openai.com/*
@@ -751,7 +751,7 @@
             }
         };
         const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
-        ndivkcg._symbol1_innerHTML = `<img src='${icon}' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
+        ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
 
         if ($(symbol1_selector)) {
