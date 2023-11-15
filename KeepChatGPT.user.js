@@ -720,6 +720,8 @@
         const ndivkcg = document.createElement("div");
         ndivkcg.id = "kcg";
         ndivkcg.setAttribute("class", "kgold flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
+        ndivkcg.style.marginTop = "10px";
+        document.body.appendChild(ndivkcg);
 
         const ndivmenu = $(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
