@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           19.6
+// @version           20.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -585,6 +585,7 @@
             } else {
                 sv("k_everchanging", true);
                 $('nav.flex').classList.add('knav');
+                everChanging();
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
@@ -651,6 +652,7 @@
         if (gv("k_everchanging", false) === true) {
             $('#nmenuid_ec .checkbutton').classList.add('checked');
             $('nav.flex').classList.add('knav');
+            everChanging();
         }
 
         //检查更新：首次、每3天
@@ -949,6 +951,7 @@ nav.flex .transition-all {
                             global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
                             cacheEC();
                         } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
+                            //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
                             const b = JSON.parse(fetchRspBody).items;
                             b.forEach(async el => {
                                 const update_time = new Date(el.update_time);
@@ -957,7 +960,29 @@ nav.flex .transition-all {
                             });
                             setTimeout(function() {
                                 cacheEC();
-                                attachDate();
+                                setTimeout(function() {
+                                    attachDate();
+                                }, 300);
+                            }, 300);
+                        } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/')) {
+                            //点击侧边栏的历史对话时，更新数据库：当前id、当前标题、当前更新时间，当前last，当前model。同时更新侧边栏
+                            const f = JSON.parse(fetchRspBody);
+                            const crt_con_id = f && f.conversation_id;
+                            const crt_con_title = f && f.title;
+                            let crt_con_update_time = f && f.update_time;
+                            crt_con_update_time = crt_con_update_time < 10**10 ? crt_con_update_time * 1000 : crt_con_update_time;
+                            crt_con_update_time = new Date(crt_con_update_time);
+                            const crt_con_speak_last_keys = f && f.mapping && Object.keys(f.mapping);
+                            const crt_con_speak_last_id = crt_con_speak_last_keys[crt_con_speak_last_keys.length - 1]
+                            const crt_con_speak_last = f.mapping[crt_con_speak_last_id].message
+                            const crt_con_last = crt_con_speak_last.content.parts[0].trim().replace(/[\r\n]/g, ``).substr(0, 100);
+                            const crt_con_model = crt_con_speak_last.metadata.model_slug;
+                            await global.st_ec.put({id: crt_con_id, title: crt_con_title, update_time: crt_con_update_time, last: crt_con_last, model: crt_con_model});
+                            setTimeout(function() {
+                                cacheEC();
+                                setTimeout(function() {
+                                    attachDate();
+                                }, 300);
                             }, 300);
                         }
                     });
@@ -988,9 +1013,9 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
 
     const attachDate = async function() {
         if (!global.kec_object) return;
-        $$('nav.flex li a.group').forEach(el => {
+        $$('nav.flex li a.rounded-lg').forEach(el => {
             const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
-            const a_id = el[keyrf].return.return.memoizedProps.id;
+            const a_id = el[keyrf].return.return.memoizedProps.conversation.id;
             const kec_obj_el = global.kec_object[a_id];
             const title = kec_obj_el && kec_obj_el.title || "";
             const update_time = kec_obj_el && kec_obj_el.update_time || "";
@@ -1021,15 +1046,6 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
                 $('.navdate', el).innerHTML = formatDate2(update_time);
                 $('.navlast', el).innerHTML = htmlEncode(last);
             }
-            if (model.match('gpt-4') && !$('.gptm', el)) {
-                $('svg:first-child', el).setAttribute("stroke", `#FF4CFF`);
-                $('svg:first-child', el).setAttribute("fill", `#FF4CFF`);
-                const ndiv = document.createElement("div");
-                ndiv.classList.add("gptm");
-                const gptab = {"gpt-4": "", "gpt-4-plugins": "p", "gpt-4-browsing": "w", "gpt-4-mobile": "m", "gpt-4-code-interpreter": "d"};
-                ndiv.innerHTML = gptab[model] || "";
-                el.insertBefore(ndiv, $('svg:first-child', el).nextSibling);
-            }
         });
 
         const sidebar_chat = $("nav.flex div.overflow-y-auto");
@@ -1039,31 +1055,6 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
             } else {
                 sidebar_chat.classList.remove("-mr-2");
             }
-        }
-
-        const crt_con_a = $('nav.flex li a.group.dark\\:bg-gray-800');
-        let crt_con_id = "";
-        if (crt_con_a) {
-            const crt_con_a_keyrf = Object.keys(crt_con_a).find(key => key.startsWith("__reactFiber"));
-            crt_con_id = crt_con_a[crt_con_a_keyrf].return.return.memoizedProps.id;
-        }
-        const m = location.href.match('/c/(.*?)(\\?|$)');
-        const crt_con_id2 = m && m[1];
-        let crt_con_last = "";
-        let crt_con_model = "";
-        const crt_con_speak = $$("main .group.w-full");
-        const crt_con_speak_last = crt_con_speak && crt_con_speak[crt_con_speak.length - 1];
-        if (crt_con_id && crt_con_id2 && crt_con_id === crt_con_id2 && crt_con_speak_last) {
-            crt_con_last = $("div.text-base .markdown", crt_con_speak_last).innerText.trim().replace(/[\r\n]/g, ``).substr(0, 100);
-            const crt_con_a_keyrf2 = Object.keys(crt_con_speak_last).find(key => key.startsWith("__reactFiber"));
-            crt_con_model = crt_con_speak_last[crt_con_a_keyrf2].return.return.memoizedProps.currentModelId;
-        }
-        if (crt_con_id && global.kec_object[crt_con_id] && ((crt_con_last && global.kec_object[crt_con_id].last !== crt_con_last) || (crt_con_model && global.kec_object[crt_con_id].model !== crt_con_model))) {
-            global.kec_object[crt_con_id].last = crt_con_last;
-            global.kec_object[crt_con_id].model = crt_con_model;
-            const crt_st_ec = await global.st_ec.get(crt_con_id);
-            await global.st_ec.put({id: crt_con_id, title: crt_st_ec.title, update_time: crt_st_ec.update_time, last: crt_con_last, model: crt_con_model});
-            $('.navlast', crt_con_a).innerHTML = htmlEncode(crt_con_last);
         }
     };
 
@@ -1260,7 +1251,6 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
             setIfr();
             cleanlyHome();
             speakCompletely();
-            everChanging();
             dataSec();
         }
     };
