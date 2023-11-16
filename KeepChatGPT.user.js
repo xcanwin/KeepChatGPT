@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           20.1
+// @version           20.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1112,6 +1112,9 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
         });
     };
 
+    /*
+    克隆对话
+    */
     const cloneChat = function(action) {
         if (action === true) {
             window.addEventListener('click', cloneChat.listen_Click);
@@ -1122,17 +1125,10 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
 
     cloneChat.listen_Click = function(event) {
         const avatarSelector = "main div.items-end>div:first-child";
-        let avatarDiv;
-        if (event.target.matches(avatarSelector)) {
-            avatarDiv = event.target;
-        } else {
-            avatarDiv = findParent(event.target, avatarSelector);
-        }
+        const avatarDiv = findParent(event.target, avatarSelector);
         if (avatarDiv) {
-            if ($('text', avatarDiv) && $('text', avatarDiv).innerHTML === "ChatGPT") {
-                $('text', avatarDiv).remove();
-            }
-            const content = findParent(avatarDiv, "div.text-base", 2).childNodes[1].innerText.trim();
+            const contentSelector = ".max-w-full .text-message";
+            const content = $(contentSelector, findParent(avatarDiv, "main div.text-base", 2)).innerText.trim();
             $("form.stretch textarea").value = "";
             $("form.stretch textarea").focus();
             document.execCommand('insertText', false, content);
