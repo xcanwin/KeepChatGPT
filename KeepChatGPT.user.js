@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           20.4
+// @version           20.5
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -381,8 +381,7 @@
         const ndivalert = document.createElement('div');
         ndivalert.setAttribute("class", "kdialog relative z-50");
         ndivalert.innerHTML = `
-<div class="fixed inset-0 bg-gray-300/70 dark:bg-gray-600/70"></div>
-<div class="fixed inset-0 overflow-y-auto z-50" style="display: flex; justify-content: center; align-items: center;">
+<div class="fixed inset-0 bg-black/50 dark:bg-gray-600/70" style="display: flex; justify-content: center; align-items: center;">
   <div class="flex items-end justify-center min-h-full p-4 sm:items-center sm:p-0 text-center">
     <div class="kdialogwin bg-white dark:bg-gray-900 rounded-lg sm:max-w-lg sm:p-6 text-left">
       <div class="flex items-center justify-between">
