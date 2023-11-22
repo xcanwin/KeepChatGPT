@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           20.5
+// @version           21.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -379,41 +379,38 @@
 
     const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(t) {return t;}, inputtype = 'br', inputvalue = '') {
         const ndivalert = document.createElement('div');
-        ndivalert.setAttribute("class", "kdialog relative z-50");
         ndivalert.innerHTML = `
-<div class="fixed inset-0 bg-black/50 dark:bg-gray-600/70" style="display: flex; justify-content: center; align-items: center;">
-  <div class="flex items-end justify-center min-h-full p-4 sm:items-center sm:p-0 text-center">
-    <div class="kdialogwin bg-white dark:bg-gray-900 rounded-lg sm:max-w-lg sm:p-6 text-left">
-      <div class="flex items-center justify-between">
-        <div class="kwidth" style="min-width: 15rem">
-          <div class="flex items-center justify-between">
-            <h3 class="dark:text-gray-200 text-gray-900 text-lg">${title}</h3>
-            <p class="kdialogclose" style="cursor: pointer; font-weight: bold; color: #aaa;">X</p>
-          </div>
-          <p class="dark:text-gray-100 mt-2 text-gray-500 text-sm" style="margin-bottom: 0.6rem;">${content}</p>
-          <div class="md:py-3 md:pl-4 border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
-            <${inputtype} class="kdialoginput resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent" style="max-height: 12.5rem; height: 1.5rem; outline: none;" placeholder=""></${inputtype}>
-          </div>
-        </div>
+<div class="fixed inset-0 bg-black/50 dark:bg-gray-600/70">
+  <div class="grid-cols-[10px_1fr_10px] grid h-full w-full grid-rows-[minmax(10px,_1fr)_auto_minmax(10px,_1fr)] md:grid-rows-[minmax(20px,_1fr)_auto_minmax(20px,_1fr)] overflow-y-auto">
+    <div class="relative col-auto col-start-2 row-auto row-start-2 w-full rounded-xl text-left shadow-xl transition-all left-1/2 -translate-x-1/2 bg-white dark:bg-gray-900 max-w-lg xl:max-w-xl">
+      <div class="px-4 pb-4 pt-5 sm:p-6 flex items-center justify-between border-b border-black/10 dark:border-white/10">
+        <h2 class="text-lg leading-6 text-gray-900 dark:text-gray-200">${title}</h2>
       </div>
-      <div class="flex sm:flex-row-reverse sm:mt-4"><button class="btn btn-neutral kdialogbtn">${buttonvalue}</button>
+      <div class="p-4 sm:p-6">
+        <p class="text-muted pb-3 pt-2 text-sm text-gray-600 dark:text-white">${content}</p>
+        <${inputtype} class="kdialoginput w-full resize-none rounded p-4 placeholder:text-gray-300 dark:bg-gray-800 border-gray-100 focus:border-brand-green border"></${inputtype}>
+        <div class="mt-5 flex flex-col gap-3 sm:mt-4 sm:flex-row-reverse">
+          <button class="kdialogbtn btn relative btn-primary">
+            <div class="flex w-full gap-2 items-center justify-center">${buttonvalue}</div>
+          </button>
+          <button class="kdialogclose btn relative btn-neutral">
+            <div class="flex w-full gap-2 items-center justify-center">Cancel</div>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
         `;
         if (inputtype === 'br') {
-            $(".kdialoginput", ndivalert).parentElement.style.display = 'none';
+            $(".kdialoginput", ndivalert).style.display = 'none';
         } else if (inputtype === 'img') {
             $(".kdialoginput", ndivalert).src = inputvalue;
-            $(".kdialoginput", ndivalert).style = `max-height: 19rem; height: unset; display: block; margin: 0 auto;`;
-            $(".kdialogwin", ndivalert).style = `max-width: 37.5rem;`;
+            $(".kdialoginput", ndivalert).style = `max-height: 25rem; height: unset; width: unset; margin: 0 auto;`;
         } else if (inputtype === 'textarea') {
             $(".kdialoginput", ndivalert).value = inputvalue;
-            $(".kdialoginput", ndivalert).style = `max-height: 19rem; height: 10rem; display: block; margin: 0 auto; width: 100%; white-space: pre;`;
-            $(".kdialogwin", ndivalert).style = `max-width: 100%;`;
-            $(".kdialogwin .kwidth", ndivalert).style = `min-width: 28rem;`;
-        }else {
+            $(".kdialoginput", ndivalert).style = `height: 10rem; `;
+        } else {
             $(".kdialoginput", ndivalert).value = inputvalue;
         }
         $(".kdialogclose", ndivalert).onclick = function() {
