@@ -1,12 +1,10 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           21.3
+// @version           21.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
-// @updateURL         https://update.greasyfork.org/scripts/462804/KeepChatGPT.meta.js
-// @downloadURL       https://update.greasyfork.org/scripts/462804/KeepChatGPT.user.js
 // @description:ar    هذا هو ملحق يعزز قدرات وكفاءة بيانات ChatGPT الأمان، ويشترك مجانًا في العديد من الميزات الابتكارية مثل: التحديث التلقائي، البقاء نشطًا، الأمان للبيانات، إلغاء التدقيق، استنساخ الحوار، إلقاء الأحرف، تنقية الصفحة الرئيسية، عرض الشاشة الكبيرة، عرض ملء الشاشة، اعتراض التتبع، التطور الدائم وغيرها.
 // @description:bg    Това е добавка, която повишава способностите и ефективността на данните на ChatGPT за сигурност и безпасност и споделя множество иновативни функции безплатно, като: автоматично обновление, поддържане на активност, сигурност на данните, отмяна на одита, клониране на диалог, безкрайни символи, почистване на началната страница, голям екран, пълен екран, прехващане на проследяване, непрекъснато развитие и други.
 // @description:cs    Toto je doplněk zvyšující schopnosti a efektivitu zabezpečení dat u ChatGPT a sdílí mnoho inovativních funkcí zdarma, jako je automatické obnovení, udržování aktivity, zabezpečení dat, zrušení auditu, klonování konverzace, bezedné znaky, úprava úvodní stránky, zobrazení na velké obrazovce, zobrazení na celou obrazovku, blokování sledování, nepřetržitý vývoj a další.
@@ -57,6 +55,8 @@
 // @grant             unsafeWindow
 // @run-at            document-body
 // @noframes
+// @downloadURL https://update.greasyfork.org/scripts/462804/KeepChatGPT.user.js
+// @updateURL https://update.greasyfork.org/scripts/462804/KeepChatGPT.meta.js
 // ==/UserScript==
 
 
@@ -1100,18 +1100,18 @@ nav.flex div.overflow-y-auto .gizmo\\:mt-5 {
     };
 
     const checkForUpdates = function() {
-        const crv = GM_info.script.version;
-        let updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || GM_info.script.downloadURL;
-        updateURL = `${updateURL}?t=${Date.now()}`;
+        const downloadURL = GM_info.script.downloadURL;
+        const updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || downloadURL;
         GM_xmlhttpRequest({
             method: "GET",
-            url: updateURL,
+            url: `${updateURL}?t=${Date.now()}`,
             onload: function(response) {
+                const crv = GM_info.script.version;
                 const m = response.responseText.match(/@version\s+(\S+)/);
                 const ltv = m && m[1];
                 if (ltv && verInt(ltv) > verInt(crv)) {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
-                        window.open(updateURL, '_blank');
+                        window.open(`${downloadURL}?t=${Date.now()}`, '_blank');
                     });
                 } else {
                     ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
