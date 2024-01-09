@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           21.6
+// @version           21.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1011,7 +1011,7 @@ nav.flex div.overflow-y-auto .relative.mt-5 {
 
     const attachDate = async function() {
         if (!global.kec_object) return;
-        $$('nav.flex li a.rounded-lg').forEach(el => {
+        $$('nav.flex li a').forEach(el => {
             const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
             const a_id = el[keyrf].return.return.memoizedProps.conversation.id;
             const kec_obj_el = global.kec_object[a_id];
@@ -1027,14 +1027,14 @@ nav.flex div.overflow-y-auto .relative.mt-5 {
                 const cdiv_new = document.createElement("div");
                 cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
                 cdiv_new.innerHTML = `
-<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute;" class="navtitle">
+<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute; color: #e1e1e1; font-weight: bold;" class="navtitle">
     ${title}
 </div>
-<div style="right: 0;position: absolute;color: grey;font-size: 0.71rem;" class="navdate">
+<div style="right: 0; position: absolute; color: gray; font-size: 0.71rem;" class="navdate">
     ${formatDate2(update_time)}
 </div>
 <br>
-<div style="max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: gray; font-size: 0.75rem;" class="navlast">
+<div style="max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #606060; font-size: 0.75rem;" class="navlast">
     ${htmlEncode(last)}
 </div>
 `;
