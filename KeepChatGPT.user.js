@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           22.0
+// @version           22.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -919,20 +919,24 @@ nav.flex .transition-all {
                 try {
                     const block_url = 'gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|/v1/initialize|/messenger/|statsigapi\.net|/rgstr|/v1/sdk_exception';
                     if (gv("k_closeModer", false) && fetchReqUrl.match('/backend-api/moderations(\\?|$)')) {
+                        //取消审计1
                         fetchRsp = Promise.resolve({
                             json: () => {return {}}
                         });
                         return fetchRsp;
                     } else if (gv("k_closeModer", false) && fetchReqUrl.match('/backend-api/conversation(\\?|$)')) {
+                        //取消审计2
                         const post_body = JSON.parse(argumentsList[1].body);
                         post_body.supports_modapi = false;
                         argumentsList[1].body = JSON.stringify(post_body);
                     } else if (gv("k_intercepttracking", false) && fetchReqUrl.match(block_url)) {
+                        //拦截跟踪
                         console.log(`KeepChatGPT: ${tl("拦截跟踪")}: ${fetchReqUrl}`);
                         fetchRsp = Promise.resolve({
                         });
                         return fetchRsp;
-                    } else if (fetchReqUrl.match('/backend-api/compliance')) { //fix openai bug
+                    } else if (fetchReqUrl.match('/backend-api/compliance')) {
+                        //fix openai bug
                         fetchRsp = Promise.resolve({
                             json: () => {return {"registration_country":null,"require_cookie_consent":false,"terms_of_use":{"is_required":false,"display":null},"cookie_consent":null,"age_verification":null}}
                         });
@@ -943,30 +947,28 @@ nav.flex .transition-all {
                 return fetchRsp.then(response => {
                     return response.text().then(async fetchRspBody => {
                         let fetchRspBodyNew = fetchRspBody;
-
                         if (fetchReqUrl.match('/api/auth/session(\\?|$)')) {
+                            //打开网页时，创建数据库。
                             let modifiedData = JSON.parse(fetchRspBody);
                             if (!global.st_ec) {
                                 const email = modifiedData.user.email;
                                 global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
-                                cacheEC();
                             }
                             delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
                             fetchRspBodyNew = JSON.stringify(modifiedData);
                         } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                             //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
                             const b = JSON.parse(fetchRspBody).items;
+                            let kec_object = {};
                             b.forEach(async el => {
                                 const update_time = new Date(el.update_time);
                                 const ec_tmp = await global.st_ec.get(el.id) || {};
                                 await global.st_ec.put({id: el.id, title: el.title, update_time: update_time, last: ec_tmp.last, model: ec_tmp.model});
+                                kec_object[el.id] = {title: el.title, update_time: update_time, last: ec_tmp.last, model: ec_tmp.model};
                             });
                             setTimeout(function() {
-                                cacheEC();
-                                setTimeout(function() {
-                                    attachDate();
-                                }, 300);
-                            }, 300);
+                                attachDate(kec_object);
+                            }, 600);
                         } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/')) {
                             //点击侧边栏的历史对话时，更新数据库：当前id、当前标题、当前更新时间，当前last，当前model。同时更新侧边栏
                             const f = JSON.parse(fetchRspBody);
@@ -981,14 +983,12 @@ nav.flex .transition-all {
                             const crt_con_last = crt_con_speak_last.content.parts[0].trim().replace(/[\r\n]/g, ``).substr(0, 100);
                             const crt_con_model = crt_con_speak_last.metadata.model_slug;
                             await global.st_ec.put({id: crt_con_id, title: crt_con_title, update_time: crt_con_update_time, last: crt_con_last, model: crt_con_model});
+                            let kec_object = {};
+                            kec_object[crt_con_id] = {title: crt_con_title, update_time: crt_con_update_time, last: crt_con_last, model: crt_con_model};
                             setTimeout(function() {
-                                cacheEC();
-                                setTimeout(function() {
-                                    attachDate();
-                                }, 300);
+                                attachDate(kec_object);
                             }, 300);
                         }
-
                         const responseNew = new Response(fetchRspBodyNew, {
                             status: response.status,
                             statusText: response.statusText,
@@ -996,12 +996,10 @@ nav.flex .transition-all {
                         });
                         return Promise.resolve(responseNew);
                     });
-                })
-                    .catch(error => {
+                }).catch(error => {
                     console.error(error);
                     return Promise.reject(error);
                 });
-
             }
         });
         navigator.sendBeacon = function(url, data) {};
@@ -1024,12 +1022,16 @@ nav.flex div.overflow-y-auto .relative.mt-5 {
         }
     };
 
-    const attachDate = async function() {
-        if (!global.kec_object) return;
-        $$('nav.flex li a').forEach(el => {
+    const attachDate = function(kec_object) {
+        $$('nav.flex li a').forEach(async el => {
             const keyrf = Object.keys(el).find(key => key.startsWith("__reactFiber"));
             const a_id = el[keyrf].return.return.memoizedProps.conversation.id;
-            const kec_obj_el = global.kec_object[a_id];
+            let kec_obj_el;
+            if (kec_object) {
+                kec_obj_el = kec_object[a_id];
+            } else {
+                kec_obj_el = await global.st_ec.get(a_id);
+            }
             const title = kec_obj_el && kec_obj_el.title || "";
             const update_time = kec_obj_el && kec_obj_el.update_time || "";
             const last = kec_obj_el && kec_obj_el.last || "";
@@ -1069,30 +1071,6 @@ nav.flex div.overflow-y-auto .relative.mt-5 {
                 sidebar_chat.classList.remove("-mr-2");
             }
         }
-    };
-
-    const cacheEC = async function() {
-        if (!global.kec_object) global.kec_object = {};
-        let store = await global.st_ec.store();
-        let request = store.openCursor();
-        request.onsuccess = function(e) {
-            let cursor = e.target.result;
-            if (cursor) {
-                const id = cursor.value.id || "";
-                const title = cursor.value.title || "";
-                const update_time = cursor.value.update_time || "";
-                const last = cursor.value.last || "";
-                const model = cursor.value.model || "";
-                if (!global.kec_object[id]) {
-                    global.kec_object[id] = {};
-                }
-                global.kec_object[id].title = title;
-                global.kec_object[id].update_time = update_time;
-                global.kec_object[id].last = last;
-                global.kec_object[id].model = model;
-                cursor.continue();
-            }
-        };
     };
 
     const verInt = function(vs) {
