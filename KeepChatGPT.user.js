@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           22.1
+// @version           22.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -945,10 +945,10 @@ nav.flex .transition-all {
                 } catch (e) {}
                 fetchRsp = target.apply(thisArg, argumentsList);
                 return fetchRsp.then(response => {
-                    return response.text().then(async fetchRspBody => {
-                        let fetchRspBodyNew = fetchRspBody;
-                        if (fetchReqUrl.match('/api/auth/session(\\?|$)')) {
-                            //打开网页时，创建数据库。
+                    if (fetchReqUrl.match('/api/auth/session(\\?|$)')) {
+                        //打开网页时，创建数据库。
+                        return response.text().then(async fetchRspBody => {
+                            let fetchRspBodyNew = fetchRspBody;
                             let modifiedData = JSON.parse(fetchRspBody);
                             if (!global.st_ec) {
                                 const email = modifiedData.user.email;
@@ -956,8 +956,17 @@ nav.flex .transition-all {
                             }
                             delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
                             fetchRspBodyNew = JSON.stringify(modifiedData);
-                        } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
-                            //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
+                            const responseNew = new Response(fetchRspBodyNew, {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: response.headers
+                            });
+                            return Promise.resolve(responseNew);
+                        });
+                    } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
+                        //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
+                        return response.text().then(async fetchRspBody => {
+                            let fetchRspBodyNew = fetchRspBody;
                             const b = JSON.parse(fetchRspBody).items;
                             let kec_object = {};
                             b.forEach(async el => {
@@ -969,8 +978,17 @@ nav.flex .transition-all {
                             setTimeout(function() {
                                 attachDate(kec_object);
                             }, 600);
-                        } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/')) {
-                            //点击侧边栏的历史对话时，更新数据库：当前id、当前标题、当前更新时间，当前last，当前model。同时更新侧边栏
+                            const responseNew = new Response(fetchRspBodyNew, {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: response.headers
+                            });
+                            return Promise.resolve(responseNew);
+                        });
+                    } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/')) {
+                        //点击侧边栏的历史对话时，更新数据库：当前id、当前标题、当前更新时间，当前last，当前model。同时更新侧边栏
+                        return response.text().then(async fetchRspBody => {
+                            let fetchRspBodyNew = fetchRspBody;
                             const f = JSON.parse(fetchRspBody);
                             const crt_con_id = f && f.conversation_id;
                             const crt_con_title = f && f.title;
@@ -988,14 +1006,15 @@ nav.flex .transition-all {
                             setTimeout(function() {
                                 attachDate(kec_object);
                             }, 300);
-                        }
-                        const responseNew = new Response(fetchRspBodyNew, {
-                            status: response.status,
-                            statusText: response.statusText,
-                            headers: response.headers
+                            const responseNew = new Response(fetchRspBodyNew, {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: response.headers
+                            });
+                            return Promise.resolve(responseNew);
                         });
-                        return Promise.resolve(responseNew);
-                    });
+                    }
+                    return response;
                 }).catch(error => {
                     console.error(error);
                     return Promise.reject(error);
