@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           21.7
+// @version           22.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -940,14 +940,19 @@ nav.flex .transition-all {
                     }
                 } catch (e) {}
                 fetchRsp = target.apply(thisArg, argumentsList);
-                fetchRsp.then(response => {
-                    let clonedResponse = response.clone();
-                    clonedResponse.text().then(async fetchRspBody => {
-                        const fetchRspHeaders = clonedResponse.headers;
-                        if (fetchReqUrl.match('/api/auth/session(\\?|$)') && !global.st_ec) {
-                            const email = JSON.parse(fetchRspBody).user.email;
-                            global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
-                            cacheEC();
+                return fetchRsp.then(response => {
+                    return response.text().then(async fetchRspBody => {
+                        let fetchRspBodyNew = fetchRspBody;
+
+                        if (fetchReqUrl.match('/api/auth/session(\\?|$)')) {
+                            let modifiedData = JSON.parse(fetchRspBody);
+                            if (!global.st_ec) {
+                                const email = modifiedData.user.email;
+                                global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
+                                cacheEC();
+                            }
+                            delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
+                            fetchRspBodyNew = JSON.stringify(modifiedData);
                         } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                             //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
                             const b = JSON.parse(fetchRspBody).items;
@@ -983,10 +988,20 @@ nav.flex .transition-all {
                                 }, 300);
                             }, 300);
                         }
+
+                        const responseNew = new Response(fetchRspBodyNew, {
+                            status: response.status,
+                            statusText: response.statusText,
+                            headers: response.headers
+                        });
+                        return Promise.resolve(responseNew);
                     });
-                    return clonedResponse;
-                }).catch(error => {});
-                return fetchRsp;
+                })
+                    .catch(error => {
+                    console.error(error);
+                    return Promise.reject(error);
+                });
+
             }
         });
         navigator.sendBeacon = function(url, data) {};
