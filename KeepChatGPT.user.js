@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           23.3
+// @version           23.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -371,7 +371,7 @@
 
     const ncheckbox = function() {
         const nsvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        nsvg.setAttribute("viewBox", "0 0 100 30");
+        nsvg.setAttribute("viewBox", "0 0 45 30");
         nsvg.classList.add("checkbutton");
         nsvg.innerHTML = `<g fill="none" fill-rule="evenodd"><path fill="#979797" d="M0 15C0 6.716 6.716 0 15 0h14c8.284 0 15 6.716 15 15s-6.716 15-15 15H15C6.716 30 0 23.284 0 15z"/><circle fill="#FFF" cx="15" cy="15" r="13"/></g>`;
         return nsvg.cloneNode(true);
@@ -828,7 +828,7 @@ nav.flex li>div:hover {
     left: .5rem;
     right: .5rem;
     font-weight: normal;
-    font-size: medium;
+    font-size: 0.9rem;
     line-height: normal;
 }
 #kcg:hover .kmenu, .kmenu:hover {
@@ -836,7 +836,7 @@ nav.flex li>div:hover {
 }
 .kmenu li {
     display: block;
-    padding: 0.5rem 1.5rem;
+    padding: 0.5rem 0.85rem;
     text-align: left;
     user-select: none;
     display: flex;
@@ -872,10 +872,9 @@ nav div.pt-3\\.5 {
 }
 
 .checkbutton {
-    height: 20px;
-    margin-left: auto;
-    margin-right: -35px;
-    padding-left: 10px;
+    height: 1.25rem;
+    right: 0.85rem;
+    position: absolute;
 }
 .checkbutton:hover {
     cursor: pointer;
