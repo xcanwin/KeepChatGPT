@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           22.2
+// @version           23.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -373,7 +373,7 @@
         const nsvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         nsvg.setAttribute("viewBox", "0 0 100 30");
         nsvg.classList.add("checkbutton");
-        nsvg.innerHTML = `<g fill="none" fill-rule="evenodd"><path fill="#E3E3E3" d="M0 15C0 6.716 6.716 0 15 0h14c8.284 0 15 6.716 15 15s-6.716 15-15 15H15C6.716 30 0 23.284 0 15z"/><circle fill="#FFF" cx="15" cy="15" r="13"/></g>`;
+        nsvg.innerHTML = `<g fill="none" fill-rule="evenodd"><path fill="#979797" d="M0 15C0 6.716 6.716 0 15 0h14c8.284 0 15 6.716 15 15s-6.716 15-15 15H15C6.716 30 0 23.284 0 15z"/><circle fill="#FFF" cx="15" cy="15" r="13"/></g>`;
         return nsvg.cloneNode(true);
     };
 
@@ -382,9 +382,9 @@
         ndivalert.innerHTML = `
 <div class="fixed inset-0 bg-black/50 dark:bg-gray-600/70">
   <div class="grid-cols-[10px_1fr_10px] grid h-full w-full grid-rows-[minmax(10px,_1fr)_auto_minmax(10px,_1fr)] md:grid-rows-[minmax(20px,_1fr)_auto_minmax(20px,_1fr)] overflow-y-auto">
-    <div class="relative col-auto col-start-2 row-auto row-start-2 w-full rounded-xl text-left shadow-xl transition-all left-1/2 -translate-x-1/2 bg-white dark:bg-gray-900 max-w-lg xl:max-w-xl">
+    <div class="relative col-auto col-start-2 row-auto row-start-2 w-full rounded-xl text-left shadow-xl transition-all left-1/2 -translate-x-1/2  bg-token-main-surface-primary max-w-lg xl:max-w-xl">
       <div class="px-4 pb-4 pt-5 sm:p-6 flex items-center justify-between border-b border-black/10 dark:border-white/10">
-        <h2 class="text-lg leading-6 text-gray-900 dark:text-gray-200">${title}</h2>
+        <h2 class="text-lg leading-6 dark:text-gray-200">${title}</h2>
       </div>
       <div class="p-4 sm:p-6">
         <p class="text-muted pb-3 pt-2 text-sm text-gray-600 dark:text-white">${content}</p>
@@ -409,7 +409,7 @@
             $(".kdialoginput", ndivalert).style = `max-height: 25rem; height: unset; width: unset; margin: 0 auto;`;
         } else if (inputtype === 'textarea') {
             $(".kdialoginput", ndivalert).value = inputvalue;
-            $(".kdialoginput", ndivalert).style = `height: 10rem; `;
+            $(".kdialoginput", ndivalert).style = `height: 10rem; background-color: transparent;`;
         } else {
             $(".kdialoginput", ndivalert).value = inputvalue;
         }
@@ -447,7 +447,7 @@
     <li id=nmenuid_ab>${tl("关于")}</li>
 </ul>
 `;
-        document.body.appendChild(ndivmenu);
+        $('#kcg').appendChild(ndivmenu);
 
         $('#nmenuid_sd').appendChild(ncheckbox());
         $('#nmenuid_dm').appendChild(ncheckbox());
@@ -485,14 +485,10 @@
 
         $('#nmenuid_dm').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
-                $('#kcg').style = $('#kcg').styleOrigin;
+                $('body').classList.remove("kdark");
                 sv("k_theme", "light");
             } else {
-                $('#kcg').styleOrigin = $('#kcg').style;
-                $('#kcg').style.background = "#2C3E50";
-                $('#kcg').style.animation = "none";
-                $('#kcg').style.color = "#ffffff";
-                $('#kcg').style.marginRight = "inherit";
+                $('body').classList.add("kdark");
                 sv("k_theme", "dark");
             }
             $('.checkbutton', this).classList.toggle('checked');
@@ -608,14 +604,9 @@
             $('#xcanwin').style.display = 'none';
         }
 
-        if (gv("k_theme", "light") === "light") {
-            $('#kcg').styleOrigin = $('#kcg').style;
-        } else {
+        if (gv("k_theme", "light") === "dark") {
             $('#nmenuid_dm .checkbutton').classList.add('checked');
-            $('#kcg').style.background = "#2C3E50";
-            $('#kcg').style.animation = "none";
-            $('#kcg').style.color = "#ffffff";
-            $('#kcg').style.marginRight = "inherit";
+            $('body').classList.add("kdark");
         }
 
         if (gv("k_closeModer", false) === true) {
@@ -666,13 +657,13 @@
     const toggleMenu = function(action) {
         const ndivmenu = $(".kmenu");
         if (action === "show") {
-            ndivmenu.style.display = 'block';
+            ndivmenu.classList.remove('hide');
             if ($("#kcg")) {
                 ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
                 ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
             }
         } else {
-            ndivmenu.style.display = 'none';
+            ndivmenu.classList.add('hide');
         }
     };
 
@@ -685,9 +676,13 @@
         if (kcg_html !== undefined) {
             if ($(symbol1_selector)) {
                 kcg_html.innerHTML = kcg_html._symbol1_innerHTML;
+                kcg_html.classList.add('kcg-pc');
+                kcg_html.classList.remove('kcg-mb');
                 symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
             } else if ($(symbol2_selector)) {
                 kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
+                kcg_html.classList.remove('kcg-pc');
+                kcg_html.classList.add('kcg-mb');
                 symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
                 $(symbol2_selector).parentNode.classList.remove('absolute');
             }
@@ -695,41 +690,32 @@
             return;
         }
 
-        loadMenu();
         setIfr(u);
 
         const ndivkcg = document.createElement("div");
         ndivkcg.id = "kcg";
-        ndivkcg.setAttribute("class", "kgold flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
+        ndivkcg.setAttribute("class", "flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
 
-        const ndivmenu = $(".kmenu");
-        ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
-            toggleMenu('show');
-        };
-        ndivkcg.onmouseleave = ndivmenu.onmouseleave = function() {
-            toggleMenu('hide');
-        };
-        ndivkcg.onclick = function() {
-            if (ndivmenu.style.display === 'none') {
-                toggleMenu('show');
-            } else {
-                toggleMenu('hide');
-            }
-        };
         const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem;' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
-        ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
+        ndivkcg._symbol2_innerHTML = `<img src='${icon}' style='width: 1rem;' />`;
 
         if ($(symbol1_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
+            ndivkcg.classList.add('kcg-pc');
+            ndivkcg.classList.remove('kcg-mb');
             symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
         } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
+            ndivkcg.classList.remove('kcg-pc');
+            ndivkcg.classList.add('kcg-mb');
             symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
             $(symbol2_selector).parentNode.classList.remove('absolute');
         }
         kcg_html = ndivkcg;
         symbol_prt.insertBefore(kcg_html, symbol_prt.childNodes[0]);
+        loadMenu();
+        const ndivmenu = $(".kmenu");
 
         addStyle();
         setUserOptions();
@@ -737,45 +723,59 @@
 
     const addStyle = function() {
         GM_addStyle(`
-.kgold {
-    color: #555;
-    background: linear-gradient(to top right, #F0B27A, #FDE184, #F0B27A);
+#kcg {
+    background: linear-gradient(to top right, #ff5, #FFE6C6, #F9F9B3);
     animation: gradient 6s ease-in-out infinite;
-    position: relative;
-    overflow: hidden;
+    color: #555;
     font-weight: bold;
     user-select: none;
+    border-color: #cec86b;
 }
 @keyframes gradient {
     0%{background-color:#F0B27A;}
     50%{background-color:#FDE184;}
     100%{background-color:#F0B27A;}
 }
-
-#kcg {
+.kcg-pc {
+    position: relative;
     margin-top: .5rem;
     margin-bottom: .5rem;
 }
-#kcg::before {
-    content: '';
+.kcg-mb {
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        to bottom right,
-        rgba(255, 255, 255, 0.4),
-        rgba(255, 255, 255, 0.2),
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0)
-    );
-    transform: rotate(-45deg);
+    margin-top: .3rem;
+    margin-bottom: .3rem;
+    top: 0;
+    left: .5rem;
+    bottom: 0;
+}
+.kdark {
+    #kcg {
+        background: linear-gradient(to top right, #2d005e, #000133, #1600bf);
+        animation: none;
+        color: #ffffff;
+        border-color: #00618e;
+    }
+    #kcg img {
+        filter: invert(1);
+    }
+    .kmenu {
+        background: linear-gradient(to top right, #01001c, #09004A, #003193);
+        color: #FFFFFF;
+    }
+    .kmenu li:hover {
+        background-color: #3a3cce;
+    }
+}
+.dark {
+    nav.flex li a .navtitle {
+        color: #e1e1e1 !important;
+    }
 }
 
 .kmenu {
-    background-color: #202123;
-    color: #FFFFFF;
+    background: linear-gradient(to top right, #A5EEFF, #E6E6FB, #FFF);
+    color: #000000;
     border: 0.06rem solid #4D4D4F;
     border-radius: 0.625rem;
     box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
@@ -784,25 +784,15 @@
     padding: 0.75rem 0;
     position: absolute;
     z-index: 1000;
+    top: .1rem;
+    left: .5rem;
+    right: .5rem;
+    font-weight: normal;
+    font-size: medium;
+    line-height: normal;
 }
-.kmenu::before {
-    content: "";
-    position: absolute;
-    top: 0rem;
-    bottom: 0rem;
-    left: -6rem;
-    right: 0rem;
-    pointer-events: auto;
-    z-index: -1;
-}
-.kmenu::after {
-    content: "";
-    position: absolute;
-    top: 1rem;
-    left: -1.25rem;
-    border-style: solid;
-    border-width: 0.625rem 0.625rem 0.625rem 0.625rem;
-    border-color: transparent #202123 transparent transparent;
+#kcg:hover .kmenu, .kmenu:hover {
+    display: block;
 }
 .kmenu li {
     display: block;
@@ -813,7 +803,7 @@
     align-items: center;
 }
 .kmenu li:hover {
-    background-color: #273746;
+    background-color: #c0caff;
     cursor: pointer;
 }
 
@@ -956,12 +946,7 @@ nav.flex .transition-all {
                             }
                             delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
                             fetchRspBodyNew = JSON.stringify(modifiedData);
-                            const responseNew = new Response(fetchRspBodyNew, {
-                                status: response.status,
-                                statusText: response.statusText,
-                                headers: response.headers
-                            });
-                            return Promise.resolve(responseNew);
+                            return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
                         });
                     } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                         //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
@@ -978,12 +963,7 @@ nav.flex .transition-all {
                             setTimeout(function() {
                                 attachDate(kec_object);
                             }, 600);
-                            const responseNew = new Response(fetchRspBodyNew, {
-                                status: response.status,
-                                statusText: response.statusText,
-                                headers: response.headers
-                            });
-                            return Promise.resolve(responseNew);
+                            return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
                         });
                     } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/')) {
                         //点击侧边栏的历史对话时，更新数据库：当前id、当前标题、当前更新时间，当前last，当前model。同时更新侧边栏
@@ -1006,12 +986,7 @@ nav.flex .transition-all {
                             setTimeout(function() {
                                 attachDate(kec_object);
                             }, 300);
-                            const responseNew = new Response(fetchRspBodyNew, {
-                                status: response.status,
-                                statusText: response.statusText,
-                                headers: response.headers
-                            });
-                            return Promise.resolve(responseNew);
+                            return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
                         });
                     }
                     return response;
@@ -1063,7 +1038,7 @@ nav.flex div.overflow-y-auto .relative.mt-5 {
                 const cdiv_new = document.createElement("div");
                 cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
                 cdiv_new.innerHTML = `
-<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute; color: #e1e1e1; font-weight: bold;" class="navtitle">
+<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute; color: #000000; font-weight: bold;" class="navtitle">
     ${title}
 </div>
 <div style="right: 0; position: absolute; color: gray; font-size: 0.71rem;" class="navdate">
