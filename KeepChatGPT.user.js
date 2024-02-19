@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           23.1
+// @version           23.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -725,10 +725,27 @@
 #__next > div > div:nth-child(1) {
     background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
 }
+nav.flex li>div .bg-gradient-to-l {
+    background-image: unset;
+}
+/*左边栏选中条目*/
+nav.flex li>div.bg-token-sidebar-surface-tertiary {
+    background-color: #bfcbfd;
+}
+/*左边栏鼠标滑动*/
+nav.flex li>div:hover {
+    background-color: #d5ddff;
+}
 /*官方暗色模式*/
 .dark {
     #__next > div > div:nth-child(1) {
         background: linear-gradient(to right top, #020000, #0f0922, #000);
+    }
+    nav.flex li>div.bg-token-sidebar-surface-tertiary {
+        background-color: #444;
+    }
+    nav.flex li>div:hover {
+        background-color: #2f2f2f;
     }
 }
 
@@ -740,17 +757,6 @@
     nav.flex div.overflow-y-auto .relative.mt-5 {
         margin-top: 0;
     }
-    /*左边栏选中条目*/
-    nav.flex li>div.bg-token-sidebar-surface-tertiary {
-        background-color: #bfcbfd;
-    }
-    /*左边栏鼠标滑动*/
-    nav.flex li>div:hover {
-        background-color: #d5ddff;
-    }
-    nav.flex li>div .bg-gradient-to-l {
-        background-image: unset;
-    }
     /*左边栏日期*/
     .navdate {
         font-size: 0.75rem;
@@ -760,12 +766,6 @@
 /*官方暗色模式*/
 .dark {
     .ever-changing {
-        nav.flex li>div.bg-token-sidebar-surface-tertiary {
-            background-color: #444;
-        }
-        nav.flex li>div:hover {
-            background-color: #2f2f2f;
-        }
         nav.flex li a .navtitle {
             color: #e1e1e1 !important;
         }
@@ -1009,7 +1009,7 @@ nav.flex .transition-all {
                             });
                             setTimeout(function() {
                                 attachDate(kec_object);
-                            }, 600);
+                            }, 1000);//有点bug
                             return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
                         });
                     } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/')) {
