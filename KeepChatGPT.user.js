@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           23.0
+// @version           23.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -573,11 +573,10 @@
         $('#nmenuid_ec').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 sv("k_everchanging", false);
-                location.reload();
+                everChanging(false);
             } else {
                 sv("k_everchanging", true);
-                $('nav.flex')?.classList.add('knav');
-                everChanging();
+                everChanging(true);
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
@@ -638,8 +637,7 @@
 
         if (gv("k_everchanging", false) === true) {
             $('#nmenuid_ec .checkbutton').classList.add('checked');
-            $('nav.flex')?.classList.add('knav');
-            everChanging();
+            everChanging(true);
         }
 
         //检查更新：首次、每3天
@@ -723,6 +721,58 @@
 
     const addStyle = function() {
         GM_addStyle(`
+/*左边栏*/
+#__next > div > div:nth-child(1) {
+    background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
+}
+/*官方暗色模式*/
+.dark {
+    #__next > div > div:nth-child(1) {
+        background: linear-gradient(to right top, #020000, #0f0922, #000);
+    }
+}
+
+/*日星月异*/
+.ever-changing {
+    nav.flex div.overflow-y-auto h3 {
+        display: none;
+    }
+    nav.flex div.overflow-y-auto .relative.mt-5 {
+        margin-top: 0;
+    }
+    /*左边栏选中条目*/
+    nav.flex li>div.bg-token-sidebar-surface-tertiary {
+        background-color: #bfcbfd;
+    }
+    /*左边栏鼠标滑动*/
+    nav.flex li>div:hover {
+        background-color: #d5ddff;
+    }
+    nav.flex li>div .bg-gradient-to-l {
+        background-image: unset;
+    }
+    /*左边栏日期*/
+    .navdate {
+        font-size: 0.75rem;
+        padding-right: 0.5rem;
+    }
+}
+/*官方暗色模式*/
+.dark {
+    .ever-changing {
+        nav.flex li>div.bg-token-sidebar-surface-tertiary {
+            background-color: #444;
+        }
+        nav.flex li>div:hover {
+            background-color: #2f2f2f;
+        }
+        nav.flex li a .navtitle {
+            color: #e1e1e1 !important;
+        }
+    }
+}
+
+/*LOGO*/
 #kcg {
     background: linear-gradient(to top right, #ff5, #FFE6C6, #F9F9B3);
     animation: gradient 6s ease-in-out infinite;
@@ -749,6 +799,7 @@
     left: .5rem;
     bottom: 0;
 }
+/*暗色模式*/
 .kdark {
     #kcg {
         background: linear-gradient(to top right, #2d005e, #000133, #1600bf);
@@ -759,24 +810,13 @@
     #kcg img {
         filter: invert(1);
     }
-    .kmenu {
-        background: linear-gradient(to top right, #01001c, #09004A, #003193);
-        color: #FFFFFF;
-    }
-    .kmenu li:hover {
-        background-color: #3a3cce;
-    }
-}
-.dark {
-    nav.flex li a .navtitle {
-        color: #e1e1e1 !important;
-    }
 }
 
+/*菜单栏*/
 .kmenu {
-    background: linear-gradient(to top right, #A5EEFF, #E6E6FB, #FFF);
+    background: linear-gradient(to top right, #C4F4FF, #E6E6FB, #FFF);
     color: #000000;
-    border: 0.06rem solid #4D4D4F;
+    border: 0.08rem solid #5252D9;
     border-radius: 0.625rem;
     box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
     display: none;
@@ -805,6 +845,16 @@
 .kmenu li:hover {
     background-color: #c0caff;
     cursor: pointer;
+}
+/*暗色模式*/
+.kdark {
+    .kmenu {
+        background: linear-gradient(to top right, #01001c, #09004A, #003193);
+        color: #FFFFFF;
+    }
+    .kmenu li:hover {
+        background-color: #3a3cce;
+    }
 }
 
 main div.items-end>div:first-child {
@@ -862,10 +912,6 @@ nav div.pt-3\\.5 {
     max-height: 0 !important;
 }
 
-.navdate {
-    font-size: 0.75rem;
-    padding-right: 0.5rem;
-}
 nav.flex div.overflow-y-auto a.hover\\:pr-4 {
     padding-right: unset;
 }
@@ -898,6 +944,7 @@ nav.flex .transition-all {
 .hide {
     display: none;
 }
+
 `);
     };
 
@@ -999,20 +1046,13 @@ nav.flex .transition-all {
         navigator.sendBeacon = function(url, data) {};
     };
 
-    const everChanging = function() {
-        if (gv("k_everchanging", false) === true) {
-            if (!global.everChangingOnce) {
-                global.everChangingOnce = 1;
-                GM_addStyle(`
-nav.flex div.overflow-y-auto h3 {
-    display: none;
-}
-nav.flex div.overflow-y-auto .relative.mt-5 {
-    margin-top: 0;
-}
-`);
-            }
+    const everChanging = function(action) {
+        if (action === true) {
+            $('nav.flex')?.classList.add('knav');
+            $("body").classList.add("ever-changing");
             attachDate();
+        } else {
+            $("body").classList.remove("ever-changing");
         }
     };
 
