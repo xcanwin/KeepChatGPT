@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           24.0
+// @version           24.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1268,7 +1268,7 @@ nav.flex .transition-all {
 
     /*
     fix openai bug
-    帮助openai官方修复Alpha语言环境bug导致的无法发送信息问题
+    帮助openai官方修复bug：Alpha语言环境存在bug导致无法发送信息
     */
     const fixOpenaiBUG = function() {
         localStorage.removeItem('oai/apps/locale');
@@ -1287,15 +1287,7 @@ nav.flex .transition-all {
     };
 
     const goodJob = function() {
-        ndialog(`这是一条求职信息`, `· 本人真诚求职，期望岗位：信息安全，位置：目前广州，接受广州深圳。
-<br>· 本人擅长信息安全/SDLC/渗透测试/安全评估/体系建设/安全开发/代码审计/攻防。
-<br>· 有甲方大型金融公司/乙方安全公司/7年工作经验/带队经验。
-<br>· 待人和蔼/喜欢分享交流。
-<br>· 欢迎内推，如果有合适的岗位信息请尽情分享给我，感谢各位朋友。
-<br>· 邮箱: ${atob(atob("ZUdOaGJuZHBia0JuYldGcGJDNWpiMjA9"))}
-<br>· 若成功了，我会在<a href="${GM_info.script.namespace}">【GITHUB首页】</a>留下【感谢】二字。
-<br>· 非常抱歉打扰各位，为了生活，希望体谅，本消息会出现4次。
-`, `邮箱`, function(t) {
+        ndialog(`这是一条求职信息`, `${decodeURIComponent(escape(atob("wrcg5pys5Lq655yf6K+a5rGC6IGM77yM5pyf5pyb5bKX5L2N77ya5L+h5oGv5a6J5YWo77yM5L2N572u77ya55uu5YmN5bm/5bee77yM5o6l5Y+X5bm/5bee5rex5Zyz44CCCjxicj7CtyDmnKzkurrmk4Xplb/kv6Hmga/lronlhagvU0RMQy/muJfpgI/mtYvor5Uv5a6J5YWo6K+E5LywL+S9k+ezu+W7uuiuvi/lronlhajlvIDlj5Ev5Luj56CB5a6h6K6hL+aUu+mYsuOAggo8YnI+wrcg5pyJ55Sy5pa55aSn5Z6L6YeR6J6N5YWs5Y+4L+S5meaWueWuieWFqOWFrOWPuC835bm05bel5L2c57uP6aqML+W4pumYn+e7j+mqjOOAggo8YnI+wrcg5b6F5Lq65ZKM6JS8L+WWnOasouWIhuS6q+S6pOa1geOAggo8YnI+wrcg5qyi6L+O5YaF5o6o77yM5aaC5p6c5pyJ5ZCI6YCC55qE5bKX5L2N5L+h5oGv6K+35bC95oOF5YiG5Lqr57uZ5oiR77yM5oSf6LCi5ZCE5L2N5pyL5Y+L44CCCjxicj7CtyDpgq7nrrE6IHhjYW53aW5AZ21haWwuY29tCjxicj7CtyDoi6XmiJDlip/kuobvvIzmiJHkvJrlnKg8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20veGNhbndpbi9LZWVwQ2hhdEdQVC8iPuOAkEdJVEhVQummlumhteOAkTwvYT7nlZnkuIvjgJDmhJ/osKLjgJHkuozlrZfjgIIKPGJyPsK3IOmdnuW4uOaKseatieaJk+aJsOWQhOS9je+8jOS4uuS6hueUn+a0u++8jOW4jOacm+S9k+iwhe+8jOacrOa2iOaBr+S8muWHuueOsDTmrKHjgII=")))}`, `邮箱`, function(t) {
             window.open(`mailto:${atob(atob("ZUdOaGJuZHBia0JuYldGcGJDNWpiMjA9"))}`, '_blank');
         });
     }
