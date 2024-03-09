@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           23.5
+// @version           24.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -387,7 +387,7 @@
         <h2 class="text-lg leading-6 dark:text-gray-200">${title}</h2>
       </div>
       <div class="p-4 sm:p-6">
-        <p class="text-muted pb-3 pt-2 text-sm text-gray-600 dark:text-white">${content}</p>
+        <p class="kdialogcontent text-muted pb-3 pt-2 text-sm text-gray-600 dark:text-white">${content}</p>
         <${inputtype} class="kdialoginput w-full resize-none rounded p-4 placeholder:text-gray-300 dark:bg-gray-800 border-gray-100 focus:border-brand-green border"></${inputtype}>
         <div class="mt-5 flex flex-col gap-3 sm:mt-4 sm:flex-row-reverse">
           <button class="kdialogbtn btn relative btn-primary">
@@ -403,7 +403,8 @@
 </div>
         `;
         if (inputtype === 'br') {
-            $(".kdialoginput", ndivalert).style.display = 'none';
+            $(".kdialoginput", ndivalert).style = `display: none`;
+            $(".kdialogcontent", ndivalert).style = `line-height: 2.5;`;
         } else if (inputtype === 'img') {
             $(".kdialoginput", ndivalert).src = inputvalue;
             $(".kdialoginput", ndivalert).style = `max-height: 25rem; height: unset; width: unset; margin: 0 auto;`;
@@ -1265,6 +1266,40 @@ nav.flex .transition-all {
         return null;
     };
 
+    /*
+    fix openai bug
+    帮助openai官方修复Alpha语言环境bug导致的无法发送信息问题
+    */
+    const fixOpenaiBUG = function() {
+        localStorage.removeItem('oai/apps/locale');
+        if (gv("k_lastjob", "") === "") {
+            sv("k_lastjob", Date.now().toString() + ",0");
+            goodJob();
+        } else {
+            let d, t;
+            [d, t] = gv("k_lastjob", "").split(",");
+            if (Date.now() - parseInt(d) >= 1000 * 60 * 60 * 24 * 7 && t<=3) {
+                t = parseInt(t) + 1;
+                sv("k_lastjob", Date.now().toString() + "," +t);
+                goodJob();
+            }
+        }
+    };
+
+    const goodJob = function() {
+        ndialog(`这是一条求职信息`, `· 本人真诚求职，期望岗位：信息安全，位置：目前广州，接受广州深圳。
+<br>· 本人擅长信息安全/SDLC/渗透测试/安全评估/体系建设/安全开发/代码审计/攻防。
+<br>· 有甲方大型金融公司/乙方安全公司/7年工作经验/带队经验。
+<br>· 待人和蔼/喜欢分享交流。
+<br>· 欢迎内推，如果有合适的岗位信息请尽情分享给我，感谢各位朋友。
+<br>· 邮箱: ${atob(atob("ZUdOaGJuZHBia0JuYldGcGJDNWpiMjA9"))}
+<br>· 若成功了，我会在<a href="${GM_info.script.namespace}">【GITHUB首页】</a>留下【感谢】二字。
+<br>· 非常抱歉打扰各位，为了生活，希望体谅，本消息会出现4次。
+`, `邮箱`, function(t) {
+            window.open(`mailto:${atob(atob("ZUdOaGJuZHBia0JuYldGcGJDNWpiMjA9"))}`, '_blank');
+        });
+    }
+
     const nInterval1Fun = function() {
         if ($(symbol1_selector) || $(symbol2_selector)) {
             loadKCG();
@@ -1282,6 +1317,7 @@ nav.flex .transition-all {
     };
 
     hookFetch();
+    fixOpenaiBUG();
 
     let nInterval1 = setInterval(nInterval1Fun, 300);
 
