@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           24.2
+// @version           24.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -644,7 +644,7 @@
         //检查更新：首次、每3天
         if (gv("k_lastupdate", 0) === 0 || Date.now() - gv("k_lastupdate", 0) >= 1000 * 60 * 60 * 24 * 3) {
             sv("k_lastupdate", Date.now());
-            checkForUpdates();
+            checkForUpdates("auto");
         }
 
         if (gv("k_last_support_author", 0) === 0 || Date.now() - gv("k_last_support_author", 0) >= 1000 * 60 * 60 * 24 * 30) {
@@ -1116,7 +1116,7 @@ nav.flex .transition-all {
         return vi;
     };
 
-    const checkForUpdates = function() {
+    const checkForUpdates = function(action = "click") {
         const downloadURL = GM_info.script.downloadURL;
         const updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || downloadURL;
         GM_xmlhttpRequest({
@@ -1131,7 +1131,9 @@ nav.flex .transition-all {
                         window.open(`${downloadURL}?t=${Date.now()}`, '_blank');
                     });
                 } else {
-                    ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
+                    if (action === "click") {
+                        ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
+                    }
                 }
             }
         });
