@@ -16,8 +16,8 @@ def save(data, outfile):
     open(outfile, 'wb').write(data.encode())
 
 def main():
-    rm = open('README.md', 'r').read()
-    kcg_code = open('KeepChatGPT.user.js', 'r').read()
+    rm = open('README.md', 'rb').read()
+    kcg_code = open('KeepChatGPT.user.js', 'rb').read().decode()
 
     cdn_pre = 'https://raw.gitmirror.com/xcanwin/KeepChatGPT/main'
     version = re.findall(r'// @version\s+(\S*?)\n', kcg_code)[0]
