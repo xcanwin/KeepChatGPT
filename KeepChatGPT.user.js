@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           24.4
+// @version           24.5
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -534,8 +534,11 @@
 
         $('#nmenuid_pp').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
+                $('body').classList.remove("kpurifypage");
                 sv("k_cleanlyhome", false);
             } else {
+                $('body').classList.add("kpurifypage");
+                purifyPage();
                 sv("k_cleanlyhome", true);
             }
             $('.checkbutton', this).classList.toggle('checked');
@@ -620,6 +623,8 @@
 
         if (gv("k_cleanlyhome", false) === true) {
             $('#nmenuid_pp .checkbutton').classList.add('checked');
+            purifyPage();
+            $('body').classList.add("kpurifypage");
         }
 
         if (gv("k_largescreen", false) === true) {
@@ -858,6 +863,20 @@
     }
 }
 
+/*净化页面*/
+.kpurifypage {
+    main .text-token-text-primary .font-medium /*首页的LOGO下方的问候语*/,
+    form.stretch .grow .bottom-full /*首页的快捷提示词*/,
+    main form .text-token-text-secondary /*输入框上方标签*/,
+    main div.text-center>span /*输入框底部标签*/,
+    nav.flex .mb-4 /*侧边栏的游客模式的登录提醒*/
+    {
+        display: none;
+    }
+}
+
+
+
 main div.items-end>div:first-child {
     user-select: none;
     max-width: 2.25rem !important;
@@ -1040,7 +1059,7 @@ nav.flex .transition-all {
                     }
                     return response;
                 }).catch(error => {
-                    console.error(error);
+                    //console.error(error);
                     return Promise.reject(error);
                 });
             }
@@ -1167,8 +1186,8 @@ nav.flex .transition-all {
     /*
     净化页面
     */
-    const cleanlyHome = function() {
-        if (location.href.match(/https:\/\/chat\.openai\.com\/\??/) && gv("k_cleanlyhome", false) === true) {
+    const purifyPage = function() {
+        if (location.href.match(/https:\/\/chat\.openai\.com\/\??/)) {
             //添加专属logo
             if ($("main h1") && $("main h1").innerText.match(/^ChatGPT(\nPLUS)?$/)) {
                 $("main h1").classList.add('text-gray-200');
@@ -1176,19 +1195,6 @@ nav.flex .transition-all {
                 nSpan.className = 'bg-yellow-200 text-yellow-900 py-0.5 px-1.5 text-xs md:text-sm rounded-md uppercase';
                 nSpan.textContent = `KEEP`;
                 $("main h1").appendChild(nSpan);
-            }
-            //净化首页的快捷提示词
-            if ($('form.stretch .grow .bottom-full')) {
-                $('form.stretch .grow .bottom-full').classList.add('hide');
-            }
-            //净化底部标签
-            if ($(`main div.text-center>span`) ) {
-                $(`main div.text-center>span`) .classList.add('hide');
-            }
-            //净化侧边栏的upgrade your plan
-            const utp_svg = $(`nav.flex .border-t .icon-sm.shrink-0`) ;
-            if (utp_svg && findParent(utp_svg, `a`, 4)) {
-                findParent(utp_svg, `a`, 4).classList.add('hide');
             }
         }
     };
@@ -1300,7 +1306,6 @@ nav.flex .transition-all {
         if ($(symbol1_selector) || $(symbol2_selector)) {
             loadKCG();
             setIfr();
-            cleanlyHome();
             speakCompletely();
             dataSec();
         }
