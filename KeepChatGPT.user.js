@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           24.3
+// @version           24.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -986,13 +986,15 @@ nav.flex .transition-all {
                         //打开网页时，创建数据库。
                         return response.text().then(async fetchRspBody => {
                             let fetchRspBodyNew = fetchRspBody;
-                            let modifiedData = JSON.parse(fetchRspBody);
-                            if (!global.st_ec) {
-                                const email = modifiedData.user.email;
-                                global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
+                            if (fetchRspBodyNew !== "{}"){ //当前已登录
+                                let modifiedData = JSON.parse(fetchRspBody);
+                                if (!global.st_ec) {
+                                    const email = modifiedData.user.email;
+                                    global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
+                                }
+                                delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
+                                fetchRspBodyNew = JSON.stringify(modifiedData);
                             }
-                            delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
-                            fetchRspBodyNew = JSON.stringify(modifiedData);
                             return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
                         });
                     } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
