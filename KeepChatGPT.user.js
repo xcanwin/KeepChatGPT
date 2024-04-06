@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           24.5
+// @version           24.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -763,7 +763,7 @@
 .dark {
     .ever-changing {
         nav.flex {
-            background: linear-gradient(to right top, #020000, #0f0922, #000);
+            background: linear-gradient(to right top, #171717, #060606, #171717);
         }
         nav.flex li>div.bg-token-sidebar-surface-tertiary {
             background-color: #444;
@@ -808,7 +808,7 @@
 /*暗色模式*/
 .kdark {
     #kcg {
-        background: linear-gradient(to top right, #2d005e, #000133, #1600bf);
+        background: linear-gradient(to top right, #1a0035, #000, #0c006a);
         animation: none;
         color: #ffffff;
         border-color: #00618e;
@@ -855,11 +855,11 @@
 /*暗色模式*/
 .kdark {
     .kmenu {
-        background: linear-gradient(to top right, #01001c, #09004A, #003193);
+        background: linear-gradient(to top right, #01000f, #00070d, #00194a);
         color: #FFFFFF;
     }
     .kmenu li:hover {
-        background-color: #3a3cce;
+        background-color: #383851;
     }
 }
 
