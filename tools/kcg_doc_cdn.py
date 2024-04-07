@@ -21,7 +21,7 @@ def main():
 
     cdn_pre = 'https://hub.gitmirror.com/https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main'
     version = re.findall(r'// @version\s+(\S*?)\s', kcg_code)[0]
-    # version = '14.11.3'
+    # version = '24.6'
 
     rm_new = re.sub(r'src="(/assets/.*?)"', r'src="{}\1?v={}"'.format(cdn_pre, version), rm)
     print(rm_new)
