@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           24.6
+// @version           24.7
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -44,9 +44,11 @@
 // @license           GPL-2.0-only
 // @match             *://chat.openai.com
 // @match             *://chat.openai.com/*
+// @match             *://chatgpt.com
+// @match             *://chatgpt.com/*
 // @connect           raw.githubusercontent.com
-// @connect           greasyfork.org
 // @connect           chat.openai.com
+// @connect           chatgpt.com
 // @grant             GM_addStyle
 // @grant             GM_addElement
 // @grant             GM_setValue
@@ -907,19 +909,21 @@ nav div.pt-3\\.5 {
     transition: transform 0.2s ease-in-out;
 }
 
-.largescreen .flex.text-base {
-    max-width: unset;
-}
-@media (min-width:1024px) {
-    .largescreen .flex.text-base .lg\\:w-\\[calc\\(100\\%-115px\\)\\] {
-        width: calc(100% - 72px);
+.largescreen {
+    .flex.text-base {
+        max-width: unset;
     }
-    .largescreen form.stretch {
-        max-width: 85%;
+    @media (min-width:1024px) {
+        .flex.text-base .lg\\:w-\\[calc\\(100\\%-115px\\)\\] {
+            width: calc(100% - 72px);
+        }
+        form.stretch {
+            max-width: 85%;
+        }
     }
-}
-.largescreen img {
-    width: 653px;
+    img {
+        width: 653px;
+    }
 }
 
 .btn-neutral {
@@ -1187,7 +1191,7 @@ nav.flex .transition-all {
     净化页面
     */
     const purifyPage = function() {
-        if (location.href.match(/https:\/\/chat\.openai\.com\/\??/)) {
+        if (location.href.match(/https:\/\/(chatgpt\.com|chat\.openai\.com)\/\??/)) {
             //添加专属logo
             if ($("main h1") && $("main h1").innerText.match(/^ChatGPT(\nPLUS)?$/)) {
                 $("main h1").classList.add('text-gray-200');
