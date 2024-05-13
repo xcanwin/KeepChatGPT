@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           25.1
+// @version           25.2
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1203,11 +1203,11 @@ nav.flex .transition-all {
 
     const speakCompletely = function() {
         if (gv("k_speakcompletely", false) === true) {
-            const continue_svg_selector = `form.w-full .justify-center polygon[points="11 19 2 12 11 5 11 19"]:not(.ct_clicked)`;
+            const continue_svg_selector = `form.w-full .justify-center svg path[d*="0-13.09-5H9a1 1 0 0 1 0 2H4.472a1 1 0 0 1-1-1.024V3.5a1 1 0 0 1 1-1"]:not(.ct_clicked)`;
             if ($(continue_svg_selector)) {
                 setTimeout(function() {
-                    findParent($(continue_svg_selector), `button`).click();
-                    $(continue_svg_selector).classList.add('ct_clicked');
+                    findParent($(continue_svg_selector), `button`)?.click();
+                    $(continue_svg_selector)?.classList.add('ct_clicked');
                 }, 1000);
             }
         }
@@ -1286,23 +1286,15 @@ nav.flex .transition-all {
         localStorage.removeItem('oai/apps/locale');
         if (gv("k_lastjob", "") === "") {
             sv("k_lastjob", Date.now().toString() + ",0");
-            goodJob();
         } else {
             let d, t;
             [d, t] = gv("k_lastjob", "").split(",");
             if (Date.now() - parseInt(d) >= 1000 * 60 * 60 * 24 * 7 && t<=3) {
                 t = parseInt(t) + 1;
                 sv("k_lastjob", Date.now().toString() + "," +t);
-                goodJob();
             }
         }
     };
-
-    const goodJob = function() {
-        ndialog(`这是一条求职信息`, `${decodeURIComponent(escape(atob("wrcg5pys5Lq655yf6K+a5rGC6IGM77yM5pyf5pyb5bKX5L2N77ya5L+h5oGv5a6J5YWo77yM5L2N572u77ya55uu5YmN5bm/5bee77yM5o6l5Y+X5bm/5bee5rex5Zyz44CCCjxicj7CtyDmnKzkurrmk4Xplb/kv6Hmga/lronlhagvU0RMQy/muJfpgI/mtYvor5Uv5a6J5YWo6K+E5LywL+S9k+ezu+W7uuiuvi/lronlhajlvIDlj5Ev5Luj56CB5a6h6K6hL+aUu+mYsuOAggo8YnI+wrcg5pyJ55Sy5pa55aSn5Z6L6YeR6J6N5YWs5Y+4L+S5meaWueWuieWFqOWFrOWPuC835bm05bel5L2c57uP6aqML+W4pumYn+e7j+mqjOOAggo8YnI+wrcg5b6F5Lq65ZKM6JS8L+WWnOasouWIhuS6q+S6pOa1geOAggo8YnI+wrcg5qyi6L+O5YaF5o6o77yM5aaC5p6c5pyJ5ZCI6YCC55qE5bKX5L2N5L+h5oGv6K+35bC95oOF5YiG5Lqr57uZ5oiR77yM5oSf6LCi5ZCE5L2N5pyL5Y+L44CCCjxicj7CtyDpgq7nrrE6IHhjYW53aW5AZ21haWwuY29tCjxicj7CtyDoi6XmiJDlip/kuobvvIzmiJHkvJrlnKg8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20veGNhbndpbi9LZWVwQ2hhdEdQVC8iPuOAkEdJVEhVQummlumhteOAkTwvYT7nlZnkuIvjgJDmhJ/osKLjgJHkuozlrZfjgIIKPGJyPsK3IOmdnuW4uOaKseatieaJk+aJsOWQhOS9je+8jOS4uuS6hueUn+a0u++8jOW4jOacm+S9k+iwhe+8jOacrOa2iOaBr+S8muWHuueOsDTmrKHjgII=")))}`, `邮箱`, function(t) {
-            window.open(`mailto:${atob(atob("ZUdOaGJuZHBia0JuYldGcGJDNWpiMjA9"))}`, '_blank');
-        });
-    }
 
     const nInterval1Fun = function() {
         if ($(symbol1_selector) || $(symbol2_selector)) {
