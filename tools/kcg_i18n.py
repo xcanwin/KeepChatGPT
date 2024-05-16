@@ -122,46 +122,46 @@ def main():
 
     lang = json.loads(lang)
 
-    new_str = "使用正则编写规则"
+    new_str = "明察秋毫"
 
-    new_str_min = "rr"
+    new_str_min = "ko"
 
     transle_tmp = """
-ar: استخدم الريجكس لكتابة القواعد
-bg: Използвайте регулярни изрази за съставяне на правила
-cs: Použijte regulární výrazy pro psaní pravidel
-da: Brug regex til at skrive regler
-de: Verwenden Sie Regex, um Regeln zu schreiben
-el: Χρησιμοποιήστε regex για να γράψετε κανόνες
-en: Use regex to write rules
-eo: Uzu regulajn esprimojn por skribi regulojn
-es: Usa regex para escribir reglas
-fi: Käytä regexiä sääntöjen kirjoittamiseen
-fr: Utilisez des regex pour écrire des règles
-fr-CA: Utilisez des regex pour écrire des règles
-he: השתמש בביטויים רגולריים לכתיבת כללים
-hu: Használja a regex-et a szabályok írásához
-id: Gunakan regex untuk menulis aturan
-it: Usa regex per scrivere regole
-ja: 正規表現を使用してルールを書く
-ka: გამოიყენეთ regex წესების დაწერად
-ko: 정규 표현식을 사용하여 규칙 작성
-nb: Bruk regex for å skrive regler
-nl: Gebruik regex om regels te schrijven
-pl: Użyj regex do pisania reguł
-pt-BR: Use regex para escrever regras
-ro: Folosiți regex pentru a scrie reguli
-ru: Используйте регулярные выражения для написания правил
-sk: Použite regex na písanie pravidiel
-sr: Користите регуларне изразе за писање правила
-sv: Använd regex för att skriva regler
-th: ใช้ regex เพื่อเขียนกฎ
-tr: Kuralları yazmak için regex kullanın
-uk: Використовуйте регулярні вирази для написання правил
-ug: قائىدىلەرنى يېزىش ئۈچۈن regex نى ئىشلىتىڭ
-vi: Sử dụng regex để viết quy tắc
-zh-CN: 使用正则编写规则
-zh-TW: 使用正則表達式撰寫規則
+ar: الرصد الدقيق
+bg: Остро наблюдение
+cs: Přesné pozorování
+da: Skarp observation
+de: Scharfe Beobachtung
+el: Εξαιρετική παρατήρηση
+en: Keen observation
+eo: Akra observado
+es: Observación aguda
+fi: Tarkka havainnointi
+fr: Observation fine
+fr-CA: Observation fine
+he: תפיסה חדה
+hu: Éles megfigyelés
+id: Pengamatan tajam
+it: Osservazione acuta
+ja: 鋭い観察
+ka: მკრეფად გამოვიდა
+ko: 예리한 관찰
+nb: Skarpt observasjon
+nl: Scherp observeren
+pl: Wnikliwa obserwacja
+pt-BR: Observação aguçada
+ro: Observație fină
+ru: Точное наблюдение
+sk: Presné pozorovanie
+sr: Прецизно набљудавање
+sv: Skarp observation
+th: การสังเกตอย่างชัดเจน
+tr: Keskin gözlem
+uk: Точне спостереження
+ug: ئاڭلىتىش قىممىتى
+vi: Quan sát tinh tế
+zh-CN: 明察秋毫
+zh-TW: 明察秋毫
 """
 
     # 删除字段
