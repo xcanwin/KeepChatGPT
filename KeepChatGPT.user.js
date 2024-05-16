@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           26.6
+// @version           27.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -729,6 +729,10 @@
 
     const addStyle = function() {
         GM_addStyle(`
+:root {
+    --myicon-background-image-url: '';
+}
+
 /*日星月异*/
 .ever-changing {
     /*左边栏*/
@@ -890,6 +894,28 @@ main .text-sm.pb-9>.text-token-text-primary .mx-auto>div:first-child {
     cursor: pointer;
 }
 
+/*明察秋毫*/
+main div[data-message-author-role="user"] {
+    padding-right: 3rem;
+}
+main div[data-message-author-role="user"]::after {
+    content: '';
+    position: absolute;
+    right: 0rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: gray;
+    background-image: var(--myicon-background-image-url);
+    background-size: contain;
+    border-radius: 50%;
+}
+main .text-token-text-primary .juice\\:flex-row-reverse .rounded-xl {
+    padding-right: 2.5rem;
+}
+main div[data-message-author-role="assistant"] {
+    padding-right: 3.5rem;
+}
+
 
 nav {
     position: relative;
@@ -1018,6 +1044,7 @@ nav.flex .transition-all {
                             let fetchRspBodyNew = fetchRspBody;
                             if (fetchRspBodyNew !== "{}"){ //当前已登录
                                 let modifiedData = JSON.parse(fetchRspBody);
+                                document.documentElement.style.setProperty('--myicon-background-image-url', `url('${modifiedData.user.image}')`); //更新明察秋毫头像
                                 if (!global.st_ec) {
                                     const email = modifiedData.user.email;
                                     global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
