@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           27.5
+// @version           27.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -907,7 +907,7 @@
 }
 
 /*克隆对话*/
-main .text-sm.pb-9>.text-token-text-primary .mx-auto>div:first-child {
+main .text-sm.flex-col>.text-token-text-primary .mx-auto>div:first-child {
     user-select: none;
     cursor: pointer;
 }
@@ -1230,11 +1230,11 @@ nav.flex .transition-all {
     };
 
     cloneChat.listen_Click = function(event) {
-        const avatarSelector = "main .text-sm.pb-9>.text-token-text-primary .mx-auto>div:first-child";
+        const avatarSelector = "main .text-sm.flex-col>.text-token-text-primary .mx-auto>div:first-child";
         const avatarDiv = findParent(event.target, avatarSelector);
         if (avatarDiv) {
             const contentSelector = ".max-w-full .text-message";
-            const content = $(contentSelector, findParent(avatarDiv, "main .text-sm.pb-9>.text-token-text-primary .mx-auto", 2)).innerText.trim();
+            const content = $(contentSelector, findParent(avatarDiv, "main .text-sm.flex-col>.text-token-text-primary .mx-auto", 2)).innerText.trim();
             $("form.w-full textarea").value = "";
             $("form.w-full textarea").focus();
             document.execCommand('insertText', false, content);
