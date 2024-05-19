@@ -263,7 +263,7 @@
 演示一下效果，如果向对话框编写、粘贴这段提示词：
 ```
 手机号码：+86 18888888888
-后台链接：https://公司域名.com/login
+后台链接：https://securiy-domain.com/login
 邮箱地址：admin@163.com
 ```
 

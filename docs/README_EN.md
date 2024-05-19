@@ -253,10 +253,10 @@ Official Channels✅:
 1. Mimics chat software styles to enhance the distinction between user and robot chat bubbles.
 2. Enabling ```Keen observation``` refreshes the chat page's appearance, improving the user experience.
 
-### About Data Security Feature
+### About Data security
 
 1. Provides data security solutions, helping users intercept sensitive information to prevent data security issues.
-2. Enabling ```Data Security``` automatically cleans sensitive information (desensitizes) and provides risk warnings while users compose dialogues.
+2. Enabling ```Data security``` automatically cleans sensitive information (desensitizes) and provides risk warnings while users compose dialogues.
 3. Please write data security rules according to regular expression syntax, with different rules separated by new lines.
 4. The default data security rules are basic and need to be customized.
 5. You can add your name, ID, computer username, company name, enterprise domain, etc., to the rules.
@@ -264,7 +264,7 @@ Official Channels✅:
 Here's a demonstration: If you type or paste this prompt into the chat box:
 ```
 Mobile: +86 18888888888
-Url: https://公司域名.com/login
+Url: https://securiy-domain.com/login
 Email: admin@163.com
 ```
 
@@ -287,7 +287,7 @@ Email:
 | From | Thanks |
 | --- | --- |
 | My cat | <img src="/assets/appreciate_mycat.jpg" width="200"></img> |
-| buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="200"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
+| buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="200"></img>](https://www.buymeacoffee.com/xcanwin)<br>Click on the image |
 | Love power generation<br>(Support WeChat, Alipay) | [<img src="/assets/appreciate_afdian.png" width="200"></img>](https://afdian.net/a/xcanwin/plan)<br>Click on the image or scan |
 | WeChat | <img src="/assets/appreciate_wechat.png" width="200"></img> |
 
