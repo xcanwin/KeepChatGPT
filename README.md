@@ -288,4 +288,4 @@
 | 我的猫 | <img src="/assets/appreciate_mycat.jpg" width="200"></img> |
 | buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="200"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
 | 爱发电<br>(支持微信、支付宝) | [<img src="/assets/appreciate_afdian.png" width="200"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
-| 微信<br>(偶尔失效) | <img src="/assets/appreciate_wechat.png" width="200"></img> |
+| 微信 | <img src="/assets/appreciate_wechat.png" width="200"></img> |
