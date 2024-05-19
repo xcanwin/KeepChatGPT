@@ -28,12 +28,12 @@
 
 ## 展示
 
-| 序号 | 描述 | 截图 |
-| --- | --- | --- |
-| 1 | 亮色主题<br>净化页面 | <img src="/assets/index_light.png" width="750"></img> |
-| 2 | 亮色主题<br>明察秋毫<br>展示大屏<br>日新月异 | <img src="/assets/chat_light.png" width="750"></img> |
-| 3 | 暗色主题<br>明察秋毫<br>展示大屏<br>日新月异 | <img src="/assets/chat_dark.png" width="750"></img> |
-| 4 | 移动端<br>净化页面 | <img src="/assets/index_mobile.png" width="180"></img> |
+| 序号 | 截图 |
+| --- | --- |
+| 1 | 亮色主题 + 净化页面<br><img src="/assets/index_light.png" width="750"></img> |
+| 2 | 亮色主题 + 明察秋毫 + 展示大屏 + 日新月异<br><img src="/assets/chat_light.png" width="750"></img> |
+| 3 | 暗色主题 + 明察秋毫 + 展示大屏 + 日新月异<br><img src="/assets/chat_dark.png" width="750"></img> |
+| 4 | 移动端 + 净化页面<br><img src="/assets/index_mobile.png" width="180"></img> |
 
 ## 功能简介
 
