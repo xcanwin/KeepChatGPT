@@ -23,17 +23,17 @@
 ## 项目简介
 
 - 喜欢这个插件的小伙伴，可以给我的GITHUB项目 [KeepChatGPT](https://github.com/xcanwin/KeepChatGPT) 点个⭐️STAR支持一下。
-- 这是一款提高```ChatGPT```的数据安全能力和效率的插件。它可以让你的聊天无比丝滑，省去足足几十数百个多余步骤，一劳永逸摆脱各种```报错```和```警告```。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、展示全屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
+- 这是一款提高```ChatGPT```的数据安全能力和效率的插件。它可以让你的聊天无比丝滑，省去足足几十数百个多余步骤，一劳永逸摆脱各种```报错```和```警告```。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
 - 没有研发经费，纯用爱发电，欢迎关注。谢谢[赞赏猫粮](#赞赏)
 
 ## 展示
 
-| 序号 | 截图 |
-| --- | --- |
-| 1 | 电脑端，亮色主题<br><img src="/assets/index_light.png" width="750"></img> |
-| 2 | 电脑端，暗色主题+展示大屏<br><img src="/assets/index_dark.png" width="750"></img> |
-| 3 | 电脑端，暗色主题+展示全屏<br><img src="/assets/index_dark_full.png" width="750"></img> |
-| 4 | 移动端<br><img src="/assets/index_mobile.png" width="180"></img> |
+| 序号 | 描述 | 截图 |
+| --- | --- | --- |
+| 1 | 亮色主题<br>净化页面 | <img src="/assets/index_light.png" width="750"></img> |
+| 2 | 亮色主题<br>明察秋毫<br>展示大屏<br>日新月异 | <img src="/assets/chat_light.png" width="750"></img> |
+| 3 | 暗色主题<br>明察秋毫<br>展示大屏<br>日新月异 | <img src="/assets/chat_dark.png" width="750"></img> |
+| 4 | 移动端<br>净化页面 | <img src="/assets/index_mobile.png" width="180"></img> |
 
 ## 功能简介
 
@@ -44,18 +44,17 @@
 5.  支持[言无不尽](#关于-言无不尽-功能)
 6.  支持[净化页面](#关于-净化页面-功能)
 7.  支持[展示大屏](#关于-展示大屏-功能)
-8.  支持[展示全屏](#关于-展示全屏-功能)
-9.  支持[拦截跟踪](#关于-拦截跟踪-功能)
-10. 支持[日新月异](#关于-日新月异-功能)
-11. 支持[明察秋毫](#关于-明察秋毫-功能)
-12. 支持多国语言
-13. 支持[电脑系统](#使用方法-电脑系统)
-14. 支持移动系统 ([鸿蒙](#使用方法-鸿蒙系统)、[iOS](#使用方法-iOS系统)、[Android](#使用方法-鸿蒙系统))
-15. 支持[保持活跃](#关于-保持活跃-功能)
-16. 解决聊天中断
-17. 解决频繁刷新
-18. 解决消息无法发送
-19. 解决以下报错
+8.  支持[拦截跟踪](#关于-拦截跟踪-功能)
+9.  支持[日新月异](#关于-日新月异-功能)
+10. 支持[明察秋毫](#关于-明察秋毫-功能)
+11. 支持多国语言
+12. 支持[电脑系统](#使用方法-电脑系统)
+13. 支持移动系统 ([鸿蒙](#使用方法-鸿蒙系统)、[iOS](#使用方法-iOS系统)、[Android](#使用方法-鸿蒙系统))
+14. 支持[保持活跃](#关于-保持活跃-功能)
+15. 解决聊天中断
+16. 解决频繁刷新
+17. 解决消息无法发送
+18. 解决以下报错
 
 | 序号 | 解决以下报错 |
 | --- | --- |
@@ -204,12 +203,6 @@
 1. 拓宽聊天视野```PRO```。
 2. 勾选了```展示大屏```以后，大幅减少鼠标滚动，对话一目了然，提升体验感。
 
-### 关于 展示全屏 功能
-
-1. 拓宽聊天视野```PRO MAX```。
-2. 勾选了```展示全屏```以后，只保留聊天元素，享受沉浸式聊天，提升体验感。
-3. 取消方法：点击```Regenerate response```左边的```KEEP```按钮。
-
 ### 关于 言无不尽 功能
 
 1. 让ChatGPT尽情地表达，没有遗漏。
@@ -256,7 +249,7 @@
 
 ### 关于 明察秋毫 功能
 
-1. 提升用户与机器人的对话气泡辨别度。
+1. 模仿聊天软件的样式，提升用户与机器人的对话气泡的辨别度。
 2. 勾选了```明察秋毫```以后，聊天页面焕然一新，提升体验感。
 
 ### 关于 数据安全 功能
@@ -292,7 +285,7 @@
 
 | From | Thanks |
 | --- | --- |
-| 我的猫 | <img src="/assets/appreciate_mycat.jpg" width="300"></img> |
-| buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="300"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
-| 爱发电<br>(支持微信、支付宝) | [<img src="/assets/appreciate_afdian.png" width="300"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
-| 微信<br>(偶尔失效) | <img src="/assets/appreciate_wechat.png" width="300"></img> |
+| 我的猫 | <img src="/assets/appreciate_mycat.jpg" width="200"></img> |
+| buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="200"></img>](https://www.buymeacoffee.com/xcanwin)<br>点击图片 |
+| 爱发电<br>(支持微信、支付宝) | [<img src="/assets/appreciate_afdian.png" width="200"></img>](https://afdian.net/a/xcanwin/plan)<br>点击图片或者扫描 |
+| 微信<br>(偶尔失效) | <img src="/assets/appreciate_wechat.png" width="200"></img> |
