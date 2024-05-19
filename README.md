@@ -262,16 +262,20 @@
 
 演示一下效果，如果向对话框编写、粘贴这段提示词：
 ```
-手机号码：+86 18888888888
-后台链接：https://securiy-domain.com/login
-邮箱地址：admin@163.com
+C:\Users\my-secret-username\Desktop> python login.py
+  File "C:\Users\my-secret-username\Desktop\login.py", line 4
+    if Mobile!"18888888888" and Email=="admin@163.com" : print("https://securiy-domain.com/login")
+             ^
+SyntaxError: invalid syntax
 ```
 
 则会立刻被纠正为：
 ```
-手机号码：+86
-后台链接：/login
-邮箱地址：
+C:\Users\\Desktop> python login.py
+  File "C:\Users\\Desktop\login.py", line 4
+    if Mobile!"" and Email=="" : print("/login")
+             ^
+SyntaxError: invalid syntax
 ```
 
 <img src="/assets/warn_data_security.png" width="600"></img>

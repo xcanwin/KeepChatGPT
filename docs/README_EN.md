@@ -31,7 +31,7 @@
 
 | No. | Screenshot |
 | --- | --- |
-| 1 | Light Theme + Page Purification<br><img src="/assets/index_light.png" width="750"></img> |
+| 1 | Light Theme + Page Purification<br><img src="/assets/index_light_en.png" width="750"></img> |
 | 2 | Light Theme + Meticulousness + Large Screen Display + Constant Updates<br><img src="/assets/chat_light.png" width="750"></img> |
 | 3 | Dark Theme + Meticulousness + Large Screen Display + Constant Updates<br><img src="/assets/chat_dark.png" width="750"></img> |
 | 4 | Mobile + Page Purification<br><img src="/assets/index_mobile.png" width="180"></img> |
@@ -263,16 +263,20 @@ Official Channels✅:
 
 Here's a demonstration: If you type or paste this prompt into the chat box:
 ```
-Mobile: +86 18888888888
-Url: https://securiy-domain.com/login
-Email: admin@163.com
+C:\Users\my-secret-username\Desktop> python login.py
+  File "C:\Users\my-secret-username\Desktop\login.py", line 4
+    if Mobile!"18888888888" and Email=="admin@163.com" : print("https://securiy-domain.com/login")
+             ^
+SyntaxError: invalid syntax
 ```
 
 will be immediately corrected to:
 ```
-Mobile: +86
-Url: /login
-Email: 
+C:\Users\\Desktop> python login.py
+  File "C:\Users\\Desktop\login.py", line 4
+    if Mobile!"" and Email=="" : print("/login")
+             ^
+SyntaxError: invalid syntax
 ```
 
 <img src="/assets/warn_data_security.png" width="600"></img>
