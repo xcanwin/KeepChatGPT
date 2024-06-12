@@ -172,8 +172,8 @@ Official Channels✅:
 1. Refers to the time interval between staying online to OpenAI, in `seconds`.
 2. The larger the time interval, the more relaxed the request and the more stable the account.
 3. The smaller the time interval, the tighter the request and the fewer network errors.
-4. Recommended intervals ```30``` More than a second.
-5. The author usually sets it up ```150``` Second.
+4. Recommended intervals ```50``` More than a second.
+5. The author usually sets it up ```900``` Second.
 
 ### About Conversation cloning
 
