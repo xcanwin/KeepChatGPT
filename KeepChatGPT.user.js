@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           29.2
+// @version           29.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -703,12 +703,12 @@
                 kcg_html.innerHTML = kcg_html._symbol1_innerHTML;
                 kcg_html.classList.add('kcg-pc');
                 kcg_html.classList.remove('kcg-mb');
-                symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
+                symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
             } else if ($(symbol2_selector)) {
                 kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
                 kcg_html.classList.remove('kcg-pc');
                 kcg_html.classList.add('kcg-mb');
-                symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
+                symbol_prt = fp(".sticky", $(symbol2_selector), 2);
                 $(symbol2_selector).parentNode.classList.remove('absolute');
             }
             symbol_prt.insertBefore(kcg_html, symbol_prt.childNodes[0]);
@@ -729,12 +729,12 @@
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
             ndivkcg.classList.add('kcg-pc');
             ndivkcg.classList.remove('kcg-mb');
-            symbol_prt = findParent($(symbol1_selector), "nav.flex", 3);
+            symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
         } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             ndivkcg.classList.remove('kcg-pc');
             ndivkcg.classList.add('kcg-mb');
-            symbol_prt = findParent($(symbol2_selector), ".sticky", 2);
+            symbol_prt = fp(".sticky", $(symbol2_selector), 2);
             $(symbol2_selector).parentNode.classList.remove('absolute');
         }
         kcg_html = ndivkcg;
@@ -1279,13 +1279,13 @@ nav.flex .transition-all {
 
     cloneChat.listen_Click = function(event) {
         const avatarSelector = "main .text-sm.flex-col>.text-token-text-primary .mx-auto>div:first-child";
-        const avatarDiv = findParent(event.target, avatarSelector, 10);
+        const avatarDiv = fp(avatarSelector, event.target, 10);
         if (avatarDiv) {
             const selectionText = window.getSelection().toString();
             if (selectionText.length === 0) { //未选中文本时
                 if (!cloneChat.firstTarget || (cloneChat.firstTarget && cloneChat.firstTarget !== avatarDiv)){ //普通单击时执行克隆，以及选中文本时记录的选中元素与当前单击元素不同时执行克隆
                     const contentSelector = ".max-w-full .text-message";
-                    const content = $(contentSelector, findParent(avatarDiv, "main .text-sm.flex-col>.text-token-text-primary .mx-auto", 2)).innerText.trim();
+                    const content = $(contentSelector, fp("main .text-sm.flex-col>.text-token-text-primary .mx-auto", avatarDiv, 2)).innerText.trim();
                     $("form.w-full textarea").value = "";
                     $("form.w-full textarea").focus();
                     document.execCommand('insertText', false, content);
@@ -1323,7 +1323,7 @@ nav.flex .transition-all {
             const continue_svg_selector = `form.w-full .justify-center svg path[d*="0-13.09-5H9a1 1 0 0 1 0 2H4.472a1 1 0 0 1-1-1.024V3.5a1 1 0 0 1 1-1"]:not(.ct_clicked)`;
             if ($(continue_svg_selector)) {
                 setTimeout(function() {
-                    findParent($(continue_svg_selector), `button`)?.click();
+                    fp(`button`, $(continue_svg_selector))?.click();
                     $(continue_svg_selector)?.classList.add('ct_clicked');
                 }, 1000);
             }
@@ -1379,7 +1379,10 @@ nav.flex .transition-all {
         }
     };
 
-    const findParent = function(el, parentSelector, level = 5) {
+    /*
+    寻找元素的父元素
+    */
+    const fp = function(parentSelector, el, level = 5) {
         if (el === null) {
             return null;
         }
