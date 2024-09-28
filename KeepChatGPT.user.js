@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           29.3
+// @version           29.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -929,6 +929,7 @@
         background-image: var(--keenobservation-background-image-url);
         background-size: contain;
         border-radius: 50%;
+        pointer-events: auto;
     }
 
     /*用户气泡下标优化*/
@@ -1278,24 +1279,29 @@ nav.flex .transition-all {
     };
 
     cloneChat.listen_Click = function(event) {
-        const avatarSelector = "main .text-sm.flex-col>.text-token-text-primary .mx-auto>div:first-child";
-        const avatarDiv = fp(avatarSelector, event.target, 10);
-        if (avatarDiv) {
-            const selectionText = window.getSelection().toString();
-            if (selectionText.length === 0) { //未选中文本时
-                if (!cloneChat.firstTarget || (cloneChat.firstTarget && cloneChat.firstTarget !== avatarDiv)){ //普通单击时执行克隆，以及选中文本时记录的选中元素与当前单击元素不同时执行克隆
-                    const contentSelector = ".max-w-full .text-message";
-                    const content = $(contentSelector, fp("main .text-sm.flex-col>.text-token-text-primary .mx-auto", avatarDiv, 2)).innerText.trim();
-                    $("form.w-full textarea").value = "";
-                    $("form.w-full textarea").focus();
-                    document.execCommand('insertText', false, content);
-                }
-                cloneChat.firstTarget = null;
-            } else { //选中文本时记录选中元素
-                cloneChat.firstTarget = avatarDiv;
+        event.stopPropagation();
+        const clickedElement = document.elementFromPoint(event.clientX, event.clientY);
+        if (clickedElement && clickedElement.matches('main div[data-message-author-role="user"]')) {
+            // 获取该元素的边界信息
+            const rect = clickedElement.getBoundingClientRect();
+
+            // 伪元素的宽度和高度是2rem
+            const logoWidth = 32;
+            const logoHeight = 32;
+
+            // 计算伪元素所在区域的边界
+            const logoRight = rect.right;
+            const logoLeft = rect.right - logoWidth;
+            const logoTop = rect.top;
+            const logoBottom = rect.top + logoHeight;
+
+            // 判断鼠标点击的位置是否在伪元素范围内
+            if (event.clientX >= logoLeft && event.clientX <= logoRight && event.clientY >= logoTop && event.clientY <= logoBottom) {
+                const content = event.target.innerText.trim();
+                $("form.w-full #prompt-textarea").innerHTML = ''
+                $("form.w-full #prompt-textarea").focus();
+                document.execCommand('insertText', false, content);
             }
-        } else {
-            cloneChat.firstTarget = null;
         }
     };
 
