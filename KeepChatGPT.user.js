@@ -703,7 +703,7 @@
                 kcg_html.innerHTML = kcg_html._symbol1_innerHTML;
                 kcg_html.classList.add('kcg-pc');
                 kcg_html.classList.remove('kcg-mb');
-                symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
+                symbol_prt = $("#sidebar_pinned").parentNode
             } else if ($(symbol2_selector)) {
                 kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
                 kcg_html.classList.remove('kcg-pc');
@@ -729,7 +729,7 @@
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
             ndivkcg.classList.add('kcg-pc');
             ndivkcg.classList.remove('kcg-mb');
-            symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
+            symbol_prt = $("section[data-testid='screen-sidebar']").parentNode
         } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             ndivkcg.classList.remove('kcg-pc');
@@ -1446,3 +1446,4 @@ nav.flex .transition-all {
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
 })();
+
