@@ -77,6 +77,21 @@
 
     const datasec_blocklist_default = "18888888888\nhttps://securiy-domain.com\n([\\w-]+(\\.[\\w-]+)*)@163\.com\nmy-secret-username\n";
 
+    const getSybol1 = function (){
+        try {
+            return fp("nav.flex", $('nav.flex .mb-1,.pr-2'), 3);
+        } catch (error) {
+        }
+        let section = $("section[data-testid='screen-sidebar']");
+        if(section){
+            return section.parentNode;
+        }
+        if(screen.width >= 1920){
+            return document.querySelector("div")?.firstElementChild.firstElementChild;
+        }
+        return null;
+    }
+
     const getLang = function() {
         let lang = `
 {
@@ -699,11 +714,11 @@
         }
         var kcg_html;
         if (kcg_html !== undefined) {
-            if ($(symbol1_selector)) {
+            if (getSybol1()) {
                 kcg_html.innerHTML = kcg_html._symbol1_innerHTML;
                 kcg_html.classList.add('kcg-pc');
                 kcg_html.classList.remove('kcg-mb');
-                symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
+                symbol_prt = getSybol1();
             } else if ($(symbol2_selector)) {
                 kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
                 kcg_html.classList.remove('kcg-pc');
@@ -725,11 +740,11 @@
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem;' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `<img src='${icon}' style='width: 1rem;' />`;
 
-        if ($(symbol1_selector)) {
+        if (getSybol1()) {
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
             ndivkcg.classList.add('kcg-pc');
             ndivkcg.classList.remove('kcg-mb');
-            symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
+            symbol_prt = getSybol1();
         } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             ndivkcg.classList.remove('kcg-pc');
@@ -1423,7 +1438,7 @@ nav.flex .transition-all {
     };
 
     const nInterval1Fun = function() {
-        if ($(symbol1_selector) || $(symbol2_selector)) {
+        if (getSybol1() || $(symbol2_selector)) {
             loadKCG();
             setIfr();
             speakCompletely();
@@ -1432,7 +1447,7 @@ nav.flex .transition-all {
     };
 
     const nInterval2Fun = function() {
-        if ($(symbol1_selector) || $(symbol2_selector)) {
+        if (getSybol1() || $(symbol2_selector)) {
             keepChat();
         }
     };
@@ -1446,3 +1461,4 @@ nav.flex .transition-all {
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
 })();
+
