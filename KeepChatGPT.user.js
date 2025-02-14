@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           29.5
+// @version           30.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -71,9 +71,27 @@
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
+    const muob = (Selector, el, func) => {
+        const observer = new MutationObserver((mutationsList, observer2) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    const target = mutation.target.querySelector(Selector);
+                    if (target && !target.hasAttribute('data-duplicate')) {
+                        target.setAttribute('data-duplicate', 'true');
+                        func(target);
+                    }
+                }
+            }
+        });
+        observer.observe(el, {
+            childList: true,
+            subtree: true
+        });
+    };
+
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
     const symbol1_selector = 'nav.flex .mb-1,.pr-2';
-    const symbol2_selector = 'button.justify-center .sr-only';
+    const symbol2_selector = 'div.sticky div.justify-center.top-0 button span.sr-only';
 
     const datasec_blocklist_default = "18888888888\nhttps://securiy-domain.com\n([\\w-]+(\\.[\\w-]+)*)@163\.com\nmy-secret-username\n";
 
@@ -708,7 +726,8 @@
                 kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
                 kcg_html.classList.remove('kcg-pc');
                 kcg_html.classList.add('kcg-mb');
-                symbol_prt = fp(".sticky", $(symbol2_selector), 2);
+                symbol_prt = fp(".sticky", $(symbol2_selector), 4);
+                print(symbol_prt)
                 $(symbol2_selector).parentNode.classList.remove('absolute');
             }
             symbol_prt.insertBefore(kcg_html, symbol_prt.childNodes[0]);
@@ -734,7 +753,7 @@
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             ndivkcg.classList.remove('kcg-pc');
             ndivkcg.classList.add('kcg-mb');
-            symbol_prt = fp(".sticky", $(symbol2_selector), 2);
+            symbol_prt = fp(".sticky", $(symbol2_selector), 4);
             $(symbol2_selector).parentNode.classList.remove('absolute');
         }
         kcg_html = ndivkcg;
@@ -1337,20 +1356,24 @@ nav.flex .transition-all {
     };
 
     const dataSec = function() {
-        if (gv("k_datasecblocklist", datasec_blocklist_default)) {
-            $("form.w-full textarea")?.addEventListener('input', dataSec.listen_input);
-        } else {
-            $("form.w-full textarea")?.removeEventListener('input', dataSec.listen_input);
-        }
+        muob("form.w-full #prompt-textarea", $(`body`), () => {
+            if (gv("k_datasecblocklist", datasec_blocklist_default)) {
+                $("form.w-full #prompt-textarea")?.addEventListener('input', dataSec.listen_input);
+                $("form.w-full #prompt-textarea")?.addEventListener('paste', dataSec.listen_input);
+            } else {
+                $("form.w-full #prompt-textarea")?.removeEventListener('input', dataSec.listen_input);
+                $("form.w-full #prompt-textarea")?.removeEventListener('paste', dataSec.listen_input);
+            }
+        });
     };
 
     dataSec.listen_input = function(event) {
         let ms = [];
         gv("k_datasecblocklist", datasec_blocklist_default).split(`\n`).forEach(e => {
             if (e) {
-                const m = $("form.w-full textarea").value.match(e);
+                const m = $("form.w-full #prompt-textarea").innerHTML.match(e);
                 if (m && m[0]) {
-                    $("form.w-full textarea").value = $("form.w-full textarea").value.replaceAll(m[0], ``);
+                    $("form.w-full #prompt-textarea").innerHTML = $("form.w-full #prompt-textarea").innerHTML.replaceAll(m[0], ``);
                     ms.push(m[0]);
                 }
             }
@@ -1424,12 +1447,17 @@ nav.flex .transition-all {
 
     const nInterval1Fun = function() {
         if ($(symbol1_selector) || $(symbol2_selector)) {
-            loadKCG();
             setIfr();
             speakCompletely();
-            dataSec();
         }
     };
+
+    [symbol1_selector, symbol2_selector].forEach(el => {
+        muob(el, $(`body`), () => {
+            loadKCG();
+            setIfr();
+        });
+    });
 
     const nInterval2Fun = function() {
         if ($(symbol1_selector) || $(symbol2_selector)) {
@@ -1439,9 +1467,9 @@ nav.flex .transition-all {
 
     hookFetch();
     //fixOpenaiBUG();
+    dataSec();
 
     let nInterval1 = setInterval(nInterval1Fun, 300);
-
     let interval2Time = parseInt(gv("k_interval", 50));
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
