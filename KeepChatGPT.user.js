@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           30.0
+// @version           30.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -90,7 +90,7 @@
     };
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_selector = 'nav.flex .mb-1,.pr-2';
+    const symbol1_selector = 'nav.flex';
     const symbol2_selector = 'div.sticky div.justify-center.top-0 button span.sr-only';
 
     const datasec_blocklist_default = "18888888888\nhttps://securiy-domain.com\n([\\w-]+(\\.[\\w-]+)*)@163\.com\nmy-secret-username\n";
@@ -721,13 +721,13 @@
                 kcg_html.innerHTML = kcg_html._symbol1_innerHTML;
                 kcg_html.classList.add('kcg-pc');
                 kcg_html.classList.remove('kcg-mb');
-                symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
+                symbol_prt = $(symbol1_selector);
             } else if ($(symbol2_selector)) {
                 kcg_html.innerHTML = kcg_html._symbol2_innerHTML;
                 kcg_html.classList.remove('kcg-pc');
                 kcg_html.classList.add('kcg-mb');
                 symbol_prt = fp(".sticky", $(symbol2_selector), 4);
-                print(symbol_prt)
+                //console.log(symbol_prt)
                 $(symbol2_selector).parentNode.classList.remove('absolute');
             }
             symbol_prt.insertBefore(kcg_html, symbol_prt.childNodes[0]);
@@ -748,7 +748,7 @@
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
             ndivkcg.classList.add('kcg-pc');
             ndivkcg.classList.remove('kcg-mb');
-            symbol_prt = fp("nav.flex", $(symbol1_selector), 3);
+            symbol_prt = $(symbol1_selector);
         } else if ($(symbol2_selector)) {
             ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
             ndivkcg.classList.remove('kcg-pc');
@@ -776,6 +776,14 @@
     /*左边栏*/
     nav.flex {
         background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
+        padding-right: .6rem;
+    }
+    nav.flex li>div {
+        height: 3.5rem;
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+    nav.flex li>div>a {
+        mask-image: unset !important;
     }
     nav.flex li>div .bg-gradient-to-l {
         background-image: unset;
@@ -1054,7 +1062,7 @@ nav.flex div.overflow-y-auto {
     content: "";
     display: block;
     height: 1px;
-    background: linear-gradient(to right, transparent, #5e5e5e, transparent);
+    background: linear-gradient(to right, transparent, #bfbfbf, transparent);
 }
 
 #nmenuid_ap {
