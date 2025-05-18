@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           31.7
+// @version           31.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -769,7 +769,8 @@
     const addStyle = function() {
         GM_addStyle(`
 :root {
-    --keenobservation-background-image-url: '';
+    --keenobservation-user-image-url: '';
+    --keenobservation-assistant-image-url: '';
 }
 
 /*日星月异*/
@@ -977,7 +978,7 @@
         width: 2rem;
         height: 2rem;
         background-color: gray;
-        background-image: var(--keenobservation-background-image-url);
+        background-image: var(--keenobservation-user-image-url);
         background-size: contain;
         border-radius: 50%;
         pointer-events: auto;
@@ -990,10 +991,12 @@
 
     /*机器人气泡优化*/
     main div[data-message-author-role="assistant"] {
+        padding-left: 3.5rem;
         padding-right: 3.5rem;
     }
     main div[data-message-author-role="assistant"]>div.w-full {
         align-items: flex-start;
+        padding-top: 0;
     }
     main div[data-message-author-role="assistant"]>div.w-full>div {
         width: auto;
@@ -1004,6 +1007,20 @@
         padding-left: 1.25rem;
         padding-right: 1.25rem;
         background-color: var(--main-surface-secondary);
+    }
+
+    /*添加机器人头像*/
+    main div[data-message-author-role="assistant"]::after {
+        content: '';
+        position: absolute;
+        left: 0rem;
+        width: 2rem;
+        height: 2rem;
+        background-color: gray;
+        background-image: var(--keenobservation-assistant-image-url);
+        background-size: contain;
+        border-radius: 50%;
+        pointer-events: auto;
     }
 }
 /*官方暗色模式*/
@@ -1137,7 +1154,8 @@ nav.flex .transition-all {
                             let fetchRspBodyNew = fetchRspBody;
                             if (fetchRspBodyNew !== "{}"){ //当前已登录
                                 let modifiedData = JSON.parse(fetchRspBody);
-                                document.documentElement.style.setProperty('--keenobservation-background-image-url', `url('${modifiedData.picture}')`); //更新明察秋毫头像
+                                document.documentElement.style.setProperty('--keenobservation-user-image-url', `url('${modifiedData.picture}')`); //更新明察秋毫用户头像
+                                document.documentElement.style.setProperty('--keenobservation-assistant-image-url', `url('https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp')`); //更新明察秋毫机器人头像
                                 if (!global.st_ec) {
                                     const email = modifiedData.email;
                                     global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
