@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           31.8
+// @version           31.9
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1115,8 +1115,15 @@ nav.flex .transition-all {
     const hookFetch = function() {
         unsafeWindow.fetch = new Proxy(fetch, {
             apply: function (target, thisArg, argumentsList) {
-                const fetchReqUrl = argumentsList[0];
-                const fetchReqOptions = argumentsList[1];
+                let fetchReqUrl = '';
+                let fetchReqOptions = {};
+                if (typeof argumentsList[0] === 'string') {
+                    fetchReqUrl = argumentsList[0];
+                    fetchReqOptions = argumentsList[1];
+                } else if (argumentsList[0] instanceof Request) {
+                    fetchReqOptions = argumentsList[0];
+                    fetchReqUrl = fetchReqOptions?.url;
+                }
                 const fetchReqMethod = fetchReqOptions?.method?.toUpperCase();
                 let fetchRsp;
                 try {
@@ -1182,8 +1189,9 @@ nav.flex .transition-all {
                             }, 1000);//有点bug
                             return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
                         });
-                    } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/(.*?)(\\?|$)')) {
+                    } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversation/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)(\\?|$)')) {
                         //点击/编辑/删除侧边栏的历史对话时，更新数据库：当前id、当前标题、当前更新时间，当前last，当前model。同时更新侧边栏
+
                         return response.text().then(async fetchRspBody => {
                             let fetchRspBodyNew = fetchRspBody;
                             if (fetchReqMethod === 'GET') {
@@ -1195,8 +1203,8 @@ nav.flex .transition-all {
                                 crt_con_update_time = crt_con_update_time < 10**10 ? crt_con_update_time * 1000 : crt_con_update_time;
                                 crt_con_update_time = new Date(crt_con_update_time);
                                 const crt_con_speak_last_keys = f && f.mapping && Object.keys(f.mapping);
-                                const crt_con_speak_last_id = crt_con_speak_last_keys[crt_con_speak_last_keys.length - 1]
-                                const crt_con_speak_last = f.mapping[crt_con_speak_last_id].message
+                                const crt_con_speak_last_id = f.current_node;
+                                const crt_con_speak_last = f.mapping[crt_con_speak_last_id].message;
                                 const crt_con_last = crt_con_speak_last.content.parts[0].trim().replace(/[\r\n]/g, ``).substr(0, 100);
                                 const crt_con_model = crt_con_speak_last.metadata.model_slug;
                                 await global.st_ec.put({id: crt_con_id, title: crt_con_title, update_time: crt_con_update_time, last: crt_con_last, model: crt_con_model});
@@ -1208,7 +1216,7 @@ nav.flex .transition-all {
                             } else if (fetchReqMethod === 'PATCH') {
                                 //删除历史对话
                                 const f = JSON.parse(fetchRspBody);
-                                const crt_con_id = fetchReqUrl.match('/backend-api/conversation/(.*?)(\\?|$)')[1];
+                                const crt_con_id = fetchReqUrl.match('/backend-api/conversation/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)')[1];
                                 const crt_con_title = f && f.title;
                                 const is_visible = f && f.is_visible;
                                 if (is_visible) {
@@ -1241,7 +1249,7 @@ nav.flex .transition-all {
     const attachDate = function(kec_object) {
         $$('nav.flex li a').forEach(async el => {
             let a_id;
-            const a_id_m = el.href.match('/([^/]{4,}?-.{4,}?-.{4,}?-.{4,}?-.{4,}?)(\\?|$)');
+            const a_id_m = el.href.match('/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)(\\?|$)');
             if (a_id_m) {
                 a_id = a_id_m[1];
             } else {
@@ -1251,7 +1259,11 @@ nav.flex .transition-all {
             if (kec_object) {
                 kec_obj_el = kec_object[a_id];
             } else {
-                kec_obj_el = await global.st_ec.get(a_id);
+                if (global.st_ec) {
+                    kec_obj_el = await global.st_ec.get(a_id);
+                } else {
+                    kec_obj_el = {};
+                }
             }
             const title = kec_obj_el && kec_obj_el.title || "";
             const update_time = kec_obj_el && kec_obj_el.update_time || "";
