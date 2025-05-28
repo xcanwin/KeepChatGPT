@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           31.10
+// @version           31.11
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -781,18 +781,18 @@
         background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
         padding-right: .6rem;
     }
-    nav.flex li>div {
+    nav.flex #history>div {
         height: 3.5rem;
         background-color: rgba(255, 255, 255, 0.4);
     }
-    nav.flex li>div>a {
+    nav.flex #history>div>a {
         mask-image: unset !important;
     }
-    nav.flex li>div .bg-gradient-to-l {
+    nav.flex #history>div .bg-gradient-to-l {
         background-image: unset;
     }
 
-    nav.flex li::after {
+    nav.flex #history::after {
         content: "";
         display: block;
         height: 1px;
@@ -800,11 +800,11 @@
     }
 
     /*左边栏选中条目*/
-    nav.flex li>div.bg-token-sidebar-surface-tertiary {
+    nav.flex #history>div.bg-token-sidebar-surface-tertiary {
         background-color: #bfcbfd;
     }
     /*左边栏鼠标滑动*/
-    nav.flex li>div:hover {
+    nav.flex #history>div:hover {
         background-color: #d5ddff;
     }
 
@@ -828,35 +828,35 @@
             background: linear-gradient(to right top, #171717, #060606, #171717);
             padding-right: .6rem;
         }
-        nav.flex li>div {
+        nav.flex #history>div {
             height: 3.5rem;
             background-color: rgba(111, 111, 111, 0.25);
         }
-        nav.flex li>div>a {
+        nav.flex #history>div>a {
             mask-image: unset !important;
         }
-        nav.flex li>div .bg-gradient-to-l {
+        nav.flex #history>div .bg-gradient-to-l {
             background-image: unset;
         }
 
-        nav.flex li::after {
+        nav.flex #history::after {
             content: "";
             display: block;
             height: 1px;
             background: linear-gradient(to right, transparent, #535353, transparent);
         }
-        nav.flex li>div.bg-token-sidebar-surface-tertiary {
+        nav.flex #history>div.bg-token-sidebar-surface-tertiary {
             background-color: #444;
         }
-        nav.flex li>div:hover {
+        nav.flex #history>div:hover {
             background-color: #2f2f2f;
         }
 
-        nav.flex li a .navtitle {
+        nav.flex #history a .navtitle {
             color: #f4f4f4 !important;
         }
 
-        nav.flex li a .navlast {
+        nav.flex #history a .navlast {
             color: #d0d0d0 !important;
         }
     }
@@ -880,6 +880,7 @@
     position: relative;
     margin-top: .5rem;
     margin-bottom: .5rem;
+    margin-left: .5rem;
 }
 .kcg-mb {
     position: absolute;
@@ -1248,7 +1249,7 @@ nav.flex .transition-all {
     };
 
     const attachDate = function(kec_object) {
-        $$('nav.flex li a').forEach(async el => {
+        $$('nav.flex #history a').forEach(async el => {
             let a_id;
             const a_id_m = el.href.match('/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)(\\?|$)');
             if (a_id_m) {
@@ -1273,7 +1274,7 @@ nav.flex .transition-all {
 
             if (!title || !update_time) return;
             if (!$('.navtitle', el) || !$('.navdate', el) || !$('.navlast', el)) {
-                const cdiv_old = $(`.overflow-hidden`, el);
+                const cdiv_old = $(`.flex.min-w-0.grow.items-center.gap-2`, el);
                 cdiv_old.style.display = "none";
                 const cdiv_new = document.createElement("div");
                 cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
