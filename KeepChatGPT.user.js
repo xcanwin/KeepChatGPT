@@ -779,7 +779,6 @@
     /*左边栏*/
     nav.flex {
         background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
-        padding-right: .6rem;
     }
     nav.flex #history>div {
         height: 3.5rem;
@@ -827,7 +826,6 @@
     .ever-changing {
         nav.flex {
             background: linear-gradient(to right top, #171717, #060606, #171717);
-            padding-right: .6rem;
         }
         nav.flex #history>div {
             height: 3.5rem;
@@ -890,6 +888,7 @@
     margin-top: .5rem;
     margin-bottom: .5rem;
     margin-left: .5rem;
+    margin-right: .5rem;
 }
 .kcg-mb {
     position: absolute;
