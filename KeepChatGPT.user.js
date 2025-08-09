@@ -69,6 +69,14 @@
     'use strict';
 
     var global = {};
+	
+    const sv = function(key, value = "") {
+        GM_setValue(key, value);
+    };
+
+    const gv = function(key, value = "") {
+        return GM_getValue(key, value);
+    };
 
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
@@ -158,6 +166,20 @@
                 break;
             }
         }
+        const storedLang = gv("k_language", "");
+        if (storedLang !== "") {
+            const setLang = storedLang.toString().trim();
+            if (lang.local[setLang]) {
+                language = setLang;
+            } else if (setLang.length > 2 && lang.local[setLang.slice(0, 2)]) {
+                language = setLang.slice(0, 2);
+            } else if (setLang.length === 2 && !lang.local[setLang]) {
+                const candidate = Object.keys(lang.local).find(k => k.startsWith(setLang + '-'));
+                if (candidate) {
+                    language = candidate;
+                }
+            }
+        }
         //language = "en"; //Debug English
         return [lang.index, lang.local[language], language];
     };
@@ -174,14 +196,6 @@
         }
         if (r === undefined) {r = s;}
         return r;
-    };
-
-    const sv = function(key, value = "") {
-        GM_setValue(key, value);
-    };
-
-    const gv = function(key, value = "") {
-        return GM_getValue(key, value);
     };
 
     class IndexedDB {
