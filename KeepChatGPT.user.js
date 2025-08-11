@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           31.19
+// @version           31.20
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -69,14 +69,6 @@
     'use strict';
 
     var global = {};
-	
-    const sv = function(key, value = "") {
-        GM_setValue(key, value);
-    };
-
-    const gv = function(key, value = "") {
-        return GM_getValue(key, value);
-    };
 
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
@@ -97,6 +89,14 @@
             childList: true,
             subtree: true
         });
+    };
+
+    const sv = function(key, value = "") {
+        GM_setValue(key, value);
+    };
+
+    const gv = function(key, value = "") {
+        return GM_getValue(key, value);
     };
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
@@ -166,20 +166,7 @@
                 break;
             }
         }
-        const storedLang = gv("k_language", "");
-        if (storedLang !== "") {
-            const setLang = storedLang.toString().trim();
-            if (lang.local[setLang]) {
-                language = setLang;
-            } else if (setLang.length > 2 && lang.local[setLang.slice(0, 2)]) {
-                language = setLang.slice(0, 2);
-            } else if (setLang.length === 2 && !lang.local[setLang]) {
-                const candidate = Object.keys(lang.local).find(k => k.startsWith(setLang + '-'));
-                if (candidate) {
-                    language = candidate;
-                }
-            }
-        }
+        language = gv("k_language", language);
         //language = "en"; //Debug English
         return [lang.index, lang.local[language], language];
     };
