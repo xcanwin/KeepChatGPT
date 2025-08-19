@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           31.20
+// @version           32.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -751,16 +751,20 @@
             ndivmenu.classList.remove('kshow');
         });
 
+        document.documentElement.style.setProperty('--keenobservation-user-image-url', `url('${user_info.image_url}')`); //更新明察秋毫用户头像
+        document.documentElement.style.setProperty('--keenobservation-assistant-image-url', `url('https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp')`); //更新明察秋毫机器人头像
         addStyle();
         setUserOptions();
     };
 
     const addStyle = function() {
         GM_addStyle(`
+/*
 :root {
     --keenobservation-user-image-url: '';
     --keenobservation-assistant-image-url: '';
 }
+*/
 
 /*日星月异*/
 .ever-changing {
@@ -1168,24 +1172,7 @@ nav.flex .transition-all {
                 } catch (e) {}
                 fetchRsp = target.apply(thisArg, argumentsList);
                 return fetchRsp.then(response => {
-                    if (fetchReqUrl.match('/backend-api/me(\\?|$)')) {
-                        //打开网页时，创建数据库。
-                        return response.text().then(async fetchRspBody => {
-                            let fetchRspBodyNew = fetchRspBody;
-                            if (fetchRspBodyNew !== "{}"){ //当前已登录
-                                let modifiedData = JSON.parse(fetchRspBody);
-                                document.documentElement.style.setProperty('--keenobservation-user-image-url', `url('${modifiedData.picture}')`); //更新明察秋毫用户头像
-                                document.documentElement.style.setProperty('--keenobservation-assistant-image-url', `url('https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp')`); //更新明察秋毫机器人头像
-                                if (!global.st_ec) {
-                                    const email = modifiedData.email;
-                                    global.st_ec = new IndexedDB(`KeepChatGPT_${email}`, 'conversations');
-                                }
-                                delete modifiedData.error; //绕过登录超时 Your session has expired. Please log in again to continue using the app.
-                                fetchRspBodyNew = JSON.stringify(modifiedData);
-                            }
-                            return Promise.resolve(new Response(fetchRspBodyNew, {status: response.status, statusText: response.statusText, headers: response.headers}));
-                        });
-                    } else if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
+                    if (gv("k_everchanging", false) === true && fetchReqUrl.match('/backend-api/conversations\\?.*offset=')) {
                         //刷新侧边栏时，更新数据库：id、标题、更新时间。同时更新侧边栏
                         return response.text().then(async fetchRspBody => {
                             let fetchRspBodyNew = fetchRspBody;
@@ -1530,6 +1517,38 @@ nav.flex .transition-all {
         }
     };
 
+    const nInterval2Fun = function() {
+        if ($(symbol1_selector) || $(symbol2_selector)) {
+            keepChat();
+        }
+    };
+
+
+    /*
+    基础数据库
+    */
+    const userInfo = () => {
+        const user_info = {
+            email: `default`,
+            image_url: ``,
+        };
+        for (const s of $$('script')) {
+            const match = s.textContent?.match(/\\"email\\",\\"(.*?)\\"/);
+            if (match) {
+                user_info.email = match[1];
+            }
+            const match2 = s.textContent?.match(/\\"picture\\",\\"(.*?)\\"/);
+            if (match2) {
+                user_info.image_url = match2[1]?.replaceAll('\\u0026', '&');
+            }
+        }
+        global.st_ec = new IndexedDB(`KeepChatGPT_${user_info.email}`, 'conversations');
+        return user_info;
+    };
+
+    const user_info = userInfo();
+
+
     [symbol1_selector, symbol2_selector].forEach(el => {
         muob(el, $(`body`), () => {
             loadKCG();
@@ -1537,11 +1556,6 @@ nav.flex .transition-all {
         });
     });
 
-    const nInterval2Fun = function() {
-        if ($(symbol1_selector) || $(symbol2_selector)) {
-            keepChat();
-        }
-    };
 
     hookFetch();
     //fixOpenaiBUG();
