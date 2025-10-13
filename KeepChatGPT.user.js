@@ -1000,7 +1000,6 @@
         padding-top: 0;
     }
     main div[data-message-author-role="assistant"]>div.w-full>div {
-        width: auto;
         max-width: 100%;
         border-radius: 1.5rem;
         padding-top: 0.75rem;
