@@ -587,7 +587,7 @@
             } else {
                 sv("k_largescreen", true);
             }
-            $("main.w-full").classList.toggle('largescreen');
+            document.documentElement.classList.toggle('largescreen');
             $('.checkbutton', this).classList.toggle('checked');
         };
 
@@ -671,7 +671,7 @@
 
         if (gv("k_largescreen", false) === true) {
             $('#nmenuid_ls .checkbutton').classList.add('checked');
-            $("main.w-full").classList.add('largescreen');
+            document.documentElement.classList.add('largescreen');
         }
 
         if (gv("k_speakcompletely", false) === true) {
