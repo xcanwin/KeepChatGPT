@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           32.9
+// @version           33.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -401,90 +401,203 @@
         return nsvg.cloneNode(true);
     };
 
+    // 通用弹窗：用于输入配置、显示更新信息、展示赞赏二维码等。
     const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(t) {return t;}, inputtype = 'br', inputvalue = '') {
         const ndivalert = document.createElement('div');
+        ndivalert.setAttribute("class", "kdialog-overlay");
         ndivalert.innerHTML = `
-<div class="fixed inset-0 z-50 bg-black/50 dark:bg-black/80">
-  <div class="z-50 h-full w-full overflow-y-auto grid grid-cols-[10px_1fr_10px] grid-rows-[minmax(10px,1fr)_auto_minmax(10px,1fr)] md:grid-rows-[minmax(20px,1fr)_auto_minmax(20px,1fr)]">
-    <div class="popover bg-token-main-surface-primary relative start-1/2 col-auto col-start-2 row-auto row-start-2 h-full w-full text-start ltr:-translate-x-1/2 rtl:translate-x-1/2 rounded-2xl shadow-xl flex flex-col focus:outline-hidden overflow-hidden max-w-xl">
-      <div class="px-4 pb-4 pt-5 sm:p-6 flex items-center justify-between border-b border-black/10 dark:border-white/10">
-        <h2 class="text-lg leading-6 dark:text-gray-200">${title}</h2>
-      </div>
-      <div class="p-4 sm:p-6">
-        <p class="kdialogcontent text-muted pb-3 pt-2 text-sm text-gray-600 dark:text-white">${content}</p>
-        <${inputtype} class="kdialoginput w-full resize-none rounded p-4 placeholder:text-gray-300 dark:bg-gray-800 border-gray-100 focus:border-brand-green border"></${inputtype}>
-        <div class="mt-5 flex flex-col gap-3 sm:mt-4 sm:flex-row-reverse">
-          <button class="kdialogbtn btn relative btn-primary">
-            <div class="flex w-full gap-2 items-center justify-center">${buttonvalue}</div>
-          </button>
-          <button class="kdialogclose btn relative btn-neutral">
-            <div class="flex w-full gap-2 items-center justify-center">Cancel</div>
-          </button>
-        </div>
-      </div>
+<div class="kdialog-shell" role="dialog" aria-modal="true" aria-label="${title}">
+  <div class="kdialog-head">
+    <h2>${title}</h2>
+  </div>
+  <div class="kdialog-body">
+    <p class="kdialogcontent">${content}</p>
+    <${inputtype} class="kdialoginput"></${inputtype}>
+    <div class="kdialog-actions">
+      <button type="button" class="kdialogbtn">${buttonvalue}</button>
+      <button type="button" class="kdialogclose">Cancel</button>
     </div>
   </div>
 </div>
         `;
+
         if (inputtype === 'br') {
             $(".kdialoginput", ndivalert).style = `display: none`;
-            $(".kdialogcontent", ndivalert).style = `line-height: 2.5;`;
+            $(".kdialogcontent", ndivalert).style = `line-height: 2.2;`;
         } else if (inputtype === 'img') {
             $(".kdialoginput", ndivalert).src = inputvalue;
             $(".kdialoginput", ndivalert).style = `max-height: 25rem; height: unset; width: unset; margin: 0 auto;`;
         } else if (inputtype === 'textarea') {
             $(".kdialoginput", ndivalert).value = inputvalue;
-            $(".kdialoginput", ndivalert).style = `height: 10rem; background-color: transparent;`;
+            $(".kdialoginput", ndivalert).style = `height: 10rem;`;
         } else {
             $(".kdialoginput", ndivalert).value = inputvalue;
         }
-        $(".kdialogclose", ndivalert).onclick = function() {
+
+        // 统一关闭逻辑，保证点击遮罩和取消按钮行为一致。
+        const closeDialog = function() {
             ndivalert.remove();
+            document.removeEventListener('keydown', onEsc);
         };
+        const onEsc = function(event) {
+            if (event.key === 'Escape') {
+                closeDialog();
+            }
+        };
+
+        $(".kdialogclose", ndivalert).onclick = closeDialog;
         $(".kdialogbtn", ndivalert).onclick = function() {
             buttonfun(ndivalert);
-            $(".kdialogclose", ndivalert).onclick();
+            closeDialog();
         };
+        ndivalert.addEventListener('click', function(event) {
+            if (event.target === ndivalert) {
+                closeDialog();
+            }
+        });
+        document.addEventListener('keydown', onEsc);
         document.body.appendChild(ndivalert);
     };
 
+    // 创建设置项按钮：统一标题、描述、交互样式。
+    const createMenuItem = function(item) {
+        const nitem = document.createElement('button');
+        nitem.type = "button";
+        nitem.id = `nmenuid_${item.id}`;
+        nitem.className = `kmenu-item ${item.type === 'toggle' ? 'kmenu-item-toggle' : 'kmenu-item-action'} ${item.extraClass || ''}`.trim();
+        nitem.innerHTML = `
+<span class="kmenu-item-main">
+  <span class="kmenu-item-title">${item.title}</span>
+  ${item.desc ? `<span class="kmenu-item-desc">${item.desc}</span>` : ``}
+</span>
+`;
+        if (item.type === 'toggle') {
+            nitem.appendChild(ncheckbox());
+        }
+        return nitem;
+    };
+
+    // 设置信息架构：仅负责视觉分组，不改变原有业务配置 key。
+    const getMenuGroups = function() {
+        return [
+            {
+                title: `通用`,
+                items: [
+                    {id: `af`, title: tl("调整间隔"), desc: tl("建议间隔50秒"), type: `action`},
+                    {id: `cu`, title: tl("检查更新"), type: `action`},
+                    {id: `ab`, title: tl("关于"), type: `action`},
+                    {id: `ap`, title: tl("赞赏鼓励"), type: `action`, extraClass: `kmenu-item-ap`}
+                ]
+            },
+            {
+                title: `隐私与安全`,
+                items: [
+                    {id: `ds`, title: tl("数据安全"), desc: tl("使用正则编写规则"), type: `action`},
+                    {id: `cm`, title: tl("取消审计"), type: `toggle`},
+                    {id: `it`, title: tl("拦截跟踪"), type: `toggle`}
+                ]
+            },
+            {
+                title: `界面与阅读`,
+                items: [
+                    {id: `dm`, title: tl("暗色主题"), type: `toggle`},
+                    {id: `ko`, title: tl("明察秋毫"), type: `toggle`},
+                    {id: `pp`, title: tl("净化页面"), type: `toggle`},
+                    {id: `ls`, title: tl("展示大屏"), type: `toggle`},
+                    {id: `sc`, title: tl("言无不尽"), type: `toggle`},
+                    {id: `cc`, title: tl("克隆对话"), type: `toggle`},
+                    {id: `ec`, title: tl("日新月异"), type: `toggle`}
+                ]
+            },
+            {
+                title: `开发与调试`,
+                items: [
+                    {id: `sd`, title: tl("显示调试"), type: `toggle`}
+                ]
+            }
+        ];
+    };
+
+    // 加载设置弹窗并绑定菜单行为。
     const loadMenu = function() {
         if ($(".kmenu") !== null) {
             return;
         }
-        const ndivmenu = document.createElement('div');
-        ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `
-<ul>
-    <li id=nmenuid_af>${tl("调整间隔")}</li>
-    <li id=nmenuid_ds>${tl("数据安全")}</li>
-    <li id=nmenuid_cm>${tl("取消审计")}</li>
-    <li id=nmenuid_ko>${tl("明察秋毫")}</li>
-    <li id=nmenuid_cc>${tl("克隆对话")}</li>
-    <li id=nmenuid_sc>${tl("言无不尽")}</li>
-    <li id=nmenuid_pp>${tl("净化页面")}</li>
-    <li id=nmenuid_ls>${tl("展示大屏")}</li>
-    <li id=nmenuid_it>${tl("拦截跟踪")}</li>
-    <li id=nmenuid_ec>${tl("日新月异")}</li>
-    <li id=nmenuid_dm>${tl("暗色主题")}</li>
-    <li id=nmenuid_sd>${tl("显示调试")}</li>
-    <li id=nmenuid_cu>${tl("检查更新")}</li>
-    <li id=nmenuid_ap>${tl("赞赏鼓励")}</li>
-    <li id=nmenuid_ab>${tl("关于")}</li>
-</ul>
-`;
-        $('#kcg').appendChild(ndivmenu);
 
-        $('#nmenuid_cm').appendChild(ncheckbox());
-        $('#nmenuid_ko').appendChild(ncheckbox());
-        $('#nmenuid_cc').appendChild(ncheckbox());
-        $('#nmenuid_sc').appendChild(ncheckbox());
-        $('#nmenuid_pp').appendChild(ncheckbox());
-        $('#nmenuid_ls').appendChild(ncheckbox());
-        $('#nmenuid_it').appendChild(ncheckbox());
-        $('#nmenuid_ec').appendChild(ncheckbox());
-        $('#nmenuid_dm').appendChild(ncheckbox());
-        $('#nmenuid_sd').appendChild(ncheckbox());
+        const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
+        const ndivmenu = document.createElement('div');
+        ndivmenu.setAttribute("class", "kmenu khide");
+        ndivmenu.setAttribute("aria-hidden", "true");
+        ndivmenu.innerHTML = `
+<div class="kmenu-backdrop"></div>
+<div class="kmenu-panel" role="dialog" aria-modal="true" aria-label="KeepChatGPT">
+  <div class="kmenu-head">
+    <div class="kmenu-brand">
+      <img src="${icon}" alt="KeepChatGPT">
+      <div class="kmenu-brand-text">
+        <strong>KeepChatGPT</strong>
+        <span>by xcanwin</span>
+      </div>
+    </div>
+    <button type="button" class="kmenu-close" aria-label="Close">×</button>
+  </div>
+  <div class="kmenu-content"></div>
+</div>
+`;
+
+        const nmenuContent = $(".kmenu-content", ndivmenu);
+        getMenuGroups().forEach(group => {
+            const ngroup = document.createElement("section");
+            ngroup.className = "kmenu-group";
+            ngroup.innerHTML = `<h3 class="kmenu-group-title">${group.title}</h3>`;
+
+            const ngroupBody = document.createElement("div");
+            ngroupBody.className = "kmenu-group-body";
+            group.items.forEach(item => {
+                ngroupBody.appendChild(createMenuItem(item));
+            });
+            ngroup.appendChild(ngroupBody);
+            nmenuContent.appendChild(ngroup);
+        });
+        document.body.appendChild(ndivmenu);
+
+        // 点击遮罩或右上角关闭按钮都可以关闭设置弹窗。
+        const closeMenu = function() {
+            toggleMenu('hide');
+        };
+        $(".kmenu-close", ndivmenu).onclick = closeMenu;
+        $(".kmenu-backdrop", ndivmenu).onclick = closeMenu;
+
+        // 弹窗内使用 Tab 时保持焦点循环，避免焦点落到页面背景元素。
+        ndivmenu.addEventListener('keydown', function(event) {
+            if (event.key !== 'Tab') {
+                return;
+            }
+            const focusableSelector = `button, [href], input, textarea, [tabindex]:not([tabindex="-1"])`;
+            const focusables = Array.from($$(focusableSelector, ndivmenu)).filter(el => !el.disabled && el.offsetParent !== null);
+            if (focusables.length === 0) {
+                return;
+            }
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        });
+
+        // 全局 Escape 关闭，避免焦点在输入框时无法关闭设置弹窗。
+        if (!global.kmenuEscListenerAdded) {
+            global.kmenuEscListenerAdded = true;
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && $(".kmenu")?.classList.contains('kshow')) {
+                    toggleMenu('hide');
+                }
+            });
+        }
 
         $('#nmenuid_ds').onclick = function() {
             toggleMenu('hide');
@@ -500,34 +613,41 @@
         };
 
         $('#nmenuid_sd').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
-                $('#xcanwin').style.display = 'none';
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
+                if ($('#xcanwin')) {
+                    $('#xcanwin').style.display = 'none';
+                }
                 sv("k_showDebug", false);
             } else {
-                $('#xcanwin').style.display = '';
+                if ($('#xcanwin')) {
+                    $('#xcanwin').style.display = '';
+                }
                 sv("k_showDebug", true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_dm').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 $('body').classList.remove("kdark");
                 sv("k_theme", "light");
             } else {
                 $('body').classList.add("kdark");
                 sv("k_theme", "dark");
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_cm').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 sv("k_closeModer", false);
             } else {
                 sv("k_closeModer", true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_af').onclick = function() {
@@ -548,29 +668,32 @@
         };
 
         $('#nmenuid_ko').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 $('body').classList.remove("kkeenobservation");
                 sv("k_keenObservation", false);
             } else {
                 $('body').classList.add("kkeenobservation");
                 sv("k_keenObservation", true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_cc').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 sv("k_clonechat", false);
                 cloneChat(false);
             } else {
                 sv("k_clonechat", true);
                 cloneChat(true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_pp').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 $('body').classList.remove("kpurifypage");
                 sv("k_cleanlyhome", false);
             } else {
@@ -578,48 +701,52 @@
                 purifyPage();
                 sv("k_cleanlyhome", true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_ls').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 sv("k_largescreen", false);
             } else {
                 sv("k_largescreen", true);
             }
             $("main#main").classList.toggle('largescreen');
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_sc').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 sv("k_speakcompletely", false);
             } else {
                 sv("k_speakcompletely", true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_it').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 sv("k_intercepttracking", false);
                 interceptTracking(false);
             } else {
                 sv("k_intercepttracking", true);
                 interceptTracking(true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_ec').onclick = function() {
-            if ($('.checkbutton', this).classList.contains('checked')) {
+            const ncheck = $('.checkbutton', this);
+            if (ncheck?.classList.contains('checked')) {
                 sv("k_everchanging", false);
                 everChanging(false);
             } else {
                 sv("k_everchanging", true);
                 everChanging(true);
             }
-            $('.checkbutton', this).classList.toggle('checked');
+            ncheck?.classList.toggle('checked');
         };
 
         $('#nmenuid_cu').onclick = function() {
@@ -628,63 +755,80 @@
         };
 
         $('#nmenuid_ap').onclick = function() {
+            toggleMenu('hide');
             supportAuthor();
         };
 
         $('#nmenuid_ab').onclick = function() {
+            toggleMenu('hide');
             window.open(GM_info.script.namespace, '_blank');
         };
     };
 
+    // 设置统一的开关视觉状态，避免节点不存在时抛出错误。
+    const setToggleChecked = function(menuId, checked = false) {
+        const ncheck = $(`#${menuId} .checkbutton`);
+        if (!ncheck) {
+            return;
+        }
+        if (checked) {
+            ncheck.classList.add('checked');
+        } else {
+            ncheck.classList.remove('checked');
+        }
+    };
+
     const setUserOptions = function() {
         if (gv("k_showDebug", false) === true) {
-            $('#nmenuid_sd .checkbutton').classList.add('checked');
-            $('#xcanwin').style.display = '';
-        } else {
+            setToggleChecked('nmenuid_sd', true);
+            if ($('#xcanwin')) {
+                $('#xcanwin').style.display = '';
+            }
+        } else if ($('#xcanwin')) {
             $('#xcanwin').style.display = 'none';
         }
 
         if (gv("k_theme", "light") === "dark") {
-            $('#nmenuid_dm .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_dm', true);
             $('body').classList.add("kdark");
         }
 
         if (gv("k_closeModer", false) === true) {
-            $('#nmenuid_cm .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_cm', true);
         }
 
         if (gv("k_keenObservation", true) === true) {
-            $('#nmenuid_ko .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_ko', true);
             $('body').classList.add("kkeenobservation");
         }
 
         if (gv("k_clonechat", false) === true) {
-            $('#nmenuid_cc .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_cc', true);
             cloneChat(true);
         }
 
         if (gv("k_cleanlyhome", false) === true) {
-            $('#nmenuid_pp .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_pp', true);
             purifyPage();
             $('body').classList.add("kpurifypage");
         }
 
         if (gv("k_largescreen", false) === true) {
-            $('#nmenuid_ls .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_ls', true);
             $("main#main").classList.add('largescreen');
         }
 
         if (gv("k_speakcompletely", false) === true) {
-            $('#nmenuid_sc .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_sc', true);
         }
 
         if (gv("k_intercepttracking", false) === true) {
-            $('#nmenuid_it .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_it', true);
             interceptTracking(true);
         }
 
         if (gv("k_everchanging", false) === true) {
-            $('#nmenuid_ec .checkbutton').classList.add('checked');
+            setToggleChecked('nmenuid_ec', true);
             everChanging(true);
         }
 
@@ -700,16 +844,27 @@
         }
     };
 
+    // 统一控制设置弹窗显示状态，并维护焦点返回。
     const toggleMenu = function(action) {
         const ndivmenu = $(".kmenu");
+        if (!ndivmenu) {
+            return;
+        }
         if (action === "show") {
+            global.kmenuLastFocus = document.activeElement;
             ndivmenu.classList.remove('khide');
-            if ($("#kcg")) {
-                ndivmenu.style.left = `${$("#kcg").getBoundingClientRect().right + 20}px`;
-                ndivmenu.style.top = `${$("#kcg").getBoundingClientRect().top}px`;
-            }
+            ndivmenu.classList.add('kshow');
+            ndivmenu.setAttribute("aria-hidden", "false");
+            document.body.classList.add("kmenu-open");
+            $(".kmenu-close", ndivmenu)?.focus();
         } else {
+            ndivmenu.classList.remove('kshow');
             ndivmenu.classList.add('khide');
+            ndivmenu.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("kmenu-open");
+            if (global.kmenuLastFocus && global.kmenuLastFocus.focus) {
+                global.kmenuLastFocus.focus();
+            }
         }
     };
 
@@ -723,6 +878,8 @@
         const ndivkcg = document.createElement("div");
         ndivkcg.id = "kcg";
         ndivkcg.setAttribute("class", "flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
+        ndivkcg.setAttribute("role", "button");
+        ndivkcg.setAttribute("tabindex", "0");
 
         const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem;' /><div style='font-size: 0.8rem'>Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin</div>`;
@@ -743,12 +900,23 @@
         } */
         symbol_prt.insertBefore(ndivkcg, symbol_prt.childNodes[0]);
         loadMenu();
-        const ndivmenu = $(".kmenu");
-        ndivkcg.addEventListener('click', () => {
-            ndivmenu.classList.add('kshow');
-        });
-        ndivmenu.addEventListener('mouseleave', () => {
-            ndivmenu.classList.remove('kshow');
+
+        // 支持点击与键盘打开设置弹窗。
+        const toggleMenuByKcg = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const nmenu = $(".kmenu");
+            if (nmenu?.classList.contains('kshow')) {
+                toggleMenu('hide');
+            } else {
+                toggleMenu('show');
+            }
+        };
+        ndivkcg.addEventListener('click', toggleMenuByKcg);
+        ndivkcg.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                toggleMenuByKcg(event);
+            }
         });
 
         document.documentElement.style.setProperty('--keenobservation-user-image-url', `url('${user_info.image_url}')`); //更新明察秋毫用户头像
@@ -877,20 +1045,73 @@
     }
 }
 
-/*LOGO*/
-#kcg {
-    background: linear-gradient(to top right, #ff5, #FFE6C6, #F9F9B3);
-    animation: gradient 6s ease-in-out infinite;
-    color: #555;
-    font-weight: bold;
-    user-select: none;
-    border-color: #cec86b;
-    cursor: pointer;
+/*KeepChatGPT 视觉系统 token（亮色）*/
+:root {
+    --kcg-accent: #3f7cff;
+    --kcg-accent-soft: #eaf1ff;
+    --kcg-panel: rgba(248, 251, 255, 0.94);
+    --kcg-panel-strong: rgba(255, 255, 255, 0.98);
+    --kcg-border: rgba(63, 124, 255, 0.2);
+    --kcg-text: #15213a;
+    --kcg-text-muted: #536284;
+    --kcg-shadow: 0 18px 42px rgba(33, 64, 133, 0.22);
 }
-@keyframes gradient {
-    0%{background-color:#F0B27A;}
-    50%{background-color:#FDE184;}
-    100%{background-color:#F0B27A;}
+
+/*KeepChatGPT 视觉系统 token（暗色）*/
+body.kdark {
+    --kcg-accent: #66b4ff;
+    --kcg-accent-soft: #031a38;
+    --kcg-panel: rgba(2, 11, 24, 0.97);
+    --kcg-panel-strong: rgba(4, 16, 33, 0.99);
+    --kcg-border: rgba(110, 188, 255, 0.56);
+    --kcg-text: #f8fbff;
+    --kcg-text-muted: #e1eafd;
+    --kcg-shadow: 0 28px 58px rgba(0, 4, 15, 0.78);
+}
+
+/*KeepChatGPT 入口*/
+#kcg {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(138deg, #fff6cf 0%, #dff1ff 52%, #e8fff2 100%);
+    color: #0d1b42;
+    border-color: rgba(44, 95, 180, 0.36);
+    box-shadow: 0 8px 20px rgba(42, 88, 170, 0.2);
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#kcg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35), transparent 52%);
+    pointer-events: none;
+}
+#kcg:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(42, 88, 170, 0.25);
+}
+#kcg:focus-visible {
+    outline: 2px solid var(--kcg-accent);
+    outline-offset: 2px;
+}
+#kcg img {
+    border-radius: 0.325rem;
+}
+/* LOGO 文本统一右移并加粗（亮暗主题一致） */
+#kcg > div {
+    margin-left: 0.24rem;
+    font-weight: 700;
+    color: #102452;
+}
+
+/* 降低动画与视觉特效负担 */
+@media (prefers-reduced-motion: reduce) {
+    #kcg {
+        transition: none;
+        animation: none !important;
+    }
 }
 .kcg-pc {
     position: relative;
@@ -907,59 +1128,297 @@
     left: .5rem;
     bottom: 0;
 }
-/*暗色模式*/
-.kdark {
-    #kcg {
-        background: linear-gradient(to top right, #1a0035, #000, #0c006a);
-        animation: none;
-        color: #ffffff;
-        border-color: #00618e;
+body.kdark #kcg {
+    /* LOGO 降亮约20% */
+    background: linear-gradient(to top right, #15002b, #000, #090055);
+    border-color: rgba(230, 242, 255, 0.6);
+    border-width: 0.5px;
+    animation: none;
+    box-shadow:
+        0 14px 30px rgba(0, 5, 16, 0.75),
+        0 0 0 0.5px rgba(140, 211, 255, 0.66),
+        inset 0 0 0 0.5px rgba(177, 227, 255, 0.34),
+        inset 0 1px 14px rgba(98, 175, 255, 0.22);
+}
+body.kdark #kcg::before {
+    background:
+        linear-gradient(180deg, rgba(171, 224, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 18% 18%, rgba(105, 178, 255, 0.06), transparent 56%);
+}
+body.kdark #kcg:hover {
+    border-color: rgba(230, 242, 255, 0.6);
+}
+body.kdark #kcg img {
+    filter: invert(1);
+}
+
+body.kdark .kmenu-panel {
+    background: linear-gradient(160deg, rgba(2, 10, 22, 0.98), rgba(4, 15, 31, 0.99));
+}
+body.kdark .kmenu-head {
+    background: linear-gradient(90deg, rgba(4, 23, 50, 0.96), rgba(4, 18, 38, 0.78) 48%, rgba(3, 12, 24, 0.62) 100%);
+}
+
+/*设置弹窗：全屏遮罩 + 中央面板*/
+.kmenu {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+}
+.kmenu-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 20, 40, 0.35);
+}
+.kmenu-panel {
+    position: relative;
+    width: min(46rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 4rem);
+    margin: 2rem auto;
+    border-radius: 1rem;
+    border: 1px solid var(--kcg-border);
+    background: linear-gradient(160deg, var(--kcg-panel), var(--kcg-panel-strong));
+    box-shadow: var(--kcg-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.kmenu-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--kcg-border);
+    background: linear-gradient(90deg, var(--kcg-accent-soft), transparent);
+}
+.kmenu-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--kcg-text);
+}
+.kmenu-brand img {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.35rem;
+}
+body.kdark .kmenu-brand img {
+    filter: invert(1);
+}
+.kmenu-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-left: 0.12rem;
+}
+.kmenu-brand-text strong {
+    font-size: 0.96rem;
+    line-height: 1.1rem;
+}
+.kmenu-brand-text span {
+    font-size: 0.75rem;
+    color: var(--kcg-text-muted);
+}
+.kmenu-close {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--kcg-border);
+    border-radius: 0.625rem;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--kcg-text-muted);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+body.kdark .kmenu-close {
+    background: rgba(5, 18, 37, 0.94);
+}
+.kmenu-close:hover {
+    color: var(--kcg-accent);
+    border-color: var(--kcg-accent);
+}
+.kmenu-close:focus-visible {
+    outline: 2px solid var(--kcg-accent);
+    outline-offset: 1px;
+}
+.kmenu-content {
+    padding: 1rem 1rem 1.1rem;
+    overflow: auto;
+}
+.kmenu-group + .kmenu-group {
+    margin-top: 0.95rem;
+}
+.kmenu-group-title {
+    margin: 0 0 0.55rem;
+    color: var(--kcg-text-muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.kmenu-group-body {
+    display: grid;
+    gap: 0.45rem;
+}
+.kmenu-item {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.45);
+    color: var(--kcg-text);
+    padding: 0.68rem 0.78rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+body.kdark .kmenu-item {
+    background: rgba(4, 16, 34, 0.9);
+}
+.kmenu-item:hover {
+    border-color: var(--kcg-border);
+    background: rgba(255, 255, 255, 0.72);
+    transform: translateY(-1px);
+}
+body.kdark .kmenu-item:hover {
+    background: rgba(7, 28, 56, 0.98);
+}
+body.kdark .kmenu-group-title {
+    color: #e9f1ff;
+}
+body.kdark .kmenu-item-desc {
+    color: #dce8ff;
+}
+body.kdark .kmenu-brand-text span {
+    color: #dce9ff;
+}
+
+body.kdark .kdialog-shell {
+    background: linear-gradient(165deg, rgba(2, 10, 22, 0.98), rgba(4, 15, 31, 0.99));
+}
+body.kdark .kdialogcontent {
+    color: #e8f0ff;
+}
+.kmenu-item:focus-visible {
+    outline: 2px solid var(--kcg-accent);
+    outline-offset: 1px;
+}
+.kmenu-item-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.14rem;
+    min-width: 0;
+}
+.kmenu-item-title {
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+.kmenu-item-desc {
+    font-size: 0.74rem;
+    color: var(--kcg-text-muted);
+    line-height: 1.25;
+}
+.kmenu-item-ap .kmenu-item-title {
+    color: #00a16d;
+    font-weight: 700;
+}
+.kmenu-open {
+    overflow: hidden;
+}
+@media (max-width: 768px) {
+    .kmenu-panel {
+        width: calc(100vw - 1rem);
+        max-height: calc(100vh - 1rem);
+        margin: 0.5rem auto;
+        border-radius: 0.9rem;
     }
-    #kcg img {
-        filter: invert(1);
+    .kmenu-content {
+        padding: 0.85rem;
     }
 }
 
-/*菜单栏*/
-.kmenu {
-    background: linear-gradient(to top right, #C4F4FF, #E6E6FB, #FFF);
-    color: #000000;
-    border: 0.08rem solid #5252D9;
-    border-radius: 0.625rem;
-    box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
-    display: none;
-    min-width: 12.5rem;
-    padding: 0.75rem 0;
-    position: absolute;
-    z-index: 1000;
-    top: .1rem;
-    left: .5rem;
-    right: .5rem;
-    font-weight: normal;
-    font-size: 0.9rem;
-    line-height: normal;
+/*通用弹窗样式（输入框、更新提示、赞赏弹窗）*/
+.kdialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3100;
+    background: rgba(7, 13, 28, 0.55);
+    display: grid;
+    place-items: center;
+    padding: 1rem;
 }
-.kmenu li {
-    display: block;
-    padding: 0.5rem 0.85rem;
-    text-align: left;
-    user-select: none;
+.kdialog-shell {
+    width: min(36rem, calc(100vw - 2rem));
+    border-radius: 0.95rem;
+    border: 1px solid var(--kcg-border);
+    background: linear-gradient(165deg, var(--kcg-panel), var(--kcg-panel-strong));
+    box-shadow: var(--kcg-shadow);
+    color: var(--kcg-text);
+    overflow: hidden;
+}
+.kdialog-head {
+    padding: 1rem 1.1rem 0.82rem;
+    border-bottom: 1px solid var(--kcg-border);
+}
+.kdialog-head h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+.kdialog-body {
+    padding: 1rem 1.1rem 1.1rem;
+}
+.kdialogcontent {
+    margin: 0 0 0.85rem;
+    color: var(--kcg-text-muted);
+    font-size: 0.86rem;
+}
+.kdialoginput {
+    width: 100%;
+    border: 1px solid var(--kcg-border);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--kcg-text);
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 2.5rem;
+}
+body.kdark .kdialoginput {
+    background: rgba(2, 15, 34, 0.94);
+}
+body.kdark .kdialogclose {
+    color: #f0f7ff;
+}
+.kdialog-actions {
+    margin-top: 0.95rem;
     display: flex;
-    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
 }
-.kmenu li:hover {
-    background-color: #c0caff;
+.kdialogbtn, .kdialogclose {
+    border: 1px solid var(--kcg-border);
+    border-radius: 0.65rem;
+    padding: 0.48rem 0.95rem;
     cursor: pointer;
+    font-size: 0.82rem;
+    transition: all 0.2s ease;
 }
-/*暗色模式*/
-.kdark {
-    .kmenu {
-        background: linear-gradient(to top right, #01000f, #00070d, #00194a);
-        color: #FFFFFF;
-    }
-    .kmenu li:hover {
-        background-color: #383851;
-    }
+.kdialogbtn {
+    background: var(--kcg-accent);
+    border-color: var(--kcg-accent);
+    color: #ffffff;
+}
+.kdialogclose {
+    background: transparent;
+    color: var(--kcg-text-muted);
+}
+.kdialogbtn:hover, .kdialogclose:hover {
+    transform: translateY(-1px);
 }
 
 /*净化页面*/
@@ -1072,19 +1531,26 @@ nav div.pt-3\\.5 {
 
 /*选择按钮*/
 .checkbutton {
-    height: 1.25rem;
-    right: 0.85rem;
-    position: absolute;
+    width: 2.1rem;
+    height: 1.4rem;
+    margin-left: auto;
+    position: static;
+    flex-shrink: 0;
 }
 .checkbutton:hover {
     cursor: pointer;
+}
+.checkbutton path {
+    transition: fill 0.2s ease-in-out;
+}
+.checkbutton circle {
+    transition: transform 0.2s ease-in-out;
 }
 .checked path {
     fill: #30D158;
 }
 .checked circle {
     transform: translateX(14px);
-    transition: transform 0.2s ease-in-out;
 }
 
 /*展示大屏*/
@@ -1127,19 +1593,15 @@ nav.flex div.overflow-y-auto {
     color: white;
 }
 
-#nmenuid_ap {
-    color: #00bf78;
-}
-
 nav.flex .transition-all {
     position: unset;
 }
 
 .khide {
-    display: none;
+    display: none !important;
 }
 .kshow {
-    display: block;
+    display: block !important;
 }
 
 `);
@@ -1586,7 +2048,8 @@ nav.flex .transition-all {
     //fixOpenaiBUG();
     dataSec();
 
-    let nInterval1 = setInterval(nInterval1Fun, 300);
+    // 降低常驻轮询频率，减少持续 CPU 占用。
+    let nInterval1 = setInterval(nInterval1Fun, 1000);
     let interval2Time = parseInt(gv("k_interval", 50));
     let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
 
