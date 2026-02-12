@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           33.3
+// @version           33.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1155,7 +1155,7 @@ body.kdark {
     background: linear-gradient(138deg, #fff6cf 0%, #dff1ff 52%, #e8fff2 100%);
     color: #0d1b42;
     border-color: rgba(44, 95, 180, 0.36);
-    box-shadow: 0 8px 20px rgba(42, 88, 170, 0.2);
+    box-shadow: none;
     user-select: none;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1170,7 +1170,7 @@ body.kdark {
 }
 #kcg:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 24px rgba(42, 88, 170, 0.25);
+    box-shadow: none;
 }
 #kcg:focus-visible {
     outline: 2px solid var(--kcg-accent);
