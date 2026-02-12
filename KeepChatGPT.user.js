@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           33.1
+// @version           33.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -110,7 +110,7 @@
     const getLang = function() {
         let lang = `
 {
-    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔50秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv", "克隆对话": "cc", "净化页面": "pp", "展示大屏": "ls", "言无不尽": "sc", "拦截跟踪": "it", "日新月异": "ec", "赞赏鼓励": "ap", "警告": "wn", "数据安全": "ds", "发现敏感数据": "dd", "使用正则编写规则": "rr", "明察秋毫": "ko"},
+    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔50秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv", "克隆对话": "cc", "净化页面": "pp", "展示大屏": "ls", "言无不尽": "sc", "拦截跟踪": "it", "日新月异": "ec", "赞赏鼓励": "ap", "警告": "wn", "数据安全": "ds", "发现敏感数据": "dd", "使用正则编写规则": "rr", "通用": "gn", "隐私与安全": "pa", "界面与阅读": "ur", "开发与调试": "dt", "按钮色调": "bh", "0为当前色调": "oh", "明察秋毫": "ko"},
     "local": {
 "ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "si": "اقتراح فاصل زمني 50 ثانية", "mi": "تعديل الفاصل", "cu": "التحقق من التحديثات", "cv": "الإصدار الحالي", "dl": "اكتشف أحدث إصدار", "lv": "أحدث إصدار", "cc": "استنساخ المحادثة", "pp": "تنقية الصفحة", "ls": "عرض الشاشة الكبيرة", "sc": "تحدث بشكل كامل", "it": "اعتراض التتبع", "ec": "التغير المستمر", "ap": "تقدير", "wn": "تحذير", "ds": "أمان البيانات", "dd": "اكتشف البيانات الحساسة", "rr": "استخدم الريجكس لكتابة القواعد", "ko": "الرصد الدقيق"},
 "bg": {"dm": "Тъмна тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ca": "Отмяна на анимацията", "ab": "За", "si": "Предложете интервал от 50 секунди", "mi": "Промяна на интервала", "cu": "Проверка на актуализации", "cc": "Клониране на разговора", "pp": "Почистване на страницата", "ls": "Показване на голям екран", "sc": "Говорете пълно", "it": "Прихващане на проследяването", "ec": "Непрекъснато променящ се", "ap": "Оценка", "wn": "Предупреждение", "ds": "Сигурност на данните", "dd": "Откриване на чувствителни данни", "rr": "Използвайте регулярни изрази за съставяне на правила", "ko": "Остро наблюдение"},
@@ -118,7 +118,7 @@
 "da": {"dm": "Mørk tilstand", "sd": "Vis fejlfinding", "cm": "Annuller revision", "ca": "Annuller animation", "ab": "Om", "si": "Forslag interval på 50 sekunder", "mi": "Ændre interval", "cu": "Tjek for opdateringer", "cc": "Klon samtalen", "pp": "Rensning af siden", "ls": "Vis stor skærm", "sc": "Fuldfør udtalelsen", "it": "Interceptor sporing", "ec": "Konstant forandring", "ap": "Værdssættelse", "wn": "Advarsel", "ds": "Datasikkerhed", "dd": "Opdage følsomme data", "rr": "Brug regex til at skrive regler", "ko": "Skarp observation"},
 "de": {"dm": "Dunkler Modus", "sd": "Fehlerbehebung anzeigen", "cm": "Prüfung abbrechen", "ca": "Animation abbrechen", "ab": "Über", "si": "Vorschlag für Intervall von 50 Sekunden", "mi": "Intervall bearbeiten", "cu": "Überprüfung auf Updates", "cv": "Aktuelle Version", "dl": "Entdecken Sie die neueste Version", "lv": "ist die neueste Version", "cc": "Konversation klonen", "pp": "Seite bereinigen", "ls": "Großen Bildschirm anzeigen", "sc": "Sprich vollständig", "it": "Tracking abfangen", "ec": "Ständiger Wandel", "ap": "Wertschätzung", "wn": "Warnung", "ds": "Datensicherheit", "dd": "Entdeckung sensibler Daten", "rr": "Verwenden Sie Regex, um Regeln zu schreiben", "ko": "Scharfe Beobachtung"},
 "el": {"dm": "Σκοτεινή θεματολογία", "sd": "Εμφάνιση αποσφαλμάτωσης", "cm": "Ακύρωση ελέγχου", "ca": "Ακύρωση κινούμενων σχεδίων", "ab": "Σχετικά με", "si": "Προτείνετε διάστημα 50 δευτερολέπτων", "mi": "Τροποποίηση διαστήματος", "cu": "Έλεγχος ενημερώσεων", "cc": "Κλωνοποίηση συνομιλίας", "pp": "Καθαρισμός σελίδας", "ls": "Εμφάνιση μεγάλης οθόνης", "sc": "Ολοκλήρωσε την ομιλία", "it": "Ανίχνευση παρακολούθησης", "ec": "Αδιάκοπη αλλαγή", "ap": "Εκτίμηση", "wn": "Προειδοποίηση", "ds": "Ασφάλεια δεδομένων", "dd": "Ανακάλυψη ευαίσθητων δεδομένων", "rr": "Χρησιμοποιήστε regex για να γράψετε κανόνες", "ko": "Εξαιρετική παρατήρηση"},
-"en": {"dm": "Dark mode", "sd": "Show debugging", "cm": "Cancel audit", "ca": "Cancel animation", "ab": "About", "si": "Suggest interval of 50 seconds; The author usually sets 900", "mi": "Modify interval", "cu": "Check for updates", "cv": "Current version", "dl": "Discover the latest version", "lv": "is the latest version", "cc": "Conversation cloning", "pp": "Purified page", "ls": "Wide display mode", "sc": "Complete response", "it": "Intercept tracking", "ec": "More chat info", "ap": "Sponsor", "wn": "Warning", "ds": "Data security", "dd": "Discover sensitive data", "rr": "Use regex to write rules", "ko": "Keen observation"},
+"en": {"dm": "Dark mode", "sd": "Show debugging", "cm": "Cancel audit", "ca": "Cancel animation", "ab": "About", "si": "Suggest interval of 50 seconds; The author usually sets 900", "mi": "Modify interval", "cu": "Check for updates", "cv": "Current version", "dl": "Discover the latest version", "lv": "is the latest version", "cc": "Conversation cloning", "pp": "Purified page", "ls": "Wide display mode", "sc": "Complete response", "it": "Intercept tracking", "ec": "More chat info", "ap": "Sponsor", "wn": "Warning", "ds": "Data security", "dd": "Discover sensitive data", "rr": "Use regex to write rules", "gn": "General", "pa": "Privacy & security", "ur": "Interface & reading", "dt": "Dev & debugging", "bh": "Button hue", "oh": "0 keeps default hue", "ko": "Keen observation"},
 "eo": {"dm": "Malhela moduso", "sd": "Montri depuradon", "cm": "Nuligi kontroli", "ca": "Nuligi animacion", "ab": "Pri", "si": "Sugesti intervalon de 50 sekundoj", "mi": "Modifi intervalon", "cu": "Kontroli ĝisdatigojn", "cc": "Kloni konversacion", "pp": "Pura paĝo", "ls": "Montri grandan ekrane", "sc": "Parolu plene", "it": "Intercepti Trakadon", "ec": "Ĉiam ŝanĝiĝanta", "ap": "Aprobo", "wn": "Averto", "ds": "Datensekureco", "dd": "Malkovru sensitivajn datumojn", "rr": "Uzu regulajn esprimojn por skribi regulojn", "ko": "Akra observado"},
 "es": {"dm": "Modo oscuro", "sd": "Mostrar depuración", "cm": "Cancelar auditoría", "ca": "Cancelar animación", "ab": "Acerca de", "si": "Sugerir un intervalo de 50 segundos", "mi": "Modificar intervalo", "cu": "Comprobar actualizaciones", "cv": "Versión actual", "dl": "Descubre la última versión", "lv": "es la última versión", "cc": "Clonar conversación", "pp": "Purificar página", "ls": "Mostrar pantalla grande", "sc": "Termina tu discurso", "it": "Interceptar Rastreo", "ec": "Cambio constante", "ap": "Apreciación", "wn": "Advertencia", "ds": "Seguridad de datos", "dd": "Descubrir datos sensibles", "rr": "Usa regex para escribir reglas", "ko": "Observación aguda"},
 "fi": {"dm": "Tumma tila", "sd": "Näytä virheenkorjaus", "cm": "Peruuta tarkistus", "ca": "Peruuta animaatio", "ab": "Tietoa", "si": "Ehdota 50 sekunnin väliaikaa", "mi": "Muokkaa väliä", "cu": "Tarkista päivitykset", "cc": "Kloonaa keskustelu", "pp": "Puhdista sivu", "ls": "Näytä suuri näyttö", "sc": "Puhu loppuun asti", "it": "Sieppaa seuranta", "ec": "Jatkuvasti muuttuva", "ap": "Arvostus", "wn": "Varoitus", "ds": "Tietoturva", "dd": "Löytää arkaluonteista dataa", "rr": "Käytä regexiä sääntöjen kirjoittamiseen", "ko": "Tarkka havainnointi"},
@@ -145,8 +145,8 @@
 "uk": {"dm": "Темний режим", "sd": "Показати налагодження", "cm": "Скасувати аудит", "ca": "Скасувати анімацію", "ab": "Про", "si": "Запропонуйте інтервал у 50 секунд", "mi": "Змінити інтервал", "cu": "Перевірити оновлення", "cc": "Клонувати діалог", "pp": "Очистити сторінку", "ls": "Відобразити великий екран", "sc": "Говоріть повністю", "it": "Перехоплення відстеження", "ec": "Постійна зміна", "ap": "Вдячність", "wn": "Попередження", "ds": "Безпека даних", "dd": "Виявлення конфіденційних даних", "rr": "Використовуйте регулярні вирази для написання правил", "ko": "Точне спостереження"},
 "ug": {"dm": "تېما كۆرسىتىش", "sd": "كۆرسەتكەن يۇقىرىلاش", "cm": "ئەمەلدىن قالدۇرۇش", "ca": "ئېنىماتىكىنى بىكار قىلىش", "ab": "ئۇچۇرلىق", "si": "50 سىكونتلىك ئارىلىقنى سۇنۇشتۇرۇش", "mi": "ئارىلىق ئۆزگەرتىش", "cu": "يېڭىلانما كۆزەت", "cc": "كۆپچەي ئىككىلىش", "pp": "چۈشۈرۈش بەت", "ls": "كۆرسىتىش چوڭ ئېكران", "sc": "تاماملا سۆزلىشىڭىز", "it": "قولايلىنىش تىزىتكۈن", "ec": "تەڭشەك ئىستىقامەت", "ap": "قىلىش", "wn": "ئاگاھلاندۇرۇش", "ds": "مەلۇمات بىخەتەرلىكى", "dd": "سىزىقلىق مەلۇماتنى تاپشۇرۇش", "rr": "قائىدىلەرنى يېزىش ئۈچۈن regex نى ئىشلىتىڭ", "ko": "ئاڭلىتىش قىممىتى"},
 "vi": {"dm": "Chế độ tối", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ca": "Hủy hoạt hình", "ab": "Về", "si": "Đề xuất khoảng thời gian 50 giây", "mi": "Sửa khoảng cách", "cu": "Kiểm tra cập nhật", "cc": "Sao chép cuộc trò chuyện", "pp": "Làm sạch trang", "ls": "Hiển thị màn hình lớn", "sc": "Nói đầy đủ", "it": "Chặn Theo Dõi", "ec": "Luôn thay đổi", "ap": "Đánh giá", "wn": "Cảnh báo", "ds": "Bảo mật dữ liệu", "dd": "Phát hiện dữ liệu nhạy cảm", "rr": "Sử dụng regex để viết quy tắc", "ko": "Quan sát tinh tế"},
-"zh-CN": {"dm": "暗色主题", "sd": "显示调试", "cm": "取消审计", "ca": "取消动画", "ab": "关于", "si": "建议间隔50秒以上，作者平时设置的是900秒", "mi": "调整间隔", "cu": "检查更新", "cc": "克隆对话", "pp": "净化页面", "ls": "展示大屏", "sc": "言无不尽", "it": "拦截跟踪", "ec": "日新月异", "ap": "赞赏鼓励", "wn": "警告", "ds": "数据安全", "dd": "你输入的内容里存在以下敏感数据，已为你自动化脱敏", "rr": "本功能会将聊天输入框里的敏感信息进行脱敏和警告<br>请根据正则表达式语法编写数据安全规则，不同的规则用换行间隔", "ko": "明察秋毫"},
-"zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "si": "建議間隔50秒，作者平時設置的是900秒", "mi": "調整間隔", "cu": "檢查更新", "cc": "複製對話", "pp": "淨化頁面", "ls": "顯示大螢幕", "sc": "言無不盡", "it": "拦截追踪", "ec": "日新月異", "ap": "讚賞鼓勵", "wn": "警告", "ds": "資料安全", "dd": "發現敏感數據", "rr": "使用正則表達式撰寫規則", "ko": "明察秋毫"}
+"zh-CN": {"dm": "暗色主题", "sd": "显示调试", "cm": "取消审计", "ca": "取消动画", "ab": "关于", "si": "建议间隔50秒以上，作者平时设置的是900秒", "mi": "调整间隔", "cu": "检查更新", "cc": "克隆对话", "pp": "净化页面", "ls": "展示大屏", "sc": "言无不尽", "it": "拦截跟踪", "ec": "日新月异", "ap": "赞赏鼓励", "wn": "警告", "ds": "数据安全", "dd": "你输入的内容里存在以下敏感数据，已为你自动化脱敏", "rr": "本功能会将聊天输入框里的敏感信息进行脱敏和警告<br>请根据正则表达式语法编写数据安全规则，不同的规则用换行间隔", "gn": "通用", "pa": "隐私与安全", "ur": "界面与阅读", "dt": "开发与调试", "bh": "按钮色调", "oh": "0为当前色调", "ko": "明察秋毫"},
+"zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "si": "建議間隔50秒，作者平時設置的是900秒", "mi": "調整間隔", "cu": "檢查更新", "cc": "複製對話", "pp": "淨化頁面", "ls": "顯示大螢幕", "sc": "言無不盡", "it": "拦截追踪", "ec": "日新月異", "ap": "讚賞鼓勵", "wn": "警告", "ds": "資料安全", "dd": "發現敏感數據", "rr": "使用正則表達式撰寫規則", "gn": "一般", "pa": "隱私與安全", "ur": "介面與閱讀", "dt": "開發與調試", "bh": "按鈕色調", "oh": "0為目前色調", "ko": "明察秋毫"}
     }
 }
 `;
@@ -463,6 +463,23 @@
 
     // 创建设置项按钮：统一标题、描述、交互样式。
     const createMenuItem = function(item) {
+        if (item.type === 'range') {
+            const nitem = document.createElement('div');
+            nitem.id = `nmenuid_${item.id}`;
+            nitem.className = `kmenu-item kmenu-item-range ${item.extraClass || ''}`.trim();
+            nitem.innerHTML = `
+<span class="kmenu-item-main">
+  <span class="kmenu-item-title">${item.title}</span>
+  ${item.desc ? `<span class="kmenu-item-desc">${item.desc}</span>` : ``}
+</span>
+<span class="kmenu-range-row">
+  <input id="kcg_hue_slider" class="kmenu-item-range-input" type="range" min="${item.min}" max="${item.max}" step="${item.step}" value="0">
+  <span id="kcg_hue_value" class="kmenu-item-range-value">0°</span>
+</span>
+`;
+            return nitem;
+        }
+
         const nitem = document.createElement('button');
         nitem.type = "button";
         nitem.id = `nmenuid_${item.id}`;
@@ -483,7 +500,7 @@
     const getMenuGroups = function() {
         return [
             {
-                title: `通用`,
+                title: tl("通用"),
                 items: [
                     {id: `af`, title: tl("调整间隔"), desc: tl("建议间隔50秒"), type: `action`},
                     {id: `cu`, title: tl("检查更新"), type: `action`},
@@ -492,7 +509,7 @@
                 ]
             },
             {
-                title: `隐私与安全`,
+                title: tl("隐私与安全"),
                 items: [
                     {id: `ds`, title: tl("数据安全"), desc: tl("使用正则编写规则"), type: `action`},
                     {id: `cm`, title: tl("取消审计"), type: `toggle`},
@@ -500,9 +517,10 @@
                 ]
             },
             {
-                title: `界面与阅读`,
+                title: tl("界面与阅读"),
                 items: [
                     {id: `dm`, title: tl("暗色主题"), type: `toggle`},
+                    {id: `hue`, title: tl("按钮色调"), desc: tl("0为当前色调"), type: `range`, min: -180, max: 180, step: 1},
                     {id: `ko`, title: tl("明察秋毫"), type: `toggle`},
                     {id: `pp`, title: tl("净化页面"), type: `toggle`},
                     {id: `ls`, title: tl("展示大屏"), type: `toggle`},
@@ -512,7 +530,7 @@
                 ]
             },
             {
-                title: `开发与调试`,
+                title: tl("开发与调试"),
                 items: [
                     {id: `sd`, title: tl("显示调试"), type: `toggle`}
                 ]
@@ -640,7 +658,15 @@
                 sv("k_theme", "dark");
             }
             ncheck?.classList.toggle('checked');
+            applyKcgHueByTheme();
         };
+
+        $('#kcg_hue_slider')?.addEventListener('input', function() {
+            const hueValue = normalizeKcgHue(this.value);
+            applyKcgHue(hueValue);
+            setKcgHueLabel(hueValue);
+            sv(getKcgHueStorageKey(getCurrentTheme()), hueValue);
+        });
 
         $('#nmenuid_cm').onclick = function() {
             const ncheck = $('.checkbutton', this);
@@ -780,6 +806,53 @@
         }
     };
 
+    const normalizeKcgHue = function(value) {
+        const parsed = parseInt(value);
+        if (Number.isNaN(parsed)) {
+            return 0;
+        }
+        return Math.min(180, Math.max(-180, parsed));
+    };
+
+    const getCurrentTheme = function() {
+        return $('body').classList.contains("kdark") ? "dark" : "light";
+    };
+
+    const getKcgHueStorageKey = function(theme) {
+        return theme === "dark" ? "k_kcgHue_dark" : "k_kcgHue_light";
+    };
+
+    const getKcgHueDefaultValue = function() {
+        return 0;
+    };
+
+    const getKcgHueBaseOffset = function() {
+        return 0;
+    };
+
+    const setKcgHueLabel = function(hueValue) {
+        if ($('#kcg_hue_value')) {
+            $('#kcg_hue_value').textContent = `${hueValue}°`;
+        }
+    };
+
+    const applyKcgHue = function(hueValue) {
+        const normalizedHue = normalizeKcgHue(hueValue);
+        const effectiveHue = normalizedHue + getKcgHueBaseOffset();
+        const hueIntensity = Math.min(180, Math.abs(effectiveHue)) / 180;
+        document.documentElement.style.setProperty('--kcg-hue-rotate', `${Math.round(effectiveHue)}deg`);
+        document.documentElement.style.setProperty('--kcg-hue-saturate', `${(1 + hueIntensity * 0.25).toFixed(3)}`);
+    };
+
+    const applyKcgHueByTheme = function() {
+        const hueValue = normalizeKcgHue(gv(getKcgHueStorageKey(getCurrentTheme()), getKcgHueDefaultValue()));
+        applyKcgHue(hueValue);
+        if ($('#kcg_hue_slider')) {
+            $('#kcg_hue_slider').value = `${hueValue}`;
+        }
+        setKcgHueLabel(hueValue);
+    };
+
     const setUserOptions = function() {
         if (gv("k_showDebug", false) === true) {
             setToggleChecked('nmenuid_sd', true);
@@ -794,6 +867,8 @@
             setToggleChecked('nmenuid_dm', true);
             $('body').classList.add("kdark");
         }
+
+        applyKcgHueByTheme();
 
         if (gv("k_closeModer", false) === true) {
             setToggleChecked('nmenuid_cm', true);
@@ -1057,6 +1132,8 @@
     --kcg-text: #15213a;
     --kcg-text-muted: #536284;
     --kcg-shadow: 0 18px 42px rgba(33, 64, 133, 0.22);
+    --kcg-hue-rotate: 0deg;
+    --kcg-hue-saturate: 1;
 }
 
 /*KeepChatGPT 视觉系统 token（暗色）*/
@@ -1082,6 +1159,7 @@ body.kdark {
     user-select: none;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    filter: hue-rotate(var(--kcg-hue-rotate)) saturate(var(--kcg-hue-saturate));
 }
 #kcg::before {
     content: "";
@@ -1105,7 +1183,7 @@ body.kdark {
 #kcg > div {
     margin-left: 0.24rem;
     font-weight: 700;
-    color: #102452;
+    color: #111;
 }
 
 /* 降低动画与视觉特效负担 */
@@ -1136,11 +1214,7 @@ body.kdark #kcg {
     border-color: rgba(230, 242, 255, 0.6);
     border-width: 0.5px;
     animation: none;
-    box-shadow:
-        0 14px 30px rgba(0, 5, 16, 0.75),
-        0 0 0 0.5px rgba(140, 211, 255, 0.66),
-        inset 0 0 0 0.5px rgba(177, 227, 255, 0.34),
-        inset 0 1px 14px rgba(98, 175, 255, 0.22);
+    box-shadow: none;
 }
 body.kdark #kcg::before {
     background:
@@ -1149,9 +1223,13 @@ body.kdark #kcg::before {
 }
 body.kdark #kcg:hover {
     border-color: rgba(230, 242, 255, 0.6);
+    box-shadow: none;
 }
 body.kdark #kcg img {
     filter: invert(1);
+}
+body.kdark #kcg > div {
+    color: #fff;
 }
 
 body.kdark .kmenu-panel {
@@ -1324,6 +1402,26 @@ body.kdark .kdialogcontent {
     font-size: 0.74rem;
     color: var(--kcg-text-muted);
     line-height: 1.25;
+}
+.kmenu-item-range {
+    display: block;
+    cursor: default;
+}
+.kmenu-range-row {
+    margin-top: 0.52rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+.kmenu-item-range-input {
+    flex: 1;
+    accent-color: var(--kcg-accent);
+}
+.kmenu-item-range-value {
+    min-width: 3.2rem;
+    text-align: right;
+    font-size: 0.76rem;
+    color: var(--kcg-text-muted);
 }
 .kmenu-item-ap .kmenu-item-title {
     color: #00a16d;
