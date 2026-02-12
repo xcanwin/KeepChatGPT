@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           33.5
+// @version           33.6
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -550,7 +550,7 @@
         ndivmenu.setAttribute("aria-hidden", "true");
         ndivmenu.innerHTML = `
 <div class="kmenu-backdrop"></div>
-<div class="kmenu-panel" role="dialog" aria-modal="true" aria-label="KeepChatGPT">
+<div class="kmenu-panel" role="dialog" aria-modal="true" aria-label="KeepChatGPT" tabindex="-1">
   <div class="kmenu-head">
     <div class="kmenu-brand">
       <img src="${icon}" alt="KeepChatGPT">
@@ -933,7 +933,7 @@
             ndivmenu.classList.add('kshow');
             ndivmenu.setAttribute("aria-hidden", "false");
             document.body.classList.add("kmenu-open");
-            $(".kmenu-close", ndivmenu)?.focus();
+            $(".kmenu-panel", ndivmenu)?.focus();
         } else {
             ndivmenu.classList.remove('kshow');
             ndivmenu.classList.add('khide');
@@ -1243,8 +1243,16 @@ body.kdark .kmenu-head {
 .kmenu {
     position: fixed;
     inset: 0;
-    z-index: 3000;
+    z-index: 2147483000;
     display: none;
+    pointer-events: auto;
+}
+.kmenu-open > *:not(.kmenu):not(.kdialog-overlay):not(script):not(style) {
+    pointer-events: none !important;
+}
+.kmenu-open .kmenu,
+.kmenu-open .kmenu * {
+    pointer-events: auto !important;
 }
 .kmenu-backdrop {
     position: absolute;
@@ -1263,6 +1271,7 @@ body.kdark .kmenu-head {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    pointer-events: auto;
 }
 .kmenu-head {
     display: flex;
