@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           33.0
+// @version           33.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -102,6 +102,8 @@
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
     const symbol1_selector = 'nav.flex';
     const symbol2_selector = 'div.sticky div.justify-center.top-0 button span.sr-only';
+    const trackingBlockRegex = /gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|\/v1\/initialize|\/messenger\/|statsigapi\.net|\/rgstr|\/v1\/sdk_exception/;
+    const intercomScriptRegex = /widget\.intercom\.io/;
 
     const datasec_blocklist_default = "18888888888\nhttps://securiy-domain.com\n([\\w-]+(\\.[\\w-]+)*)@163\.com\nmy-secret-username\n";
 
@@ -1622,7 +1624,6 @@ nav.flex .transition-all {
                 const fetchReqMethod = fetchReqOptions?.method?.toUpperCase();
                 let fetchRsp;
                 try {
-                    const block_url = 'gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|/v1/initialize|/messenger/|statsigapi\.net|/rgstr|/v1/sdk_exception';
                     if (gv("k_closeModer", false) && fetchReqUrl.match('/backend-api/moderations(\\?|$)')) {
                         //取消审计1
                         fetchRsp = Promise.resolve({
@@ -1634,13 +1635,13 @@ nav.flex .transition-all {
                         const post_body = JSON.parse(argumentsList[1].body);
                         post_body.supports_modapi = false;
                         argumentsList[1].body = JSON.stringify(post_body);
-                    } else if (gv("k_intercepttracking", false) && fetchReqUrl.match(block_url)) {
+                    } else if (gv("k_intercepttracking", false) && typeof fetchReqUrl === 'string' && trackingBlockRegex.test(fetchReqUrl)) {
                         //拦截跟踪
                         console.log(`KeepChatGPT: ${tl("拦截跟踪")}: ${fetchReqUrl}`);
                         fetchRsp = Promise.resolve({
                         });
                         return fetchRsp;
-                    } else if (fetchReqUrl.match('/backend-api/compliance')) {
+                    } else if (typeof fetchReqUrl === 'string' && fetchReqUrl.match('/backend-api/compliance')) {
                         //fix openai bug
                         fetchRsp = Promise.resolve({
                             json: () => {return {"registration_country":null,"require_cookie_consent":false,"terms_of_use":{"is_required":false,"display":null},"cookie_consent":null,"age_verification":null}}
@@ -1714,6 +1715,33 @@ nav.flex .transition-all {
         navigator.sendBeacon = function(url, data) {};
     };
 
+    // 网络层兜底：补充 XHR 拦截，兼容未经过 fetch 的跟踪请求。
+    const hookXHR = function() {
+        const XHR = unsafeWindow.XMLHttpRequest;
+        if (!XHR || !XHR.prototype) return;
+        if (XHR.prototype._kcgHooked === true) return;
+        XHR.prototype._kcgHooked = true;
+        const xhrOpen = XHR.prototype.open;
+        const xhrSend = XHR.prototype.send;
+
+        XHR.prototype.open = function(method, url, ...rest) {
+            this._kcg_url = typeof url === 'string' ? url : `${url || ''}`;
+            return xhrOpen.call(this, method, url, ...rest);
+        };
+
+        XHR.prototype.send = function(...args) {
+            try {
+                const xhrReqUrl = this._kcg_url || '';
+                if (gv("k_intercepttracking", false) && trackingBlockRegex.test(xhrReqUrl)) {
+                    console.log(`KeepChatGPT: ${tl("拦截跟踪")}: ${xhrReqUrl}`);
+                    this.abort();
+                    return;
+                }
+            } catch (e) {}
+            return xhrSend.apply(this, args);
+        };
+    };
+
     const everChanging = function(action) {
         if (action === true) {
             $('nav.flex')?.classList.add('knav');
@@ -1756,7 +1784,7 @@ nav.flex .transition-all {
                 cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
                 cdiv_new.innerHTML = `
 <div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute; color: #000000; font-weight: bold;" class="navtitle">
-    ${title}
+    ${htmlEncode(title)}
 </div>
 <div style="right: 0; position: absolute; color: gray; font-size: 0.71rem;" class="navdate">
     ${formatDate2(update_time)}
@@ -1767,10 +1795,10 @@ nav.flex .transition-all {
 </div>
 `;
                 el.insertBefore(cdiv_new, el.childNodes[1]);
-            } else if ($('.navtitle', el).innerHTML !== title || $('.navdate', el).innerHTML !== formatDate2(update_time) || $('.navlast', el).innerHTML !== last) {
-                $('.navtitle', el).innerHTML = title;
-                $('.navdate', el).innerHTML = formatDate2(update_time);
-                $('.navlast', el).innerHTML = htmlEncode(last);
+            } else if ($('.navtitle', el).textContent !== title || $('.navdate', el).textContent !== formatDate2(update_time) || $('.navlast', el).textContent !== last) {
+                $('.navtitle', el).textContent = title;
+                $('.navdate', el).textContent = formatDate2(update_time);
+                $('.navlast', el).textContent = last;
             }
         });
 
@@ -1828,6 +1856,35 @@ nav.flex .transition-all {
         }
     };
 
+    const setPromptRichText = function(promptTextarea, contentProseMirror) {
+        promptTextarea.innerHTML = '';
+        promptTextarea.focus();
+
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(promptTextarea);
+        range.collapse(false);
+
+        if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        if (typeof range.createContextualFragment === 'function') {
+            const fragment = range.createContextualFragment(contentProseMirror);
+            range.insertNode(fragment);
+            range.collapse(false);
+            if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        } else {
+            promptTextarea.innerHTML = contentProseMirror;
+        }
+
+        promptTextarea.dispatchEvent(new Event('input', {bubbles: true}));
+    };
+
     cloneChat.listen_Click = function(event) {
         event.stopPropagation();
         const clickedElement = document.elementFromPoint(event.clientX, event.clientY);
@@ -1847,11 +1904,12 @@ nav.flex .transition-all {
 
             // 判断鼠标点击的位置是否在伪元素范围内
             if (event.clientX >= logoLeft && event.clientX <= logoRight && event.clientY >= logoTop && event.clientY <= logoBottom) {
-                const content = $('.whitespace-pre-wrap', event.target).innerHTML.trim();
+                const contentElement = $('.whitespace-pre-wrap', event.target);
+                const promptTextarea = $("form.w-full #prompt-textarea");
+                if (!contentElement || !promptTextarea) return;
+                const content = contentElement.innerHTML.trim();
                 const content_ProseMirror = content.split(/\n/).map(line => `<p>${line}</p>`).join('');
-                $("form.w-full #prompt-textarea").innerHTML = '';
-                $("form.w-full #prompt-textarea").focus();
-                document.execCommand('insertHTML', false, content_ProseMirror);
+                setPromptRichText(promptTextarea, content_ProseMirror);
             }
         }
     };
@@ -1926,17 +1984,54 @@ nav.flex .transition-all {
     const interceptTracking = function(action) {
         if (action === true) {
             window.addEventListener('beforescriptexecute', interceptTracking.listen_beforescriptexecute);
+            interceptTracking.startObserver();
         } else {
             window.removeEventListener('beforescriptexecute', interceptTracking.listen_beforescriptexecute);
+            interceptTracking.stopObserver();
+        }
+    };
+
+    interceptTracking.observer = null;
+
+    interceptTracking.blockScript = function(scriptElement) {
+        if (!scriptElement || scriptElement.tagName !== 'SCRIPT') return false;
+        if (intercomScriptRegex.test(scriptElement.src || '')) {
+            scriptElement.textContent = ``;
+            scriptElement.remove();
+            return true;
+        }
+        return false;
+    };
+
+    interceptTracking.startObserver = function() {
+        if (interceptTracking.observer || !document.documentElement) return;
+        interceptTracking.observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType !== 1) continue;
+                    if (node.tagName === 'SCRIPT') {
+                        interceptTracking.blockScript(node);
+                    } else if (node.querySelectorAll) {
+                        node.querySelectorAll('script').forEach(scriptElement => interceptTracking.blockScript(scriptElement));
+                    }
+                }
+            }
+        });
+        interceptTracking.observer.observe(document.documentElement, {childList: true, subtree: true});
+        $$('script').forEach(scriptElement => interceptTracking.blockScript(scriptElement));
+    };
+
+    interceptTracking.stopObserver = function() {
+        if (interceptTracking.observer) {
+            interceptTracking.observer.disconnect();
+            interceptTracking.observer = null;
         }
     };
 
     interceptTracking.listen_beforescriptexecute = function(event) {
         const scriptElement = event.target;
-        if (scriptElement.src.match('widget\.intercom\.io')) {
+        if (interceptTracking.blockScript(scriptElement)) {
             event.preventDefault();
-            scriptElement.textContent = ``;
-            scriptElement.remove();
         }
     };
 
@@ -2045,6 +2140,7 @@ nav.flex .transition-all {
 
     blockStorageDialog();
     hookFetch();
+    hookXHR();
     //fixOpenaiBUG();
     dataSec();
 

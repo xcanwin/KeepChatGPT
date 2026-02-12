@@ -1,3 +1,5 @@
 **/test/*
 .DS_Store
 **/.DS_Store
+.agents/*
+AGENTS.md
