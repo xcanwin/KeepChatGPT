@@ -94,7 +94,7 @@ Official Channels✅:
 
 1. Installation ```Tampermonkey```, through the [official website](https://www.tampermonkey.net/)；
 2. Installation ```KeepChatGPT```, through the [Install channels](#Install-channels)；
-3. Open [ChatGPT](https://chat.openai.com/chat)；
+3. Open [ChatGPT](https://chatgpt.com/) (compatible with the legacy domain `chat.openai.com`)；
 
 ## Usage Harmony OS
 
@@ -102,7 +102,7 @@ Official Channels✅:
 2. Installation ```Firefox```, through the [HUAWEI App Store](https://appgallery.huawei.com/app/C31765) and [official website](https://www.mozilla.org/firefox/browsers/mobile/android/)；
 3. Open ```Firefox``` > bottom right corner ```...``` > Add-ons > Add-ons Manager > The one on the right ```+```；
 4. Installation ```KeepChatGPT```, through the [Install channels](#Install-channels)；
-5. Open [ChatGPT](https://chat.openai.com/chat)；
+5. Open [ChatGPT](https://chatgpt.com/)；
 
 ## Usage iOS
 
@@ -110,7 +110,7 @@ Official Channels✅:
 2. Installation ```Stay```, through the [App Store](https://apps.apple.com/app/id1591620171)；
 3. For instructions on use, please refer to [official website](https://github.com/shenruisi/Stay)；
 4. Installation ```KeepChatGPT```, through the [Install channels](#Install-channels)；
-5. Open [ChatGPT](https://chat.openai.com/chat)；
+5. Open [ChatGPT](https://chatgpt.com/)；
 
 ## Other Notes
 
@@ -294,4 +294,3 @@ SyntaxError: invalid syntax
 | buymeacoffee | [<img src="/assets/appreciate_buycoffee.png" width="200"></img>](https://www.buymeacoffee.com/xcanwin)<br>Click on the image |
 | Love power generation<br>(Support WeChat, Alipay) | [<img src="/assets/appreciate_afdian.png" width="200"></img>](https://afdian.net/a/xcanwin/plan)<br>Click on the image or scan |
 | WeChat | <img src="/assets/appreciate_wechat.png" width="200"></img> |
-

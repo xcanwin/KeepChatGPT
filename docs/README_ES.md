@@ -81,7 +81,7 @@ Y al final de este artículo [Otras instrucciones](#other-instructions), el auto
 *   Disfrute de la "Etiqueta de oro exclusiva" gratuita, que representa un cambio dramático en su experiencia de IA:
 *   <img src="/assets/index_light_en.png" width="750"></img>
 *   Para los amigos a los que les gustan los tonos oscuros, puede pasar el cursor sobre la "Etiqueta dorada exclusiva" con el mouse y seleccionar "Tema" para cambiarla a "Etiqueta azul exclusiva":
-*   <img src="/assets/index_dark.png" width="750"></img>
+*   <img src="/assets/chat_dark.png" width="750"></img>
 *   Moblie:
 *   <img src="/assets/index_mobile.png" width="280"></img>
 
@@ -98,9 +98,10 @@ Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores
 
 1. Instala la extensión del navegador `Tampermonkey` desde el sitio web de [Tampermonkey](https://www.tampermonkey.net/).
 2. Instala `KeepChatGPT` seleccionando uno de los repositorios de [Instalación de repositorios](#install).
-3. Abre [ChatGPT](https://chat.OpenAI.com/chat) y disfruta de una experiencia sin problemas.
-4. Además, hay una forma más inteligente de hacerlo, que es preguntarle a ChatGPT: "¿Cómo instalar la extensión Tampermonkey? ¿Cómo instalar el script de usuario desde Greasy Fork?"
+3. Abre [ChatGPT](https://chatgpt.com/) (compatible con el dominio anterior `chat.openai.com`) y disfruta de una experiencia sin problemas.
+4. Además, hay una forma más inteligente de hacerlo, que es preguntarle a ChatGPT: "¿Cómo instalar la extensión Tampermonkey? ¿Cómo instalar el script de usuario desde el canal oficial?"
 
+<a id="usage-harmonyos-system"></a>
 ## Uso del sistema HarmonyOS
 
 1.  El navegador preferido es `Firefox`;
@@ -108,6 +109,7 @@ Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores
 3.  Abrir `Firefox` Aplicación del navegador > esquina inferior derecha `...` > Complementos > Administrador de complementos > `+` a la derecha de `Tampermonkey`;
 4.  Instalar `KeepChatGPT` userscript, puede elegir un canal para instalar [Canal de instalación](#installation-channel);
 
+<a id="usage-android-system"></a>
 ## Uso del sistema Android
 
 1.  El navegador preferido es `Firefox`;
@@ -115,6 +117,7 @@ Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores
 3.  Abrir `Firefox` Aplicación del navegador > esquina inferior derecha `...` > Complementos > Administrador de complementos > `+` a la derecha de `Tampermonkey`;
 4.  Instalar `KeepChatGPT` userscript, puede elegir un canal para instalar [Canal de instalación](#installation-channel);
 
+<a id="usage-apple-system"></a>
 ## Uso del sistema Apple
 
 1.  El navegador preferido es `Safari`, otros navegadores están limitados por la política de Apple y rara vez admiten complementos JS;
@@ -122,19 +125,22 @@ Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores
 3.  Consulte \[Sitio web oficial de la estancia] (<https://github.com/shenruisi/Stay>) para instrucciones;
 4.  Instalar `KeepChatGPT` plugin, puede elegir un canal para instalar [Canal de instalación](#installation-channel)；
 
+<a id="install"></a>
+<a id="installation-channel"></a>
 ## Canal de instalación
 
 |  | Origen UserScript |
 | --- | --- |
 | 1 | [Github](https://raw.githubusercontent.com/xcanwin/KeepChatGPT/main/KeepChatGPT.user.js) |
-| 2 | [GreasyFork](https://greasyfork.org/zh-CN/scripts/462804-keepchatgpt) |
 
-*   El autor solo proporciona el método de instalación del script de usuario, y las fuentes oficiales son solo las dos anteriores, busque las fuentes oficiales.
+*   El autor solo proporciona el método de instalación del script de usuario, y la fuente oficial es solo la anterior.
 *   El autor piensa que los scripts de usuario son mejores que las extensiones. Todos pueden auditar la seguridad en cualquier momento, y todos pueden averiguar si hay datos cargados en secreto.
 *   ⚠️[Google App Store](https://chrome.google.com/webstore/category/extensions) y ⚠️[Tienda de aplicaciones de Microsoft](https://microsoftedge.microsoft.com/) no son proporcionados por el autor. Y plagió este proyecto, pero también cobró a los usuarios.
 
+<a id="other-instructions"></a>
 ## Otras instrucciones
 
+<a id="about-why-large-scale-network-errors-occur"></a>
 ### Acerca de por qué se producen errores de red a gran escala
 
 1.  Ha habido una escasez de potencia informática en el mundo debido a la crisis global de chips, y OpenAI también existe.
@@ -160,19 +166,22 @@ Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores
 4.  Motivo: Error en Cloudflare. Solución: Utilice el modo de privacidad de un navegador o una instancia de ChatGPT. Si el modo de privacidad funciona normalmente, borre todas las cookies y el almacenamiento local relacionados con el dominio y los subdominios de OpenAI.com en el modo de navegación normal.
 5.  Motivo: es posible que no sepas que estás usando un `666` IP. Hay un grupo de "vecinos en línea con la misma salida de IP" que constantemente hacen solicitudes frecuentes para diversos fines. Aunque su tráfico es alto, logran mantenerse por debajo del umbral para evitar desencadenar el error 429. Sin embargo, cuando comienzas a usar este complemento, los arrastra hacia abajo y se quedan perplejos por encontrarse repentinamente con el error 429. Solución: cambie la IP, el centro de datos, el proveedor de servicios de Internet y el canal del `666`; La configuración más óptima para una sola `666`.
 
+<a id="about-cancel-audit-function"></a>
 ### Acerca de la función Cancelar auditoría
 
 1.  De forma predeterminada, todas sus conversaciones son auditadas automáticamente por el oficial de OpenAI. [moderación](https://platform.OpenAI.com/docs/guides/moderation/overview) sistema. Si el sistema de moderación de OpenAI detecta violaciones excesivas o violaciones de la [Políticas de uso de OpenAI](https://OpenAI.com/policies/usage-policies) En sus conversaciones, su cuenta corre el riesgo de ser restringida o incluso prohibida.
 2.  Por **habilitante** la función "Cancelar auditoría" de este complemento junto con su inteligente elección de palabras, puede minimizar el impacto en gran medida.
 
+<a id="about-adjust-interval-feature"></a>
 ### Con respecto a la función Ajustar intervalo
 
 1.  El valor hace referencia al intervalo de tiempo para *guardar* (manteniendo viva la conexión), medido en *sobras*.
 2.  Un intervalo de tiempo más grande significa una velocidad de mantenimiento más lenta, menos impacto en el sitio web y una cuenta más segura.
 3.  Un intervalo de tiempo más pequeño significa una velocidad de mantenimiento más rápida y menos ocurrencia de errores de red.
-4.  Se recomienda tener un intervalo de *30* segundos o más.
-5.  El autor generalmente lo establece en *150* sobras.
+4.  Se recomienda tener un intervalo de *50* segundos o más.
+5.  El autor generalmente lo establece en *900* sobras.
 
+<a id="about-clone-dialogue-function"></a>
 ### Acerca de la función Clonar conversación
 
 1.  ChatGPT pertenece al proyecto AI prompt.
@@ -180,11 +189,13 @@ Los navegadores recomendados son `Chrome`, `Firefox`, `Edge` y otros navegadores
 3.  Una de las cosas más comunes que hace es ajustar repetidamente la redacción del mensaje antes de estar satisfecho con los resultados copiando y pegando lo que ya ha publicado.
 4.  Después de comprobar `Clone dialog`, puede hacer clic en el avatar delante del cuadro de diálogo que desea volver a optimizar, y el cuadro de diálogo aparecerá inmediatamente.
 
+<a id="about-purify-page-features"></a>
 ### Acerca de las características de la página Purify
 
-1.  Para los usuarios regulares (no Plus), a menudo se ve que la página de inicio de ChatGPT `https://chat.OpenAI.com/` está lleno de indicaciones inútiles.
+1.  Para los usuarios regulares (no Plus), a menudo se ve que la página de inicio de ChatGPT `https://chatgpt.com/` está lleno de indicaciones inútiles.
 2.  Después de comprobar `Purify page`, puede hacer que la página de inicio se vea nueva, disfrutar del estándar de oro similar a los usuarios PLUS y mejorar la experiencia.
 
+<a id="about-other-errors-causes-and-solutions"></a>
 ### Causas y soluciones para otros errores
 
 Si se produce el siguiente mensaje de error, consulte la solución oficial: [Código de error del documento oficial de OpenAI](https://OpenAI.com/policies/usage-policies)

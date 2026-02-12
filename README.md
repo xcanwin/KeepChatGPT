@@ -93,7 +93,7 @@
 
 1. 安装```Tampermonkey```，通过 [官网](https://www.tampermonkey.net/)；
 2. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
-3. 访问 [ChatGPT](https://chat.openai.com/chat)；
+3. 访问 [ChatGPT](https://chatgpt.com/)（兼容旧域名 `chat.openai.com`）；
 
 ## 使用方法 鸿蒙系统
 
@@ -101,7 +101,7 @@
 2. 安装```Firefox```，通过 [华为应用市场](https://appgallery.huawei.com/app/C31765)、[官网](https://www.mozilla.org/firefox/browsers/mobile/android/)；
 3. 打开```Firefox``` > 右下角```...``` > 附加组件 > 附加组件管理器 > ```Tampermonkey```右边的```+```；
 4. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
-5. 访问 [ChatGPT](https://chat.openai.com/chat)；
+5. 访问 [ChatGPT](https://chatgpt.com/)；
 
 ## 使用方法 iOS系统
 
@@ -109,7 +109,7 @@
 2. 安装```Stay```，通过 [App Store](https://apps.apple.com/app/id1591620171)；
 3. 使用说明参考 [官网](https://github.com/shenruisi/Stay)；
 4. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
-5. 访问 [ChatGPT](https://chat.openai.com/chat)；
+5. 访问 [ChatGPT](https://chatgpt.com/)；
 
 ## 其他说明
 
