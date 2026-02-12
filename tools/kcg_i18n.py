@@ -174,6 +174,6 @@ zh-TW: 明察秋毫
 
     langStr = format_json(lang)
     print(langStr)
-    save(langStr, 'test/lang.txt')
+    save(langStr, 'temp/lang.txt')
 
 main()

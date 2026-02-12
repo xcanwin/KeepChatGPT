@@ -25,6 +25,6 @@ def main():
 
     rm_new = re.sub(r'src="(/assets/.*?)"', r'src="{}\1?v={}"'.format(cdn_pre, version), rm)
     print(rm_new)
-    save(rm_new, 'test/README_CDN.md')
+    save(rm_new, 'temp/README_CDN.md')
 
 main()
