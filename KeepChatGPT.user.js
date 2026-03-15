@@ -2238,12 +2238,35 @@ nav.flex .transition-all {
 
     const user_info = userInfo();
 
-    [symbol1_selector, symbol2_selector].forEach(el => {
-        muob(el, $(`body`), () => {
+    let kcgBooted = false;
+    let kcgBootTimer = null;
+
+    const scheduleKcgBootstrap = function() {
+        if (kcgBooted) return;
+
+        const hasTarget = $(symbol1_selector) || $(symbol2_selector);
+        if (!hasTarget) return;
+
+        if (kcgBootTimer) {
+            clearTimeout(kcgBootTimer);
+        }
+
+        kcgBootTimer = setTimeout(() => {
+            if (kcgBooted) return;
+            if (!($(symbol1_selector) || $(symbol2_selector))) return;
+
+            kcgBooted = true;
             loadKCG();
             setIfr();
-        });
+        }, 800);
+    };
+
+    [symbol1_selector, symbol2_selector].forEach(selector => {
+        muob(selector, document.body, scheduleKcgBootstrap);
     });
+
+    // also try once in case the target already exists before observer callback
+    scheduleKcgBootstrap();
 
     blockStorageDialog();
     hookFetch();
