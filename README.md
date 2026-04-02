@@ -124,6 +124,18 @@
 - `KeepChatGPT.dev.user.js` 只用于本地开发调试，实际功能代码仍在 `KeepChatGPT.user.js`
 - 本地开发服务仅监听 `127.0.0.1`，且只提供 `KeepChatGPT.user.js`
 
+可直接把下面的提示词发给支持浏览器操作的 AI：
+
+```text
+我已开启 `npm run dev`，请用浏览器打开 `https://chatgpt.com/`，确认 `KeepChatGPT.dev.user.js` 是否已正常工作，并且页面是否成功加载 `http://localhost:8888/KeepChatGPT.user.js`，然后验证以下内容：
+1. `#kcg` 是否出现
+2. 设置菜单是否能打开
+3. 我指定的功能是否生效
+4. 控制台是否有明显报错
+
+如果发现问题，请先定位到具体 DOM、样式或脚本逻辑，再给出最小修改方案。
+```
+
 ## 其他说明
 
 ### 关于 保持活跃 功能
