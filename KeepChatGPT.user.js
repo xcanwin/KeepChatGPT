@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           33.6
+// @version           34.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1733,6 +1733,7 @@ nav.flex .transition-all {
                 const fetchReqMethod = fetchReqOptions?.method?.toUpperCase();
 
                 try {
+                    // 取消审计1：直接返回一个空的审核结果。
                     if (
                         gv("k_closeModer", false) &&
                         typeof fetchReqUrl === 'string' &&
@@ -1746,6 +1747,7 @@ nav.flex .transition-all {
                                 }
                             })
                         );
+                    // 取消审计2：发送会话请求前，关闭 modapi 支持位。
                     } else if (
                         gv("k_closeModer", false) &&
                         typeof fetchReqUrl === 'string' &&
@@ -1756,6 +1758,7 @@ nav.flex .transition-all {
                         const post_body = JSON.parse(argumentsList[1].body);
                         post_body.supports_modapi = false;
                         argumentsList[1].body = JSON.stringify(post_body);
+                    // 拦截跟踪：必须返回标准 Response，避免调用方执行 text/json 时崩溃。
                     } else if (
                         gv("k_intercepttracking", false) &&
                         typeof fetchReqUrl === 'string' &&
@@ -1771,6 +1774,7 @@ nav.flex .transition-all {
                                 }
                             })
                         );
+                    // fix openai bug：补一个稳定的 compliance 响应。
                     } else if (
                         typeof fetchReqUrl === 'string' &&
                         /\/backend-api\/compliance/.test(fetchReqUrl)
@@ -1797,6 +1801,7 @@ nav.flex .transition-all {
                 const fetchRsp = target.apply(thisArg, argumentsList);
 
                 return fetchRsp.then(response => {
+                    // 刷新侧边栏时，同步更新数据库中的标题、时间和摘要。
                     if (
                         gv("k_everchanging", false) === true &&
                         typeof fetchReqUrl === 'string' &&
@@ -1828,18 +1833,21 @@ nav.flex .transition-all {
                                 attachDate(kec_object);
                             }, 1000);
 
+                            // response.body 已被 text() 消费，需要重建一个 Response 返还给页面。
                             return new Response(fetchRspBody, {
                                 status: response.status,
                                 statusText: response.statusText,
                                 headers: response.headers
                             });
                         });
+                    // 打开、编辑、删除单个历史对话时，增量更新对应侧边栏数据。
                     } else if (
                         gv("k_everchanging", false) === true &&
                         typeof fetchReqUrl === 'string' &&
                         /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)(\?|$)/.test(fetchReqUrl)
                     ) {
                         return response.text().then(async fetchRspBody => {
+                            // 点击进入历史对话时，刷新当前会话的标题、摘要和模型信息。
                             if (fetchReqMethod === 'GET') {
                                 const f = JSON.parse(fetchRspBody);
                                 const crt_con_id = f && f.conversation_id;
@@ -1872,6 +1880,7 @@ nav.flex .transition-all {
                                 setTimeout(function() {
                                     attachDate(kec_object);
                                 }, 300);
+                            // 删除历史对话后，从本地缓存移除对应记录。
                             } else if (fetchReqMethod === 'PATCH') {
                                 const f = JSON.parse(fetchRspBody);
                                 const crt_con_id = fetchReqUrl.match(/\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/)[1];
@@ -1881,6 +1890,7 @@ nav.flex .transition-all {
                                 }
                             }
 
+                            // 同上：消费过 body 后，返回一个可继续读取的新 Response。
                             return new Response(fetchRspBody, {
                                 status: response.status,
                                 statusText: response.statusText,
