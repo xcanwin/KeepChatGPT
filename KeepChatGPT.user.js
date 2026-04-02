@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.0
+// @version           34.1
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -948,6 +948,8 @@
     const loadKCG = function() {
         let symbol_prt;
         if ($("#kcg") !== null) {
+            addStyle();
+            setUserOptions();
             return;
         }
         setIfr(u);
@@ -1003,7 +1005,8 @@
     };
 
     const addStyle = function() {
-        GM_addStyle(`
+        $("#kcg-style")?.remove();
+        const kcgStyle = GM_addStyle(`
 /*
 :root {
     --keenobservation-user-image-url: '';
@@ -1665,16 +1668,16 @@ nav div.pt-3\\.5 {
 /*展示大屏*/
 .largescreen {
     @media (min-width:1024px) {
+        /* ChatGPT 2026-03 起实际限宽节点已改到消息区和输入区的内层容器 */
+        section.text-token-text-primary>div>div,
+        #thread-bottom>div>div>div {
+            width: 100% !important;
+            max-width: min(90rem, calc(100vw - 8rem)) !important;
+        }
         form.w-full {
-            max-width: 85%;
+            max-width: 100% !important;
             margin: auto;
         }
-        article.text-token-text-primary>div>div.w-full {
-            max-width: 100%;
-        }
-    }
-    #thread-bottom>div>div {
-        --thread-content-max-width: unset !important;
     }
 }
 
@@ -1714,6 +1717,9 @@ nav.flex .transition-all {
 }
 
 `);
+        if (kcgStyle) {
+            kcgStyle.id = "kcg-style";
+        }
     };
 
     const hookFetch = function() {
