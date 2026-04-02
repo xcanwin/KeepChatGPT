@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = 8888;
-const ROOT = __dirname;
+const ROOT = path.resolve(__dirname, '..');
 
 const server = http.createServer((req, res) => {
   const urlPath = req.url.split('?')[0]; // 去掉 cache-bust 参数
