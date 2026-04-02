@@ -111,6 +111,19 @@
 4. 安装```KeepChatGPT```，通过 [安装渠道](#安装渠道)；
 5. 访问 [ChatGPT](https://chatgpt.com/)；
 
+## 开发调试
+
+1. 临时关闭 Tampermonkey 中已安装的正式版 `KeepChatGPT.user.js`，避免与开发加载器重复注入
+2. 安装依赖：`npm install`
+3. 启动开发模式：`npm run dev`
+4. 在 Tampermonkey 中安装开发加载器：`KeepChatGPT.dev.user.js`
+5. 开发加载器会从 `http://localhost:8888/KeepChatGPT.user.js` 拉取最新脚本
+6. 修改 `KeepChatGPT.user.js` 后，刷新 ChatGPT 页面即可生效
+
+说明：
+- `KeepChatGPT.dev.user.js` 只用于本地开发调试，实际功能代码仍在 `KeepChatGPT.user.js`
+- 本地开发服务仅监听 `127.0.0.1`，且只提供 `KeepChatGPT.user.js`
+
 ## 其他说明
 
 ### 关于 保持活跃 功能
