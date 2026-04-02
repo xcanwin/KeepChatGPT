@@ -1,0 +1,19 @@
+{
+  "name": "keepchatgpt",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently -n server,test -c cyan,yellow \"node tools/dev-server.js\" \"jest --watchAll --verbose\"",
+    "test": "jest --verbose"
+  },
+  "jest": {
+    "testEnvironment": "jest-environment-jsdom",
+    "setupFiles": ["./tests/setup.js"],
+    "testMatch": ["**/tests/**/*.test.js"],
+    "testTimeout": 10000
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}
