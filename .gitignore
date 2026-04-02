@@ -1,5 +1,6 @@
+node_modules/
 **/temp/*
 .DS_Store
 **/.DS_Store
 .agents/*
-AGENTS.md
+.claude/*
