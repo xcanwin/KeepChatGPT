@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.3
+// @version           34.4
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -2004,6 +2004,68 @@ nav.flex .transition-all {
         );
     };
 
+    const extractConversationIdFromUrl = function (requestUrl) {
+        if (typeof requestUrl !== "string") {
+            return "";
+        }
+        const matched = requestUrl.match(
+            /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
+        );
+        return matched ? matched[1] : "";
+    };
+
+    const normalizeConversationUpdateTime = function (value) {
+        if (!value) {
+            return null;
+        }
+        let updateTime = value;
+        updateTime = updateTime < 10 ** 10 ? updateTime * 1000 : updateTime;
+        const parsedDate = new Date(updateTime);
+        return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+    };
+
+    const findConversationMessageForPreview = function (payload) {
+        const currentNodeMessage =
+            payload?.mapping?.[payload?.current_node]?.message;
+        if (currentNodeMessage) {
+            return currentNodeMessage;
+        }
+        const mappedMessages = Object.values(payload?.mapping || {})
+            .map((node) => node?.message)
+            .filter(Boolean)
+            .sort((a, b) => {
+                const aTime = Number(a?.create_time || 0);
+                const bTime = Number(b?.create_time || 0);
+                return bTime - aTime;
+            });
+        return mappedMessages[0] || null;
+    };
+
+    const buildConversationRecordFromPayload = function (
+        payload,
+        fallbackConversationId = "",
+    ) {
+        if (!payload || typeof payload !== "object") {
+            return null;
+        }
+        const conversationId =
+            payload.conversation_id || payload.id || fallbackConversationId;
+        const updateTime = normalizeConversationUpdateTime(
+            payload.update_time || payload.create_time,
+        );
+        if (!conversationId || !updateTime) {
+            return null;
+        }
+        const previewMessage = findConversationMessageForPreview(payload);
+        return {
+            id: conversationId,
+            title: payload.title || "",
+            update_time: updateTime,
+            last: extractConversationPreview(previewMessage),
+            model: extractConversationModel(previewMessage),
+        };
+    };
+
     const shouldDeleteEverChangingRecord = function (payload) {
         return Boolean(
             payload &&
@@ -2016,6 +2078,7 @@ nav.flex .transition-all {
     global.__test__ = Object.assign(global.__test__ || {}, {
         isTrackingRequest: isTrackingRequest,
         extractConversationPreview: extractConversationPreview,
+        buildConversationRecordFromPayload: buildConversationRecordFromPayload,
         shouldDeleteEverChangingRecord: shouldDeleteEverChangingRecord,
     });
 
@@ -2171,52 +2234,24 @@ nav.flex .transition-all {
                                     if (fetchReqMethod === "GET") {
                                         const f = JSON.parse(fetchRspBody);
                                         const crt_con_id =
-                                            f && f.conversation_id;
-                                        const crt_con_title = f && f.title;
-                                        let crt_con_update_time =
-                                            f && f.update_time;
-                                        crt_con_update_time =
-                                            crt_con_update_time < 10 ** 10
-                                                ? crt_con_update_time * 1000
-                                                : crt_con_update_time;
-                                        crt_con_update_time = new Date(
-                                            crt_con_update_time,
-                                        );
-
-                                        const crt_con_speak_last_id =
-                                            f.current_node;
-                                        const crt_con_speak_last =
-                                            f.mapping?.[crt_con_speak_last_id]
-                                                ?.message;
-                                        const crt_con_last =
-                                            extractConversationPreview(
-                                                crt_con_speak_last,
+                                            extractConversationIdFromUrl(
+                                                fetchReqUrl,
                                             );
-                                        const crt_con_model =
-                                            extractConversationModel(
-                                                crt_con_speak_last,
+                                        const record =
+                                            buildConversationRecordFromPayload(
+                                                f,
+                                                crt_con_id,
                                             );
 
-                                        await global.st_ec.put({
-                                            id: crt_con_id,
-                                            title: crt_con_title,
-                                            update_time: crt_con_update_time,
-                                            last: crt_con_last,
-                                            model: crt_con_model,
-                                        });
-
-                                        let kec_object = {};
-                                        kec_object[crt_con_id] = {
-                                            title: crt_con_title,
-                                            update_time: crt_con_update_time,
-                                            last: crt_con_last,
-                                            model: crt_con_model,
-                                        };
-
-                                        scheduleEverChangingAttach(
-                                            kec_object,
-                                            120,
-                                        );
+                                        if (record) {
+                                            await global.st_ec.put(record);
+                                            let kec_object = {};
+                                            kec_object[record.id] = record;
+                                            scheduleEverChangingAttach(
+                                                kec_object,
+                                                120,
+                                            );
+                                        }
                                         // 删除历史对话后，从本地缓存移除对应记录。
                                     } else if (fetchReqMethod === "PATCH") {
                                         const f = JSON.parse(fetchRspBody);
@@ -2368,6 +2403,14 @@ nav.flex .transition-all {
             const previewText = last || model || "";
 
             if (!title || !update_time) return;
+            if (!previewText) {
+                $("[data-kcg-everchanging='true']", el)?.remove();
+                $$("[data-kcg-original-hidden='true']", el).forEach((node) => {
+                    node.style.display = "";
+                    node.removeAttribute("data-kcg-original-hidden");
+                });
+                return;
+            }
             if (
                 !$(".navtitle", el) ||
                 !$(".navdate", el) ||

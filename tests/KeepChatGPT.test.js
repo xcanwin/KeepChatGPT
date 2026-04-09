@@ -25,6 +25,7 @@ try {
 
 const isTrackingRequest = scriptGlobals.__test__?.isTrackingRequest;
 const extractConversationPreview = scriptGlobals.__test__?.extractConversationPreview;
+const buildConversationRecordFromPayload = scriptGlobals.__test__?.buildConversationRecordFromPayload;
 const shouldDeleteEverChangingRecord = scriptGlobals.__test__?.shouldDeleteEverChangingRecord;
 
 // ─── 正则测试 ─────────────────────────────────────────────
@@ -79,6 +80,31 @@ describe('everChanging helpers', () => {
       },
     });
     expect(preview).toBe('第一段 第二段 第三段');
+  });
+
+  test('会话详情缺少 conversation_id 时使用 URL 兜底构建记录', () => {
+    expect(typeof buildConversationRecordFromPayload).toBe('function');
+    const record = buildConversationRecordFromPayload({
+      title: '医生能力评估方法',
+      update_time: 1741500000,
+      current_node: 'node-1',
+      mapping: {
+        'node-1': {
+          message: {
+            create_time: 1741500000,
+            content: { parts: ['最后一条回复'] },
+            metadata: { model_slug: 'gpt-4o' },
+          },
+        },
+      },
+    }, '69be62a8-6788-8399-a133-c63bd049f1dc');
+    expect(record).toMatchObject({
+      id: '69be62a8-6788-8399-a133-c63bd049f1dc',
+      title: '医生能力评估方法',
+      last: '最后一条回复',
+      model: 'gpt-4o',
+    });
+    expect(record.update_time instanceof Date).toBe(true);
   });
 
   test('归档或隐藏时删除 everChanging 缓存', () => {
