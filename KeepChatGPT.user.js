@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.2
+// @version           34.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -68,6 +68,13 @@
     "use strict";
 
     var global = {};
+    if (
+        typeof __kcg_test_probe__ !== "undefined" &&
+        __kcg_test_probe__ &&
+        typeof __kcg_test_probe__ === "object"
+    ) {
+        global = __kcg_test_probe__;
+    }
 
     const $ = (Selector, el) => (el || document).querySelector(Selector);
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
@@ -102,9 +109,14 @@
     const symbol1_selector = "nav.flex";
     const symbol2_selector =
         "div.sticky div.justify-center.top-0 button span.sr-only";
+    const trackingHostRegex =
+        /(^|\.)((google-analytics|googletagmanager)\.com|browser-intake-datadoghq\.com|gravatar\.com|intercomcdn\.com|intercom\.io|featuregates\.org|statsigapi\.net|ab\.chatgpt\.com)$/i;
+    const trackingPathRegex =
+        /\/v1\/initialize|\/messenger\/|\/rgstr|\/v1\/sdk_exception|\/ces\/v1\/(?:t|p|i|m)(?:\?|$)|\/ces\/v1\/telemetry\/intake(?:\?|$)|\/ces\/statsc\/flush(?:\?|$)|\/backend-api\/beacons\//i;
     const trackingBlockRegex =
-        /gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|\/v1\/initialize|\/messenger\/|statsigapi\.net|\/rgstr|\/v1\/sdk_exception/;
-    const intercomScriptRegex = /widget\.intercom\.io/;
+        /gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|\/v1\/initialize|\/messenger\/|statsigapi\.net|\/rgstr|\/v1\/sdk_exception|google-analytics\.com|googletagmanager\.com|\/ces\/v1\/telemetry\/intake|\/ces\/statsc\/flush|\/ces\/v1\/(?:t|p|i|m)(?:\?|$)|\/backend-api\/beacons\//i;
+    const trackingScriptRegex =
+        /widget\.intercom\.io|googletagmanager\.com|google-analytics\.com/i;
     let domStable = false;
     let domStableQueue = [];
 
@@ -398,6 +410,45 @@
         var textNode = document.createTextNode(text);
         tempElement.appendChild(textNode);
         return tempElement.innerHTML;
+    };
+
+    const parseRequestUrl = function (requestUrl) {
+        if (typeof requestUrl !== "string" || requestUrl.trim() === "") {
+            return null;
+        }
+        try {
+            return new URL(requestUrl, location.origin);
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const isTrackingRequest = function (requestUrl) {
+        if (typeof requestUrl !== "string" || requestUrl.trim() === "") {
+            return false;
+        }
+        if (trackingBlockRegex.test(requestUrl)) {
+            return true;
+        }
+        const parsedUrl = parseRequestUrl(requestUrl);
+        if (!parsedUrl) {
+            return false;
+        }
+        return (
+            trackingHostRegex.test(parsedUrl.hostname) ||
+            trackingPathRegex.test(`${parsedUrl.pathname}${parsedUrl.search}`)
+        );
+    };
+
+    const buildBlockedTrackingResponse = function () {
+        return new Response(null, {
+            status: 204,
+            statusText: "No Content",
+            headers: {
+                "Content-Type": "text/plain; charset=utf-8",
+                "X-KeepChatGPT-Blocked": "tracking",
+            },
+        });
     };
 
     const setIfr = function (u = "") {
@@ -1901,7 +1952,75 @@ nav.flex .transition-all {
         }
     };
 
+    const scheduleEverChangingAttach = function (kec_object, delay = 180) {
+        if (global.kecAttachTimer) {
+            clearTimeout(global.kecAttachTimer);
+        }
+        global.kecAttachTimer = setTimeout(function () {
+            attachDate(kec_object);
+        }, delay);
+    };
+
+    const flattenConversationText = function (value) {
+        if (value === null || value === undefined) {
+            return "";
+        }
+        if (typeof value === "string") {
+            return value;
+        }
+        if (Array.isArray(value)) {
+            return value.map(flattenConversationText).join(" ");
+        }
+        if (typeof value === "object") {
+            if (typeof value.text === "string") {
+                return value.text;
+            }
+            if (typeof value.content === "string") {
+                return value.content;
+            }
+            if (value.content) {
+                return flattenConversationText(value.content);
+            }
+            if (Array.isArray(value.parts)) {
+                return flattenConversationText(value.parts);
+            }
+        }
+        return "";
+    };
+
+    const extractConversationPreview = function (message) {
+        const text = flattenConversationText(message?.content?.parts || message?.content)
+            .replace(/[\r\n]+/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+        return text.slice(0, 100);
+    };
+
+    const extractConversationModel = function (message) {
+        return (
+            message?.metadata?.model_slug ||
+            message?.metadata?.default_model_slug ||
+            ""
+        );
+    };
+
+    const shouldDeleteEverChangingRecord = function (payload) {
+        return Boolean(
+            payload &&
+                (payload.is_visible === false ||
+                    payload.is_archived === true ||
+                    payload.is_hidden === true),
+        );
+    };
+
+    global.__test__ = Object.assign(global.__test__ || {}, {
+        isTrackingRequest: isTrackingRequest,
+        extractConversationPreview: extractConversationPreview,
+        shouldDeleteEverChangingRecord: shouldDeleteEverChangingRecord,
+    });
+
     const hookFetch = function () {
+        const rawSendBeacon = navigator.sendBeacon?.bind(navigator);
         unsafeWindow.fetch = new Proxy(fetch, {
             apply: function (target, thisArg, argumentsList) {
                 let fetchReqUrl = "";
@@ -1915,7 +2034,11 @@ nav.flex .transition-all {
                     fetchReqUrl = fetchReqOptions.url;
                 }
 
-                const fetchReqMethod = fetchReqOptions?.method?.toUpperCase();
+                const fetchReqMethod = (
+                    argumentsList[1]?.method ||
+                    fetchReqOptions?.method ||
+                    "GET"
+                ).toUpperCase();
 
                 try {
                     // 取消审计1：直接返回一个空的审核结果。
@@ -1946,21 +2069,12 @@ nav.flex .transition-all {
                         // 拦截跟踪：必须返回标准 Response，避免调用方执行 text/json 时崩溃。
                     } else if (
                         gv("k_intercepttracking", false) &&
-                        typeof fetchReqUrl === "string" &&
-                        trackingBlockRegex.test(fetchReqUrl)
+                        isTrackingRequest(fetchReqUrl)
                     ) {
                         console.log(
                             `KeepChatGPT: ${tl("拦截跟踪")}: ${fetchReqUrl}`,
                         );
-                        return Promise.resolve(
-                            new Response("", {
-                                status: 200,
-                                statusText: "OK",
-                                headers: {
-                                    "Content-Type": "text/plain",
-                                },
-                            }),
-                        );
+                        return Promise.resolve(buildBlockedTrackingResponse());
                         // fix openai bug：补一个稳定的 compliance 响应。
                     } else if (
                         typeof fetchReqUrl === "string" &&
@@ -2006,34 +2120,34 @@ nav.flex .transition-all {
                             return response
                                 .text()
                                 .then(async (fetchRspBody) => {
-                                    const b = JSON.parse(fetchRspBody).items;
+                                    const b =
+                                        JSON.parse(fetchRspBody).items || [];
                                     let kec_object = {};
 
-                                    b.forEach(async (el) => {
-                                        const update_time = new Date(
-                                            el.update_time,
-                                        );
-                                        const ec_tmp =
-                                            (await global.st_ec.get(el.id)) ||
-                                            {};
-                                        await global.st_ec.put({
-                                            id: el.id,
-                                            title: el.title,
-                                            update_time: update_time,
-                                            last: ec_tmp.last,
-                                            model: ec_tmp.model,
-                                        });
-                                        kec_object[el.id] = {
-                                            title: el.title,
-                                            update_time: update_time,
-                                            last: ec_tmp.last,
-                                            model: ec_tmp.model,
-                                        };
-                                    });
+                                    await Promise.all(
+                                        b.map(async (el) => {
+                                            const update_time = new Date(
+                                                el.update_time,
+                                            );
+                                            const ec_tmp =
+                                                (await global.st_ec.get(
+                                                    el.id,
+                                                )) || {};
+                                            const mergedRecord = {
+                                                id: el.id,
+                                                title: el.title,
+                                                update_time: update_time,
+                                                last: ec_tmp.last || "",
+                                                model: ec_tmp.model || "",
+                                            };
+                                            await global.st_ec.put(
+                                                mergedRecord,
+                                            );
+                                            kec_object[el.id] = mergedRecord;
+                                        }),
+                                    );
 
-                                    setTimeout(function () {
-                                        attachDate(kec_object);
-                                    }, 1000);
+                                    scheduleEverChangingAttach(kec_object, 220);
 
                                     // response.body 已被 text() 消费，需要重建一个 Response 返还给页面。
                                     return new Response(fetchRspBody, {
@@ -2072,16 +2186,16 @@ nav.flex .transition-all {
                                         const crt_con_speak_last_id =
                                             f.current_node;
                                         const crt_con_speak_last =
-                                            f.mapping[crt_con_speak_last_id]
-                                                .message;
+                                            f.mapping?.[crt_con_speak_last_id]
+                                                ?.message;
                                         const crt_con_last =
-                                            crt_con_speak_last.content.parts[0]
-                                                .trim()
-                                                .replace(/[\r\n]/g, ``)
-                                                .substr(0, 100);
+                                            extractConversationPreview(
+                                                crt_con_speak_last,
+                                            );
                                         const crt_con_model =
-                                            crt_con_speak_last.metadata
-                                                .model_slug;
+                                            extractConversationModel(
+                                                crt_con_speak_last,
+                                            );
 
                                         await global.st_ec.put({
                                             id: crt_con_id,
@@ -2099,20 +2213,26 @@ nav.flex .transition-all {
                                             model: crt_con_model,
                                         };
 
-                                        setTimeout(function () {
-                                            attachDate(kec_object);
-                                        }, 300);
+                                        scheduleEverChangingAttach(
+                                            kec_object,
+                                            120,
+                                        );
                                         // 删除历史对话后，从本地缓存移除对应记录。
                                     } else if (fetchReqMethod === "PATCH") {
                                         const f = JSON.parse(fetchRspBody);
                                         const crt_con_id = fetchReqUrl.match(
                                             /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
                                         )[1];
-                                        const is_visible = f && f.is_visible;
-                                        if (is_visible) {
+                                        if (
+                                            shouldDeleteEverChangingRecord(f)
+                                        ) {
                                             await global.st_ec.delete({
                                                 id: crt_con_id,
                                             });
+                                            scheduleEverChangingAttach(
+                                                undefined,
+                                                120,
+                                            );
                                         }
                                     }
 
@@ -2131,7 +2251,20 @@ nav.flex .transition-all {
             },
         });
 
-        navigator.sendBeacon = function (url, data) {};
+        if (rawSendBeacon) {
+            navigator.sendBeacon = function (url, data) {
+                try {
+                    if (
+                        gv("k_intercepttracking", false) &&
+                        isTrackingRequest(url)
+                    ) {
+                        console.log(`KeepChatGPT: ${tl("拦截跟踪")}: ${url}`);
+                        return true;
+                    }
+                } catch (e) {}
+                return rawSendBeacon(url, data);
+            };
+        }
     };
 
     // 网络层兜底：补充 XHR 拦截，兼容未经过 fetch 的跟踪请求。
@@ -2153,7 +2286,7 @@ nav.flex .transition-all {
                 const xhrReqUrl = this._kcg_url || "";
                 if (
                     gv("k_intercepttracking", false) &&
-                    trackingBlockRegex.test(xhrReqUrl)
+                    isTrackingRequest(xhrReqUrl)
                 ) {
                     console.log(`KeepChatGPT: ${tl("拦截跟踪")}: ${xhrReqUrl}`);
                     this.abort();
@@ -2168,14 +2301,47 @@ nav.flex .transition-all {
         if (action === true) {
             $("nav.flex")?.classList.add("knav");
             $("body").classList.add("ever-changing");
-            attachDate();
+            everChanging.startObserver();
+            scheduleEverChangingAttach(undefined, 60);
         } else {
+            $("nav.flex")?.classList.remove("knav");
             $("body").classList.remove("ever-changing");
+            everChanging.stopObserver();
+            $$("[data-kcg-everchanging='true']").forEach((el) => el.remove());
+            $$("[data-kcg-original-hidden='true']").forEach((el) => {
+                el.style.display = "";
+                el.removeAttribute("data-kcg-original-hidden");
+            });
+        }
+    };
+
+    everChanging.observer = null;
+
+    everChanging.startObserver = function () {
+        if (everChanging.observer || !document.body) {
+            return;
+        }
+        everChanging.observer = new MutationObserver(function () {
+            if (gv("k_everchanging", false) !== true) {
+                return;
+            }
+            scheduleEverChangingAttach();
+        });
+        everChanging.observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+    };
+
+    everChanging.stopObserver = function () {
+        if (everChanging.observer) {
+            everChanging.observer.disconnect();
+            everChanging.observer = null;
         }
     };
 
     const attachDate = function (kec_object) {
-        $$("nav.flex #history a").forEach(async (el) => {
+        $$("nav.flex a[href*='/c/']").forEach(async (el) => {
             let a_id;
             const a_id_m = el.href.match(
                 "/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)(\\?|$)",
@@ -2199,17 +2365,24 @@ nav.flex .transition-all {
             const update_time = (kec_obj_el && kec_obj_el.update_time) || "";
             const last = (kec_obj_el && kec_obj_el.last) || "";
             const model = (kec_obj_el && kec_obj_el.model) || "";
+            const previewText = last || model || "";
 
             if (!title || !update_time) return;
             if (
                 !$(".navtitle", el) ||
                 !$(".navdate", el) ||
-                !$(".navlast", el)
+                (previewText && !$(".navlast", el))
             ) {
-                const cdiv_old = $(`.flex.min-w-0.grow.items-center`, el);
-                cdiv_old.style.display = "none";
+                const cdiv_old =
+                    $(`.flex.min-w-0.grow.items-center`, el) ||
+                    el.firstElementChild;
+                if (cdiv_old) {
+                    cdiv_old.style.display = "none";
+                    cdiv_old.setAttribute("data-kcg-original-hidden", "true");
+                }
                 const cdiv_new = document.createElement("div");
                 cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
+                cdiv_new.setAttribute("data-kcg-everchanging", "true");
                 cdiv_new.innerHTML = `
 <div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute; color: #000000; font-weight: bold;" class="navtitle">
     ${htmlEncode(title)}
@@ -2217,20 +2390,42 @@ nav.flex .transition-all {
 <div style="right: 0; position: absolute; color: gray; font-size: 0.71rem;" class="navdate">
     ${formatDate2(update_time)}
 </div>
-<br>
+${previewText ? `<br>
 <div style="max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #606060; font-size: 0.75rem;" class="navlast">
-    ${htmlEncode(last)}
-</div>
+    ${htmlEncode(previewText)}
+</div>` : ``}
 `;
-                el.insertBefore(cdiv_new, el.childNodes[1]);
+                const renderedNode = $("[data-kcg-everchanging='true']", el);
+                if (renderedNode) {
+                    renderedNode.replaceWith(cdiv_new);
+                } else if (el.childNodes[1]) {
+                    el.insertBefore(cdiv_new, el.childNodes[1]);
+                } else {
+                    el.appendChild(cdiv_new);
+                }
             } else if (
                 $(".navtitle", el).textContent !== title ||
                 $(".navdate", el).textContent !== formatDate2(update_time) ||
-                $(".navlast", el).textContent !== last
+                ($(".navlast", el)?.textContent || "") !== previewText
             ) {
                 $(".navtitle", el).textContent = title;
                 $(".navdate", el).textContent = formatDate2(update_time);
-                $(".navlast", el).textContent = last;
+                if (previewText) {
+                    if ($(".navlast", el)) {
+                        $(".navlast", el).textContent = previewText;
+                    } else {
+                        const navlast = document.createElement("div");
+                        navlast.className = "navlast";
+                        navlast.style =
+                            "max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #606060; font-size: 0.75rem;";
+                        navlast.textContent = previewText;
+                        $("[data-kcg-everchanging='true']", el)?.appendChild(
+                            navlast,
+                        );
+                    }
+                } else {
+                    $(".navlast", el)?.remove();
+                }
             }
         });
 
@@ -2499,7 +2694,7 @@ nav.flex .transition-all {
 
     interceptTracking.blockScript = function (scriptElement) {
         if (!scriptElement || scriptElement.tagName !== "SCRIPT") return false;
-        if (intercomScriptRegex.test(scriptElement.src || "")) {
+        if (trackingScriptRegex.test(scriptElement.src || "")) {
             scriptElement.textContent = ``;
             scriptElement.remove();
             return true;

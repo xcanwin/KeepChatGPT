@@ -23,31 +23,70 @@ try {
   // IIFE 中依赖 DOM/网络的部分会抛错，忽略，只测纯函数
 }
 
+const isTrackingRequest = scriptGlobals.__test__?.isTrackingRequest;
+const extractConversationPreview = scriptGlobals.__test__?.extractConversationPreview;
+const shouldDeleteEverChangingRecord = scriptGlobals.__test__?.shouldDeleteEverChangingRecord;
+
 // ─── 正则测试 ─────────────────────────────────────────────
 
 describe('trackingBlockRegex', () => {
-  // 从脚本提取 regex（不依赖 IIFE 执行）
-  const trackingBlockRegex = /gravatar\.com|browser-intake-datadoghq\.com|\.wp\.com|intercomcdn\.com|sentry\.io|sentry_key=|intercom\.io|featuregates\.org|\/v1\/initialize|\/messenger\/|statsigapi\.net|\/rgstr|\/v1\/sdk_exception/;
+  test('测试辅助函数已暴露', () => {
+    expect(typeof isTrackingRequest).toBe('function');
+  });
 
   test('拦截 sentry.io 请求', () => {
-    expect(trackingBlockRegex.test('https://browser-intake-datadoghq.com/api/v2/rum')).toBe(true);
-    expect(trackingBlockRegex.test('https://sentry.io/api/1234/')).toBe(true);
+    expect(isTrackingRequest('https://browser-intake-datadoghq.com/api/v2/rum')).toBe(true);
+    expect(isTrackingRequest('https://sentry.io/api/1234/')).toBe(true);
   });
 
   test('拦截 intercom 请求', () => {
-    expect(trackingBlockRegex.test('https://api.intercom.io/messenger/')).toBe(true);
-    expect(trackingBlockRegex.test('https://widget.intercomcdn.com/foo.js')).toBe(true);
+    expect(isTrackingRequest('https://api.intercom.io/messenger/')).toBe(true);
+    expect(isTrackingRequest('https://widget.intercomcdn.com/foo.js')).toBe(true);
   });
 
   test('拦截 statsig 请求', () => {
-    expect(trackingBlockRegex.test('https://statsigapi.net/v1/initialize')).toBe(true);
-    expect(trackingBlockRegex.test('https://statsigapi.net/rgstr')).toBe(true);
+    expect(isTrackingRequest('https://statsigapi.net/v1/initialize')).toBe(true);
+    expect(isTrackingRequest('https://statsigapi.net/rgstr')).toBe(true);
+  });
+
+  test('拦截 GA 与 CES 埋点请求', () => {
+    expect(isTrackingRequest('https://www.google-analytics.com/g/collect?v=2')).toBe(true);
+    expect(isTrackingRequest('https://chatgpt.com/ces/v1/t')).toBe(true);
+    expect(isTrackingRequest('https://chatgpt.com/ces/v1/p')).toBe(true);
+    expect(isTrackingRequest('/ces/v1/telemetry/intake?ddforward=1')).toBe(true);
+    expect(isTrackingRequest('/ces/statsc/flush')).toBe(true);
+    expect(isTrackingRequest('/backend-api/beacons/home?conversation_id=123')).toBe(true);
   });
 
   test('不拦截正常请求', () => {
-    expect(trackingBlockRegex.test('https://chat.openai.com/api/auth/session')).toBe(false);
-    expect(trackingBlockRegex.test('https://chatgpt.com/backend-api/conversation')).toBe(false);
-    expect(trackingBlockRegex.test('https://cdn.jsdelivr.net/foo.js')).toBe(false);
+    expect(isTrackingRequest('https://chat.openai.com/api/auth/session')).toBe(false);
+    expect(isTrackingRequest('https://chatgpt.com/backend-api/conversation')).toBe(false);
+    expect(isTrackingRequest('https://chatgpt.com/backend-api/sentinel/heartbeat')).toBe(false);
+    expect(isTrackingRequest('https://cdn.jsdelivr.net/foo.js')).toBe(false);
+  });
+});
+
+describe('everChanging helpers', () => {
+  test('提取会话预览时兼容富结构 content', () => {
+    expect(typeof extractConversationPreview).toBe('function');
+    const preview = extractConversationPreview({
+      content: {
+        parts: [
+          { text: '第一段' },
+          '第二段',
+          { content: { parts: ['第三段'] } },
+        ],
+      },
+    });
+    expect(preview).toBe('第一段 第二段 第三段');
+  });
+
+  test('归档或隐藏时删除 everChanging 缓存', () => {
+    expect(typeof shouldDeleteEverChangingRecord).toBe('function');
+    expect(shouldDeleteEverChangingRecord({ is_visible: false })).toBe(true);
+    expect(shouldDeleteEverChangingRecord({ is_archived: true })).toBe(true);
+    expect(shouldDeleteEverChangingRecord({ is_hidden: true })).toBe(true);
+    expect(shouldDeleteEverChangingRecord({ is_visible: true })).toBe(false);
   });
 });
 
