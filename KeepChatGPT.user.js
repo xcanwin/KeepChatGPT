@@ -1165,7 +1165,6 @@
     };
 
     const loadKCG = function () {
-        let symbol_prt;
         if ($("#kcg") !== null) {
             addStyle();
             setUserOptions();
@@ -1188,20 +1187,62 @@
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' style='width: 1rem;' /><div style='font-size: 0.8rem'>Keep${ndivkcg.id.slice(1, 2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1, 2)}anwin</div>`;
         ndivkcg._symbol2_innerHTML = `<img src='${icon}' style='width: 1rem;' />`;
 
-        if ($(symbol1_selector)) {
+        // ChatGPT now renders a hidden collapsed sidebar rail (#stage-sidebar-tiny-bar)
+        // next to the expanded sidebar. With KeepChatGPT enabled, that rail can reserve
+        // a large blank area. Remove it once and keep removing it if ChatGPT recreates it.
+        const removeChatGPTTinySidebar = function () {
+            $$("#stage-sidebar-tiny-bar").forEach((el) => el.remove());
+        };
+
+        const watchChatGPTTinySidebar = function () {
+            removeChatGPTTinySidebar();
+            if (global.kcgTinySidebarObserver) {
+                return;
+            }
+            global.kcgTinySidebarObserver = new MutationObserver(
+                removeChatGPTTinySidebar,
+            );
+            global.kcgTinySidebarObserver.observe(document.documentElement, {
+                childList: true,
+                subtree: true,
+            });
+        };
+
+        const mountKeepChatGPT = function (ndivkcg) {
             ndivkcg.innerHTML = ndivkcg._symbol1_innerHTML;
             ndivkcg.classList.add("kcg-pc");
             ndivkcg.classList.remove("kcg-mb");
-            symbol_prt = $(symbol1_selector);
-        } /* else if ($(symbol2_selector)) {
-            ndivkcg.innerHTML = ndivkcg._symbol2_innerHTML;
-            ndivkcg.classList.remove('kcg-pc');
-            ndivkcg.classList.add('kcg-mb');
-            symbol_prt = fp(".sticky", $(symbol2_selector), 4);
-            let gpt_menu = fp(".no-draggable", $(symbol2_selector), 4);
-            gpt_menu.classList.remove('absolute');
-        } */
-        symbol_prt.insertBefore(ndivkcg, symbol_prt.childNodes[0]);
+
+            watchChatGPTTinySidebar();
+
+            const sidebar = $("#stage-slideover-sidebar");
+            const chatHistoryNav = sidebar?.querySelector(
+                'nav[aria-label="Chat history"]',
+            );
+            const stickyTop = chatHistoryNav?.querySelector(":scope > .sticky");
+
+            if (!chatHistoryNav) {
+                return false;
+            }
+
+            const mountTarget = stickyTop || chatHistoryNav;
+            mountTarget.insertBefore(ndivkcg, mountTarget.firstChild);
+
+            const resetSidebarScroll = function () {
+                chatHistoryNav.scrollTop = 0;
+                chatHistoryNav.parentElement &&
+                    (chatHistoryNav.parentElement.scrollTop = 0);
+            };
+
+            requestAnimationFrame(resetSidebarScroll);
+            [100, 400].forEach((delay) => setTimeout(resetSidebarScroll, delay));
+
+            return true;
+        };
+
+        if (!mountKeepChatGPT(ndivkcg)) {
+            return;
+        }
         loadMenu();
 
         // 支持点击与键盘打开设置弹窗。
@@ -1935,15 +1976,55 @@ nav.flex div.overflow-y-auto {
     color: white;
 }
 
-nav.flex .transition-all {
-    position: unset;
-}
 
 .khide {
     display: none !important;
 }
 .kshow {
     display: block !important;
+}
+
+/* ChatGPT sidebar compatibility: backup CSS while JS removes the tiny rail */
+#stage-sidebar-tiny-bar {
+    display: none !important;
+    width: 0 !important;
+    pointer-events: none !important;
+}
+
+/* KeepChatGPT button in the expanded sidebar sticky header */
+#stage-slideover-sidebar nav[aria-label="Chat history"] > .sticky > #kcg.kcg-pc {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+
+    height: 36px !important;
+    min-height: 36px !important;
+    width: calc(100% - 16px) !important;
+    box-sizing: border-box !important;
+
+    margin: 6px 8px 4px 8px !important;
+    padding: 0 0.75rem !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0.375rem !important;
+
+    flex: 0 0 auto !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+}
+
+#stage-slideover-sidebar nav[aria-label="Chat history"] > .sticky > #kcg.kcg-pc img {
+    width: 1rem !important;
+    height: 1rem !important;
+    flex: 0 0 auto !important;
+}
+
+#stage-slideover-sidebar nav[aria-label="Chat history"] > .sticky > #kcg.kcg-pc > div {
+    font-size: 0.8rem !important;
+    line-height: 1rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 `);
