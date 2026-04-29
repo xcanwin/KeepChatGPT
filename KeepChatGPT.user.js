@@ -106,7 +106,7 @@
     };
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_selector = "nav.flex:not([inert])";
+    const symbol1_selector = "nav.flex:not(#stage-sidebar-tiny-bar):not([inert])";
     const symbol2_selector =
         "div.sticky div.justify-center.top-0 button span.sr-only";
     const trackingHostRegex =
@@ -1201,6 +1201,7 @@
             let gpt_menu = fp(".no-draggable", $(symbol2_selector), 4);
             gpt_menu.classList.remove('absolute');
         } */
+        if (!symbol_prt) return;
         symbol_prt.insertBefore(ndivkcg, symbol_prt.childNodes[0]);
         loadMenu();
 
@@ -1247,29 +1248,29 @@
 /*日星月异*/
 .ever-changing {
     /*左边栏*/
-    nav.flex:not([inert]) {
+    ${symbol1_selector} {
         background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
     }
     /*左边栏顶部选项*/
-    nav.flex:not([inert]) .top-0 {
+    ${symbol1_selector} .top-0 {
         background: linear-gradient(to top, #f0f0ff, #fff3f3);
     }
     /*左边栏顶部工具*/
-    nav.flex:not([inert]) aside {
+    ${symbol1_selector} aside {
         background: linear-gradient(to top, #efebff, #f0f0ff);
     }
-    nav.flex:not([inert]) #history>div {
+    ${symbol1_selector} #history>div {
         height: 3.5rem;
         background-color: rgba(255, 255, 255, 0.4);
     }
-    nav.flex:not([inert]) #history>div>a {
+    ${symbol1_selector} #history>div>a {
         mask-image: unset !important;
     }
-    nav.flex:not([inert]) #history>div .bg-gradient-to-l {
+    ${symbol1_selector} #history>div .bg-gradient-to-l {
         background-image: unset;
     }
 
-    nav.flex:not([inert]) #history::after {
+    ${symbol1_selector} #history::after {
         content: "";
         display: block;
         height: 1px;
@@ -1277,11 +1278,11 @@
     }
 
     /*左边栏选中条目*/
-    nav.flex:not([inert]) #history>div.bg-token-sidebar-surface-tertiary {
+    ${symbol1_selector} #history>div.bg-token-sidebar-surface-tertiary {
         background-color: #bfcbfd;
     }
     /*左边栏鼠标滑动*/
-    nav.flex:not([inert]) #history>div:hover {
+    ${symbol1_selector} #history>div:hover {
         background-color: #d5ddff;
     }
 
@@ -1302,46 +1303,46 @@
 /*官方暗色模式*/
 .dark {
     .ever-changing {
-        nav.flex:not([inert]) {
+        ${symbol1_selector} {
             background: linear-gradient(to right top, #171717, #060606, #171717);
         }
         /*左边栏顶部选项*/
-        nav.flex:not([inert]) .top-0 {
+        ${symbol1_selector} .top-0 {
             background: linear-gradient(to top, #060606, #0f0f0f);
         }
         /*左边栏顶部工具*/
-        nav.flex:not([inert]) aside {
+        ${symbol1_selector} aside {
             background: linear-gradient(to top, #111, #060606);
         }
-        nav.flex:not([inert]) #history>div {
+        ${symbol1_selector} #history>div {
             height: 3.5rem;
             background-color: rgba(111, 111, 111, 0.25);
         }
-        nav.flex:not([inert]) #history>div>a {
+        ${symbol1_selector} #history>div>a {
             mask-image: unset !important;
         }
-        nav.flex:not([inert]) #history>div .bg-gradient-to-l {
+        ${symbol1_selector} #history>div .bg-gradient-to-l {
             background-image: unset;
         }
 
-        nav.flex:not([inert]) #history::after {
+        ${symbol1_selector} #history::after {
             content: "";
             display: block;
             height: 1px;
             background: linear-gradient(to right, transparent, #535353, transparent);
         }
-        nav.flex:not([inert]) #history>div.bg-token-sidebar-surface-tertiary {
+        ${symbol1_selector} #history>div.bg-token-sidebar-surface-tertiary {
             background-color: #444;
         }
-        nav.flex:not([inert]) #history>div:hover {
+        ${symbol1_selector} #history>div:hover {
             background-color: #2f2f2f;
         }
 
-        nav.flex:not([inert]) #history a .navtitle {
+        ${symbol1_selector} #history a .navtitle {
             color: #f4f4f4 !important;
         }
 
-        nav.flex:not([inert]) #history a .navlast {
+        ${symbol1_selector} #history a .navlast {
             color: #d0d0d0 !important;
         }
 
@@ -1767,7 +1768,7 @@ body.kdark .kdialogclose {
 .kpurifypage {
     main .text-token-text-primary .mb-5.font-medium /*游客模式的首页的LOGO下方的问候语*/,
     form.w-full .grow .bottom-full /*游客模式的首页的快捷提示词*/,
-    nav.flex:not([inert]) .mb-4 /*游客模式的侧边栏的登录提醒*/,
+    ${symbol1_selector} .mb-4 /*游客模式的侧边栏的登录提醒*/,
     main .text-token-text-primary .mx-3.items-stretch /*首页的LOGO下方的快捷提示词*/,
     main div.shadow-xxs /*输入框上方的GPT-4o的上限提示*/,
     main form .text-token-text-secondary /*输入框上方标签*/,
@@ -1862,11 +1863,11 @@ body.kdark .kdialogclose {
 }
 
 /*侧边栏*/
-nav.flex:not([inert]) {
+${symbol1_selector} {
     position: relative;
     scrollbar-width: thin;
 }
-nav.flex:not([inert]) div.pt-3\\.5 {
+${symbol1_selector} div.pt-3\\.5 {
     padding-bottom: .5rem;
     padding-top: .25rem;
 }
@@ -1920,10 +1921,10 @@ nav.flex:not([inert]) div.pt-3\\.5 {
     max-height: 0 !important;
 }
 
-nav.flex:not([inert]) div.overflow-y-auto a.hover\\:pr-4 {
+${symbol1_selector} div.overflow-y-auto a.hover\\:pr-4 {
     padding-right: unset;
 }
-nav.flex:not([inert]) div.overflow-y-auto {
+${symbol1_selector} div.overflow-y-auto {
     scrollbar-width: thin;
 }
 .gptm {
@@ -1935,7 +1936,7 @@ nav.flex:not([inert]) div.overflow-y-auto {
     color: white;
 }
 
-nav.flex:not([inert]) .transition-all {
+${symbol1_selector} .transition-all {
     position: unset;
 }
 
@@ -2898,7 +2899,7 @@ ${previewText ? `<br>
 
     const bootKCG = function () {
         if (kcgBooted) return;
-        if (!($(symbol1_selector) || $(symbol2_selector))) return;
+        if (!$(symbol1_selector)) return;
 
         kcgBooted = true;
         if (kcgBootTimer) {
@@ -2926,7 +2927,7 @@ ${previewText ? `<br>
 
         onDomStable(() => {
             if (kcgBooted) return;
-            if (!($(symbol1_selector) || $(symbol2_selector))) return;
+            if (!$(symbol1_selector)) return;
 
             if (kcgBootTimer) {
                 clearTimeout(kcgBootTimer);
