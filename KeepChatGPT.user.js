@@ -106,7 +106,7 @@
     };
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_selector = "nav.flex";
+    const symbol1_selector = "nav.flex:not([inert])";
     const symbol2_selector =
         "div.sticky div.justify-center.top-0 button span.sr-only";
     const trackingHostRegex =
@@ -1247,29 +1247,29 @@
 /*日星月异*/
 .ever-changing {
     /*左边栏*/
-    nav.flex {
+    nav.flex:not([inert]) {
         background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
     }
     /*左边栏顶部选项*/
-    nav.flex .top-0 {
+    nav.flex:not([inert]) .top-0 {
         background: linear-gradient(to top, #f0f0ff, #fff3f3);
     }
     /*左边栏顶部工具*/
-    nav.flex aside {
+    nav.flex:not([inert]) aside {
         background: linear-gradient(to top, #efebff, #f0f0ff);
     }
-    nav.flex #history>div {
+    nav.flex:not([inert]) #history>div {
         height: 3.5rem;
         background-color: rgba(255, 255, 255, 0.4);
     }
-    nav.flex #history>div>a {
+    nav.flex:not([inert]) #history>div>a {
         mask-image: unset !important;
     }
-    nav.flex #history>div .bg-gradient-to-l {
+    nav.flex:not([inert]) #history>div .bg-gradient-to-l {
         background-image: unset;
     }
 
-    nav.flex #history::after {
+    nav.flex:not([inert]) #history::after {
         content: "";
         display: block;
         height: 1px;
@@ -1277,11 +1277,11 @@
     }
 
     /*左边栏选中条目*/
-    nav.flex #history>div.bg-token-sidebar-surface-tertiary {
+    nav.flex:not([inert]) #history>div.bg-token-sidebar-surface-tertiary {
         background-color: #bfcbfd;
     }
     /*左边栏鼠标滑动*/
-    nav.flex #history>div:hover {
+    nav.flex:not([inert]) #history>div:hover {
         background-color: #d5ddff;
     }
 
@@ -1302,46 +1302,46 @@
 /*官方暗色模式*/
 .dark {
     .ever-changing {
-        nav.flex {
+        nav.flex:not([inert]) {
             background: linear-gradient(to right top, #171717, #060606, #171717);
         }
         /*左边栏顶部选项*/
-        nav.flex .top-0 {
+        nav.flex:not([inert]) .top-0 {
             background: linear-gradient(to top, #060606, #0f0f0f);
         }
         /*左边栏顶部工具*/
-        nav.flex aside {
+        nav.flex:not([inert]) aside {
             background: linear-gradient(to top, #111, #060606);
         }
-        nav.flex #history>div {
+        nav.flex:not([inert]) #history>div {
             height: 3.5rem;
             background-color: rgba(111, 111, 111, 0.25);
         }
-        nav.flex #history>div>a {
+        nav.flex:not([inert]) #history>div>a {
             mask-image: unset !important;
         }
-        nav.flex #history>div .bg-gradient-to-l {
+        nav.flex:not([inert]) #history>div .bg-gradient-to-l {
             background-image: unset;
         }
 
-        nav.flex #history::after {
+        nav.flex:not([inert]) #history::after {
             content: "";
             display: block;
             height: 1px;
             background: linear-gradient(to right, transparent, #535353, transparent);
         }
-        nav.flex #history>div.bg-token-sidebar-surface-tertiary {
+        nav.flex:not([inert]) #history>div.bg-token-sidebar-surface-tertiary {
             background-color: #444;
         }
-        nav.flex #history>div:hover {
+        nav.flex:not([inert]) #history>div:hover {
             background-color: #2f2f2f;
         }
 
-        nav.flex #history a .navtitle {
+        nav.flex:not([inert]) #history a .navtitle {
             color: #f4f4f4 !important;
         }
 
-        nav.flex #history a .navlast {
+        nav.flex:not([inert]) #history a .navlast {
             color: #d0d0d0 !important;
         }
 
@@ -1767,7 +1767,7 @@ body.kdark .kdialogclose {
 .kpurifypage {
     main .text-token-text-primary .mb-5.font-medium /*游客模式的首页的LOGO下方的问候语*/,
     form.w-full .grow .bottom-full /*游客模式的首页的快捷提示词*/,
-    nav.flex .mb-4 /*游客模式的侧边栏的登录提醒*/,
+    nav.flex:not([inert]) .mb-4 /*游客模式的侧边栏的登录提醒*/,
     main .text-token-text-primary .mx-3.items-stretch /*首页的LOGO下方的快捷提示词*/,
     main div.shadow-xxs /*输入框上方的GPT-4o的上限提示*/,
     main form .text-token-text-secondary /*输入框上方标签*/,
@@ -1862,11 +1862,11 @@ body.kdark .kdialogclose {
 }
 
 /*侧边栏*/
-nav {
+nav.flex:not([inert]) {
     position: relative;
     scrollbar-width: thin;
 }
-nav div.pt-3\\.5 {
+nav.flex:not([inert]) div.pt-3\\.5 {
     padding-bottom: .5rem;
     padding-top: .25rem;
 }
@@ -1920,10 +1920,10 @@ nav div.pt-3\\.5 {
     max-height: 0 !important;
 }
 
-nav.flex div.overflow-y-auto a.hover\\:pr-4 {
+nav.flex:not([inert]) div.overflow-y-auto a.hover\\:pr-4 {
     padding-right: unset;
 }
-nav.flex div.overflow-y-auto {
+nav.flex:not([inert]) div.overflow-y-auto {
     scrollbar-width: thin;
 }
 .gptm {
@@ -1935,7 +1935,7 @@ nav.flex div.overflow-y-auto {
     color: white;
 }
 
-nav.flex .transition-all {
+nav.flex:not([inert]) .transition-all {
     position: unset;
 }
 
@@ -2334,12 +2334,12 @@ nav.flex .transition-all {
 
     const everChanging = function (action) {
         if (action === true) {
-            $("nav.flex")?.classList.add("knav");
+            $(symbol1_selector)?.classList.add("knav");
             $("body").classList.add("ever-changing");
             everChanging.startObserver();
             scheduleEverChangingAttach(undefined, 60);
         } else {
-            $("nav.flex")?.classList.remove("knav");
+            $(symbol1_selector)?.classList.remove("knav");
             $("body").classList.remove("ever-changing");
             everChanging.stopObserver();
             $$("[data-kcg-everchanging='true']").forEach((el) => el.remove());
@@ -2376,7 +2376,7 @@ nav.flex .transition-all {
     };
 
     const attachDate = function (kec_object) {
-        $$("nav.flex a[href*='/c/']").forEach(async (el) => {
+        $$(`${symbol1_selector} a[href*='/c/']`).forEach(async (el) => {
             let a_id;
             const a_id_m = el.href.match(
                 "/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)(\\?|$)",
@@ -2472,7 +2472,7 @@ ${previewText ? `<br>
             }
         });
 
-        const sidebar_chat = $("nav.flex div.overflow-y-auto");
+        const sidebar_chat = $(`${symbol1_selector} div.overflow-y-auto`);
         if (sidebar_chat) {
             if (sidebar_chat.scrollHeight > sidebar_chat.clientHeight) {
                 sidebar_chat.classList.add("-mr-2");
