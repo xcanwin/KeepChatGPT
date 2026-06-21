@@ -2067,6 +2067,52 @@ ${symbol1_selector} .transition-all {
         };
     };
 
+    const extractConversationIdFromPageUrl = function () {
+        const matched = location.pathname.match(
+            /\/c\/(([^/]{4,}?){4}-[^/]{4,}?)(?:\/|$)/,
+        );
+        return matched ? matched[1] : "";
+    };
+
+    const updateEverChangingFromCurrentPage = async function () {
+        const conversationId = extractConversationIdFromPageUrl();
+        const assistantMessages = $$(`main [data-message-author-role="assistant"]`);
+        const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
+        const last = `${lastAssistantMessage?.innerText || ""}`
+            .replace(/[\r\n]+/g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, 100);
+        if (!conversationId || !last || !global.st_ec) return;
+
+        const oldRecord = (await global.st_ec.get(conversationId)) || {};
+        const record = {
+            id: conversationId,
+            title:
+                document.title && document.title !== "ChatGPT"
+                    ? document.title
+                    : oldRecord.title || "",
+            update_time: new Date(),
+            last: last,
+            model: oldRecord.model || "",
+        };
+        await global.st_ec.put(record);
+        const kec_object = {};
+        kec_object[record.id] = record;
+        scheduleEverChangingAttach(kec_object, 120);
+    };
+
+    const scheduleCurrentConversationRecordUpdate = function (delay = 1200) {
+        if (global.currentConversationRecordTimer) {
+            clearTimeout(global.currentConversationRecordTimer);
+        }
+        global.currentConversationRecordTimer = setTimeout(function () {
+            if (gv("k_everchanging", false) === true) {
+                updateEverChangingFromCurrentPage();
+            }
+        }, delay);
+    };
+
     const shouldDeleteEverChangingRecord = function (payload) {
         return Boolean(
             payload &&
@@ -2362,6 +2408,7 @@ ${symbol1_selector} .transition-all {
                 return;
             }
             scheduleEverChangingAttach();
+            scheduleCurrentConversationRecordUpdate();
         });
         everChanging.observer.observe(document.body, {
             childList: true,
