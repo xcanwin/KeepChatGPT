@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.7
+// @version           34.8
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -1770,7 +1770,7 @@ body.kdark .kdialogclose {
     form.w-full .grow .bottom-full /*游客模式的首页的快捷提示词*/,
     ${symbol1_selector} .mb-4 /*游客模式的侧边栏的登录提醒*/,
     main .text-token-text-primary .mx-3.items-stretch /*首页的LOGO下方的快捷提示词*/,
-    main div.shadow-xxs /*输入框上方的GPT-4o的上限提示*/,
+    main .shadow-xxs /*输入框上方的GPT-4o上限提示、GPT-5.5 Pro升级提示*/,
     main form .text-token-text-secondary /*输入框上方标签*/,
     main div.text-center>span /*输入框底部标签*/,
     main [class*="aria-live=polite"] /*上下文的选中文本的"询问ChatGPT"弹窗*/
@@ -2675,33 +2675,75 @@ ${previewText ? `<br>
     };
 
     dataSec.listen_input = function (event) {
-        let ms = [];
-        gv("k_datasecblocklist", datasec_blocklist_default)
-            .split(`\n`)
-            .forEach((e) => {
-                if (e) {
-                    const m = $("form.w-full #prompt-textarea").innerHTML.match(
-                        e,
-                    );
-                    if (m && m[0]) {
-                        $("form.w-full #prompt-textarea").innerHTML = $(
-                            "form.w-full #prompt-textarea",
-                        ).innerHTML.replaceAll(m[0], ``);
-                        ms.push(m[0]);
-                    }
-                }
-            });
-        if (ms.join(`\n`).trim()) {
+        const scanPrompt = function () {
+            const promptTextarea = $("form.w-full #prompt-textarea");
+            if (!promptTextarea) return;
+
+            const result = sanitizeDataSecText(
+                "value" in promptTextarea
+                    ? promptTextarea.value
+                    : promptTextarea.innerText || promptTextarea.textContent,
+                gv("k_datasecblocklist", datasec_blocklist_default),
+            );
+            if (!result.matches.join(`\n`).trim()) return;
+
+            setPromptPlainText(promptTextarea, result.text);
             ndialog(
                 `⚠️${tl("警告")}`,
                 `${tl("发现敏感数据")}`,
                 `Thanks`,
                 function (t) {},
                 `textarea`,
-                ms.join(`\n`),
+                result.matches.join(`\n`),
             );
-        }
+        };
+        event?.type === "paste" ? setTimeout(scanPrompt, 0) : scanPrompt();
     };
+
+    const sanitizeDataSecText = function (
+        text,
+        rulesText = datasec_blocklist_default,
+    ) {
+        let result = `${text || ""}`;
+        const matches = [];
+        `${rulesText || ""}`.split(`\n`).forEach((ruleText) => {
+            if (!ruleText) return;
+            try {
+                const rule = new RegExp(ruleText, "g");
+                const found = result.match(rule) || [];
+                found.forEach((item) => {
+                    if (!matches.includes(item)) matches.push(item);
+                });
+                result = result.replace(rule, ``);
+            } catch (e) {
+                if (gv("k_showDebug", false) === true) {
+                    console.log(`KeepChatGPT: DATASEC: ERROR: ${e}`);
+                }
+            }
+        });
+        return { text: result, matches: matches };
+    };
+
+    const setPromptPlainText = function (promptTextarea, text) {
+        promptTextarea.focus();
+        if ("value" in promptTextarea) {
+            promptTextarea.value = text;
+        } else {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(promptTextarea);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+            if (!document.execCommand?.("insertText", false, text)) {
+                promptTextarea.textContent = text;
+            }
+        }
+        promptTextarea.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+
+    global.__test__ = Object.assign(global.__test__ || {}, {
+        sanitizeDataSecText: sanitizeDataSecText,
+    });
 
     const supportAuthor = function () {
         ndialog(
@@ -2841,6 +2883,7 @@ ${previewText ? `<br>
     const nInterval1Fun = function () {
         byebyeCF();
         if ($(symbol1_selector) || $(symbol2_selector)) {
+            if ($(symbol1_selector) && !$("#kcg")) loadKCG();
             setIfr();
             speakCompletely();
         }

@@ -27,6 +27,7 @@ const isTrackingRequest = scriptGlobals.__test__?.isTrackingRequest;
 const extractConversationPreview = scriptGlobals.__test__?.extractConversationPreview;
 const buildConversationRecordFromPayload = scriptGlobals.__test__?.buildConversationRecordFromPayload;
 const shouldDeleteEverChangingRecord = scriptGlobals.__test__?.shouldDeleteEverChangingRecord;
+const sanitizeDataSecText = scriptGlobals.__test__?.sanitizeDataSecText;
 
 // ─── 正则测试 ─────────────────────────────────────────────
 
@@ -135,6 +136,16 @@ describe('datasec_blocklist_default', () => {
   test('匹配敏感用户名', () => {
     expect(rules[3].test('my-secret-username')).toBe(true);
     expect(rules[3].test('other-username')).toBe(false);
+  });
+
+  test('按规则清理敏感文本并返回命中项', () => {
+    expect(typeof sanitizeDataSecText).toBe('function');
+    const result = sanitizeDataSecText(
+      '手机号 18888888888 邮箱 user@163.com 保留',
+      defaultRules,
+    );
+    expect(result.text).toBe('手机号  邮箱  保留');
+    expect(result.matches).toEqual(['18888888888', 'user@163.com']);
   });
 });
 
