@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
     "prettier": "^3.8.4"
   },
   "overrides": {
