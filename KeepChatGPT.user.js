@@ -2067,6 +2067,184 @@ ${symbol1_selector} .transition-all {
         };
     };
 
+    const buildConversationRecordFromStream = function (
+        streamText,
+        fallbackConversationId = "",
+        fallbackTitle = "",
+        fallbackUpdateTime = Date.now(),
+    ) {
+        let conversationId = fallbackConversationId;
+        let title = fallbackTitle;
+        let updateTime = null;
+        let previewMessage = null;
+
+        `${streamText || ""}`.split(/\r?\n/).forEach((line) => {
+            if (!line.trim().startsWith("data:")) {
+                return;
+            }
+            const data = line.replace(/^data:\s*/, "").trim();
+            if (!data || data === "[DONE]") {
+                return;
+            }
+            let payload;
+            try {
+                payload = JSON.parse(data);
+            } catch (e) {
+                return;
+            }
+            conversationId =
+                payload.conversation_id ||
+                payload.conversation?.id ||
+                payload.message?.conversation_id ||
+                conversationId;
+            title = payload.title || payload.conversation?.title || title;
+            updateTime =
+                normalizeConversationUpdateTime(
+                    payload.update_time ||
+                        payload.create_time ||
+                        payload.message?.create_time,
+                ) || updateTime;
+
+            const message = payload.message || payload.data?.message;
+            if (message && extractConversationPreview(message)) {
+                previewMessage = message;
+            }
+        });
+
+        updateTime =
+            updateTime || normalizeConversationUpdateTime(fallbackUpdateTime);
+        if (!conversationId || !updateTime) {
+            return null;
+        }
+
+        return {
+            id: conversationId,
+            title: title || "",
+            update_time: updateTime,
+            last: extractConversationPreview(previewMessage),
+            model: extractConversationModel(previewMessage),
+        };
+    };
+
+    const extractConversationIdFromRequestBody = function (body) {
+        if (typeof body !== "string" || !body.trim()) {
+            return "";
+        }
+        try {
+            const payload = JSON.parse(body);
+            return payload?.conversation_id || payload?.conversation?.id || "";
+        } catch (e) {
+            return "";
+        }
+    };
+
+    const extractConversationIdFromPageUrl = function () {
+        const matched = location.pathname.match(
+            /\/c\/(([^/]{4,}?){4}-[^/]{4,}?)(?:\/|$)/,
+        );
+        return matched ? matched[1] : "";
+    };
+
+    const mergeEverChangingRecord = async function (record) {
+        if (!record || !record.id || !global.st_ec) {
+            return null;
+        }
+        const oldRecord = (await global.st_ec.get(record.id)) || {};
+        const mergedRecord = {
+            id: record.id,
+            title: record.title || oldRecord.title || "",
+            update_time: record.update_time || oldRecord.update_time,
+            last: record.last || oldRecord.last || "",
+            model: record.model || oldRecord.model || "",
+        };
+        if (!mergedRecord.update_time) {
+            return null;
+        }
+        await global.st_ec.put(mergedRecord);
+        return mergedRecord;
+    };
+
+    const updateEverChangingFromCurrentPage = async function (
+        conversationId = "",
+    ) {
+        const currentConversationId =
+            conversationId || extractConversationIdFromPageUrl();
+        const assistantMessages = $$(
+            `main [data-message-author-role="assistant"]`,
+        );
+        const lastAssistantMessage =
+            assistantMessages[assistantMessages.length - 1];
+        if (!currentConversationId || !lastAssistantMessage?.innerText.trim()) {
+            return;
+        }
+
+        const mergedRecord = await mergeEverChangingRecord({
+            id: currentConversationId,
+            title:
+                document.title && document.title !== "ChatGPT"
+                    ? document.title
+                    : "",
+            update_time: new Date(),
+            last: lastAssistantMessage.innerText
+                .replace(/[\r\n]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 100),
+            model: "",
+        });
+        if (mergedRecord) {
+            scheduleEverChangingAttach(undefined, 120);
+        }
+    };
+
+    const scheduleCurrentConversationRecordUpdate = function (delay = 500) {
+        if (global.currentConversationRecordTimer) {
+            clearTimeout(global.currentConversationRecordTimer);
+        }
+        global.currentConversationRecordTimer = setTimeout(function () {
+            if (gv("k_everchanging", false) === true) {
+                updateEverChangingFromCurrentPage();
+            }
+        }, delay);
+    };
+
+    const updateEverChangingFromConversationStream = function (
+        response,
+        requestBody = "",
+    ) {
+        if (!response || typeof response.clone !== "function") {
+            return;
+        }
+        response
+            .clone()
+            .text()
+            .then(async (fetchRspBody) => {
+                const fallbackConversationId =
+                    extractConversationIdFromRequestBody(requestBody) ||
+                    extractConversationIdFromPageUrl();
+                const fallbackTitle =
+                    document.title && document.title !== "ChatGPT"
+                        ? document.title
+                        : "";
+                const record = buildConversationRecordFromStream(
+                    fetchRspBody,
+                    fallbackConversationId,
+                    fallbackTitle,
+                );
+                const mergedRecord = await mergeEverChangingRecord(record);
+                if (mergedRecord) {
+                    const kec_object = {};
+                    kec_object[mergedRecord.id] = mergedRecord;
+                    scheduleEverChangingAttach(kec_object, 120);
+                }
+            })
+            .catch((e) => {
+                if (gv("k_showDebug", false) === true) {
+                    console.log(`KeepChatGPT: STREAM: ERROR: ${e}`);
+                }
+            });
+    };
+
     const shouldDeleteEverChangingRecord = function (payload) {
         return Boolean(
             payload &&
@@ -2080,6 +2258,7 @@ ${symbol1_selector} .transition-all {
         isTrackingRequest: isTrackingRequest,
         extractConversationPreview: extractConversationPreview,
         buildConversationRecordFromPayload: buildConversationRecordFromPayload,
+        buildConversationRecordFromStream: buildConversationRecordFromStream,
         shouldDeleteEverChangingRecord: shouldDeleteEverChangingRecord,
     });
 
@@ -2281,6 +2460,22 @@ ${symbol1_selector} .transition-all {
                                 });
                         }
 
+                        if (
+                            gv("k_everchanging", false) === true &&
+                            typeof fetchReqUrl === "string" &&
+                            /\/backend-api\/f\/conversation(\?|$)/.test(
+                                fetchReqUrl,
+                            ) &&
+                            fetchReqMethod === "POST"
+                        ) {
+                            updateEverChangingFromConversationStream(
+                                response,
+                                typeof argumentsList[1]?.body === "string"
+                                    ? argumentsList[1].body
+                                    : "",
+                            );
+                        }
+
                         return response;
                     })
                     .catch((error) => Promise.reject(error));
@@ -2362,6 +2557,7 @@ ${symbol1_selector} .transition-all {
                 return;
             }
             scheduleEverChangingAttach();
+            scheduleCurrentConversationRecordUpdate();
         });
         everChanging.observer.observe(document.body, {
             childList: true,
@@ -2675,31 +2871,36 @@ ${previewText ? `<br>
     };
 
     dataSec.listen_input = function (event) {
-        let ms = [];
-        gv("k_datasecblocklist", datasec_blocklist_default)
-            .split(`\n`)
-            .forEach((e) => {
-                if (e) {
-                    const m = $("form.w-full #prompt-textarea").innerHTML.match(
-                        e,
-                    );
-                    if (m && m[0]) {
-                        $("form.w-full #prompt-textarea").innerHTML = $(
-                            "form.w-full #prompt-textarea",
-                        ).innerHTML.replaceAll(m[0], ``);
-                        ms.push(m[0]);
-                    }
-                }
-            });
-        if (ms.join(`\n`).trim()) {
+        const scanPrompt = function () {
+            const promptTextarea = $("form.w-full #prompt-textarea");
+            if (!promptTextarea) {
+                return;
+            }
+            const promptText =
+                "value" in promptTextarea
+                    ? promptTextarea.value
+                    : promptTextarea.innerText || promptTextarea.textContent;
+            const result = sanitizeDataSecText(
+                promptText,
+                gv("k_datasecblocklist", datasec_blocklist_default),
+            );
+            if (!result.matches.join(`\n`).trim()) {
+                return;
+            }
+            setPromptPlainText(promptTextarea, result.text);
             ndialog(
                 `⚠️${tl("警告")}`,
                 `${tl("发现敏感数据")}`,
                 `Thanks`,
                 function (t) {},
                 `textarea`,
-                ms.join(`\n`),
+                result.matches.join(`\n`),
             );
+        };
+        if (event?.type === "paste") {
+            setTimeout(scanPrompt, 0);
+        } else {
+            scanPrompt();
         }
     };
 
@@ -2717,6 +2918,73 @@ ${previewText ? `<br>
             `https://github.com/xcanwin/KeepChatGPT/raw/main/assets/appreciate_wechat.png`,
         );
     };
+
+    const sanitizeDataSecText = function (
+        text,
+        rulesText = datasec_blocklist_default,
+    ) {
+        let sanitizedText = `${text || ""}`;
+        const matches = [];
+        `${rulesText || ""}`
+            .split(`\n`)
+            .forEach((ruleText) => {
+                if (!ruleText) {
+                    return;
+                }
+                try {
+                    const rule = new RegExp(ruleText, "g");
+                    const found = sanitizedText.match(rule);
+                    if (found && found.length) {
+                        found.forEach((item) => {
+                            if (!matches.includes(item)) {
+                                matches.push(item);
+                            }
+                        });
+                        sanitizedText = sanitizedText.replace(rule, ``);
+                    }
+                } catch (e) {
+                    if (gv("k_showDebug", false) === true) {
+                        console.log(`KeepChatGPT: DATASEC: ERROR: ${e}`);
+                    }
+                }
+            });
+        return {
+            text: sanitizedText,
+            matches: matches,
+        };
+    };
+
+    const setPromptPlainText = function (promptTextarea, text) {
+        if (!promptTextarea) {
+            return;
+        }
+        promptTextarea.focus();
+        if ("value" in promptTextarea) {
+            promptTextarea.value = text;
+        } else {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(promptTextarea);
+            if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            if (
+                document.queryCommandSupported?.("insertText") &&
+                document.execCommand &&
+                document.execCommand("insertText", false, text)
+            ) {
+                // execCommand has already updated the editable text.
+            } else {
+                promptTextarea.textContent = text;
+            }
+        }
+        promptTextarea.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+
+    global.__test__ = Object.assign(global.__test__ || {}, {
+        sanitizeDataSecText: sanitizeDataSecText,
+    });
 
     const interceptTracking = function (action) {
         if (action === true) {
@@ -2898,17 +3166,12 @@ ${previewText ? `<br>
     const kcgBootstrapQuietTime = 600;
 
     const bootKCG = function () {
-        if (kcgBooted) return;
         if (!$(symbol1_selector)) return;
 
         kcgBooted = true;
         if (kcgBootTimer) {
             clearTimeout(kcgBootTimer);
             kcgBootTimer = null;
-        }
-        if (kcgBootstrapObserver) {
-            kcgBootstrapObserver.disconnect();
-            kcgBootstrapObserver = null;
         }
 
         loadKCG();
@@ -2923,11 +3186,20 @@ ${previewText ? `<br>
     };
 
     const scheduleKcgBootstrap = function () {
-        if (kcgBooted) return;
+        if (
+            kcgBooted &&
+            (!$(symbol1_selector) || $("#kcg"))
+        ) {
+            return;
+        }
 
         onDomStable(() => {
-            if (kcgBooted) return;
-            if (!$(symbol1_selector)) return;
+            const hasSidebar = Boolean($(symbol1_selector));
+            const hasEntry = Boolean($("#kcg"));
+            if (!hasSidebar) return;
+            if (kcgBooted && hasEntry) {
+                return;
+            }
 
             if (kcgBootTimer) {
                 clearTimeout(kcgBootTimer);

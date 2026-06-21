@@ -26,7 +26,9 @@ try {
 const isTrackingRequest = scriptGlobals.__test__?.isTrackingRequest;
 const extractConversationPreview = scriptGlobals.__test__?.extractConversationPreview;
 const buildConversationRecordFromPayload = scriptGlobals.__test__?.buildConversationRecordFromPayload;
+const buildConversationRecordFromStream = scriptGlobals.__test__?.buildConversationRecordFromStream;
 const shouldDeleteEverChangingRecord = scriptGlobals.__test__?.shouldDeleteEverChangingRecord;
+const sanitizeDataSecText = scriptGlobals.__test__?.sanitizeDataSecText;
 
 // ─── 正则测试 ─────────────────────────────────────────────
 
@@ -114,6 +116,23 @@ describe('everChanging helpers', () => {
     expect(shouldDeleteEverChangingRecord({ is_hidden: true })).toBe(true);
     expect(shouldDeleteEverChangingRecord({ is_visible: true })).toBe(false);
   });
+
+  test('从流式会话响应构建新增会话记录', () => {
+    expect(typeof buildConversationRecordFromStream).toBe('function');
+    const streamText = [
+      'data: {"conversation_id":"6a37b729-4338-83ea-8170-fc33ee178995","title":"KeepChatGPT 测试","create_time":1782036265}',
+      'data: {"message":{"create_time":1782036266,"content":{"parts":["ok"]},"metadata":{"model_slug":"gpt-5"}}}',
+      'data: [DONE]',
+    ].join('\n\n');
+    const record = buildConversationRecordFromStream(streamText);
+    expect(record).toMatchObject({
+      id: '6a37b729-4338-83ea-8170-fc33ee178995',
+      title: 'KeepChatGPT 测试',
+      last: 'ok',
+      model: 'gpt-5',
+    });
+    expect(record.update_time instanceof Date).toBe(true);
+  });
 });
 
 // ─── 数据安全默认规则测试 ──────────────────────────────────
@@ -135,6 +154,16 @@ describe('datasec_blocklist_default', () => {
   test('匹配敏感用户名', () => {
     expect(rules[3].test('my-secret-username')).toBe(true);
     expect(rules[3].test('other-username')).toBe(false);
+  });
+
+  test('按规则清理敏感文本并返回命中项', () => {
+    expect(typeof sanitizeDataSecText).toBe('function');
+    const result = sanitizeDataSecText(
+      '手机号 18888888888 邮箱 user@163.com 保留',
+      defaultRules,
+    );
+    expect(result.text).toBe('手机号  邮箱  保留');
+    expect(result.matches).toEqual(['18888888888', 'user@163.com']);
   });
 });
 
