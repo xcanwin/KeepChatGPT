@@ -42,6 +42,7 @@
 ## 测试指引
 - 自动化测试：`npm test`（Jest，单次）或 `npm run dev`（HTTP 服务 + Jest watch 同时运行）。测试覆盖纯逻辑（正则、数据安全规则、GM mock），DOM/网络相关功能仍以手工回归为主。
 - 功能改动后至少验证：菜单可打开、开关可切换、目标功能行为符合预期、无明显控制台报错。
+- 涉及 `fetch`/XHR hook、`Response` body 读取、生成流解析、DOM `MutationObserver` 或 IndexedDB 写入的 ChatGPT 运行时改动，应单独拆分、单独验证，避免与版本号、依赖或样式改动混合；优先使用 DOM 或已有接口状态同步，只有必要时才读取生成响应体。至少验证：打开历史会话、历史会话刷新、历史会话继续发送、新建会话发送，并确认无 `Something went wrong`、订阅加载失败、内容不可用等错误。
 - i18n 相关改动后：运行 `python3 tools/kcg_i18n.py`，检查 `temp/lang.txt` 结构与新增词条映射。
 - 文档或资源链接改动后：运行 `python3 tools/kcg_doc_cdn.py`，检查 `temp/README_CDN.md` 图片链接与版本参数。
 - 多语言文档变更时：同步核对 `README.md`、`docs/README_EN.md`、`docs/README_ES.md` 的功能描述与目录结构一致性。
