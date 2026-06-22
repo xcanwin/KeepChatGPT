@@ -2219,6 +2219,15 @@ ${symbol1_selector} .transition-all {
 
                 return fetchRsp
                     .then((response) => {
+                        if (
+                            gv("k_everchanging", false) === true &&
+                            fetchReqMethod === "POST" &&
+                            typeof fetchReqUrl === "string" &&
+                            /\/backend-api\/f\/conversation(\?|$)/.test(fetchReqUrl)
+                        ) {
+                            scheduleCurrentConversationRecordUpdate(3000);
+                        }
+
                         // 刷新侧边栏时，同步更新数据库中的标题、时间和摘要。
                         if (
                             gv("k_everchanging", false) === true &&
