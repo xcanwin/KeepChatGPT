@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.9
+// @version           34.10
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -2122,11 +2122,28 @@ ${symbol1_selector} .transition-all {
         );
     };
 
+    const parseJsonSafely = function (text, fallback = null) {
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return fallback;
+        }
+    };
+
+    const rebuildConsumedResponse = function (response, body) {
+        return new Response(body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+        });
+    };
+
     global.__test__ = Object.assign(global.__test__ || {}, {
         isTrackingRequest: isTrackingRequest,
         extractConversationPreview: extractConversationPreview,
         buildConversationRecordFromPayload: buildConversationRecordFromPayload,
         shouldDeleteEverChangingRecord: shouldDeleteEverChangingRecord,
+        parseJsonSafely: parseJsonSafely,
     });
 
     const hookFetch = function () {
@@ -2239,41 +2256,58 @@ ${symbol1_selector} .transition-all {
                             return response
                                 .text()
                                 .then(async (fetchRspBody) => {
-                                    const b =
-                                        JSON.parse(fetchRspBody).items || [];
-                                    let kec_object = {};
-
-                                    await Promise.all(
-                                        b.map(async (el) => {
-                                            const update_time = new Date(
-                                                el.update_time,
-                                            );
-                                            const ec_tmp =
-                                                (await global.st_ec.get(
-                                                    el.id,
-                                                )) || {};
-                                            const mergedRecord = {
-                                                id: el.id,
-                                                title: el.title,
-                                                update_time: update_time,
-                                                last: ec_tmp.last || "",
-                                                model: ec_tmp.model || "",
-                                            };
-                                            await global.st_ec.put(
-                                                mergedRecord,
-                                            );
-                                            kec_object[el.id] = mergedRecord;
-                                        }),
+                                    const parsedBody = parseJsonSafely(
+                                        fetchRspBody,
                                     );
+                                    const b = Array.isArray(parsedBody?.items)
+                                        ? parsedBody.items
+                                        : null;
 
-                                    scheduleEverChangingAttach(kec_object, 220);
+                                    if (b) {
+                                        try {
+                                            let kec_object = {};
+
+                                            await Promise.all(
+                                                b.map(async (el) => {
+                                                    const update_time = new Date(
+                                                        el.update_time,
+                                                    );
+                                                    const ec_tmp =
+                                                        (await global.st_ec.get(
+                                                            el.id,
+                                                        )) || {};
+                                                    const mergedRecord = {
+                                                        id: el.id,
+                                                        title: el.title,
+                                                        update_time: update_time,
+                                                        last: ec_tmp.last || "",
+                                                        model: ec_tmp.model || "",
+                                                    };
+                                                    await global.st_ec.put(
+                                                        mergedRecord,
+                                                    );
+                                                    kec_object[el.id] =
+                                                        mergedRecord;
+                                                }),
+                                            );
+
+                                            scheduleEverChangingAttach(
+                                                kec_object,
+                                                220,
+                                            );
+                                        } catch (e) {
+                                            console.error(
+                                                "KeepChatGPT everChanging list sync error:",
+                                                e,
+                                            );
+                                        }
+                                    }
 
                                     // response.body 已被 text() 消费，需要重建一个 Response 返还给页面。
-                                    return new Response(fetchRspBody, {
-                                        status: response.status,
-                                        statusText: response.statusText,
-                                        headers: response.headers,
-                                    });
+                                    return rebuildConsumedResponse(
+                                        response,
+                                        fetchRspBody,
+                                    );
                                 });
                             // 打开、编辑、删除单个历史对话时，增量更新对应侧边栏数据。
                         } else if (
@@ -2286,53 +2320,67 @@ ${symbol1_selector} .transition-all {
                             return response
                                 .text()
                                 .then(async (fetchRspBody) => {
-                                    // 点击进入历史对话时，刷新当前会话的标题、摘要和模型信息。
-                                    if (fetchReqMethod === "GET") {
-                                        const f = JSON.parse(fetchRspBody);
-                                        const crt_con_id =
-                                            extractConversationIdFromUrl(
-                                                fetchReqUrl,
-                                            );
-                                        const record =
-                                            buildConversationRecordFromPayload(
-                                                f,
-                                                crt_con_id,
-                                            );
+                                    const f = parseJsonSafely(fetchRspBody);
+                                    if (f) {
+                                        try {
+                                            // 点击进入历史对话时，刷新当前会话的标题、摘要和模型信息。
+                                            if (fetchReqMethod === "GET") {
+                                                const crt_con_id =
+                                                    extractConversationIdFromUrl(
+                                                        fetchReqUrl,
+                                                    );
+                                                const record =
+                                                    buildConversationRecordFromPayload(
+                                                        f,
+                                                        crt_con_id,
+                                                    );
 
-                                        if (record) {
-                                            await global.st_ec.put(record);
-                                            let kec_object = {};
-                                            kec_object[record.id] = record;
-                                            scheduleEverChangingAttach(
-                                                kec_object,
-                                                120,
-                                            );
-                                        }
-                                        // 删除历史对话后，从本地缓存移除对应记录。
-                                    } else if (fetchReqMethod === "PATCH") {
-                                        const f = JSON.parse(fetchRspBody);
-                                        const crt_con_id = fetchReqUrl.match(
-                                            /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
-                                        )[1];
-                                        if (
-                                            shouldDeleteEverChangingRecord(f)
-                                        ) {
-                                            await global.st_ec.delete({
-                                                id: crt_con_id,
-                                            });
-                                            scheduleEverChangingAttach(
-                                                undefined,
-                                                120,
+                                                if (record) {
+                                                    await global.st_ec.put(record);
+                                                    let kec_object = {};
+                                                    kec_object[record.id] =
+                                                        record;
+                                                    scheduleEverChangingAttach(
+                                                        kec_object,
+                                                        120,
+                                                    );
+                                                }
+                                                // 删除历史对话后，从本地缓存移除对应记录。
+                                            } else if (
+                                                fetchReqMethod === "PATCH"
+                                            ) {
+                                                const crt_con_id =
+                                                    extractConversationIdFromUrl(
+                                                        fetchReqUrl,
+                                                    );
+                                                if (
+                                                    crt_con_id &&
+                                                    shouldDeleteEverChangingRecord(
+                                                        f,
+                                                    )
+                                                ) {
+                                                    await global.st_ec.delete({
+                                                        id: crt_con_id,
+                                                    });
+                                                    scheduleEverChangingAttach(
+                                                        undefined,
+                                                        120,
+                                                    );
+                                                }
+                                            }
+                                        } catch (e) {
+                                            console.error(
+                                                "KeepChatGPT everChanging detail sync error:",
+                                                e,
                                             );
                                         }
                                     }
 
                                     // 同上：消费过 body 后，返回一个可继续读取的新 Response。
-                                    return new Response(fetchRspBody, {
-                                        status: response.status,
-                                        statusText: response.statusText,
-                                        headers: response.headers,
-                                    });
+                                    return rebuildConsumedResponse(
+                                        response,
+                                        fetchRspBody,
+                                    );
                                 });
                         }
 

@@ -27,6 +27,7 @@ const isTrackingRequest = scriptGlobals.__test__?.isTrackingRequest;
 const extractConversationPreview = scriptGlobals.__test__?.extractConversationPreview;
 const buildConversationRecordFromPayload = scriptGlobals.__test__?.buildConversationRecordFromPayload;
 const shouldDeleteEverChangingRecord = scriptGlobals.__test__?.shouldDeleteEverChangingRecord;
+const parseJsonSafely = scriptGlobals.__test__?.parseJsonSafely;
 const sanitizeDataSecText = scriptGlobals.__test__?.sanitizeDataSecText;
 
 // ─── 正则测试 ─────────────────────────────────────────────
@@ -114,6 +115,16 @@ describe('everChanging helpers', () => {
     expect(shouldDeleteEverChangingRecord({ is_archived: true })).toBe(true);
     expect(shouldDeleteEverChangingRecord({ is_hidden: true })).toBe(true);
     expect(shouldDeleteEverChangingRecord({ is_visible: true })).toBe(false);
+  });
+
+  test('解析异常响应体时返回兜底对象', () => {
+    expect(typeof parseJsonSafely).toBe('function');
+    expect(parseJsonSafely('{"items":[{"id":"ok"}]}', { items: [] })).toEqual({
+      items: [{ id: 'ok' }],
+    });
+    expect(parseJsonSafely('<html>not json</html>', { items: [] })).toEqual({
+      items: [],
+    });
   });
 });
 
