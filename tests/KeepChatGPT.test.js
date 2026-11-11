@@ -29,12 +29,24 @@ const buildConversationRecordFromPayload = scriptGlobals.__test__?.buildConversa
 const shouldDeleteEverChangingRecord = scriptGlobals.__test__?.shouldDeleteEverChangingRecord;
 const parseJsonSafely = scriptGlobals.__test__?.parseJsonSafely;
 const sanitizeDataSecText = scriptGlobals.__test__?.sanitizeDataSecText;
+const extractConversationIdFromUrl = scriptGlobals.__test__?.extractConversationIdFromUrl;
+const isConversationListUrl = scriptGlobals.__test__?.isConversationListUrl;
+const isConversationDetailUrl = scriptGlobals.__test__?.isConversationDetailUrl;
+const isConversationSendUrl = scriptGlobals.__test__?.isConversationSendUrl;
+const patchConversationSendBody = scriptGlobals.__test__?.patchConversationSendBody;
+const selectors = scriptGlobals.__test__?.selectors;
 
 // ─── 正则测试 ─────────────────────────────────────────────
 
 describe('trackingBlockRegex', () => {
   test('测试辅助函数已暴露', () => {
     expect(typeof isTrackingRequest).toBe('function');
+  });
+
+  test('兼容传入 URL 对象（fetch(new URL(...)) 场景）', () => {
+    expect(isTrackingRequest(new URL('https://ab.chatgpt.com/v1/initialize?k=1'))).toBe(true);
+    expect(isTrackingRequest(new URL('https://chatgpt.com/ces/statsc/flush'))).toBe(true);
+    expect(isTrackingRequest(new URL('https://chatgpt.com/backend-api/conversation'))).toBe(false);
   });
 
   test('拦截 sentry.io 请求', () => {
@@ -59,6 +71,8 @@ describe('trackingBlockRegex', () => {
     expect(isTrackingRequest('/ces/v1/telemetry/intake?ddforward=1')).toBe(true);
     expect(isTrackingRequest('/ces/statsc/flush')).toBe(true);
     expect(isTrackingRequest('/backend-api/beacons/home?conversation_id=123')).toBe(true);
+    expect(isTrackingRequest('https://ab.chatgpt.com/v1/initialize?k=client-x&st=javascript-client-react')).toBe(true);
+    expect(isTrackingRequest('https://chatgpt.com/ces/v1/rgstr?k=client-x&gz=1')).toBe(true);
   });
 
   test('不拦截正常请求', () => {
@@ -109,6 +123,57 @@ describe('everChanging helpers', () => {
     expect(record.update_time instanceof Date).toBe(true);
   });
 
+  test('会话详情改为 messages 数组时，取 current_node 对应消息构建记录', () => {
+    const record = buildConversationRecordFromPayload({
+      conversation_id: '11111111-2222-3333-4444-555555555555',
+      title: '示例会话标题',
+      update_time: 1794345824.223914,
+      current_node: 'm-4',
+      messages: [
+        {
+          id: 'm-1',
+          author: { role: 'system' },
+          create_time: 1794344026,
+          content: { parts: [''] },
+          metadata: { is_visually_hidden_from_conversation: true },
+        },
+        {
+          id: 'm-2',
+          author: { role: 'user' },
+          create_time: 1794344027,
+          content: { parts: ['你是哪个版本的大模型'] },
+          metadata: {},
+        },
+        {
+          id: 'm-4',
+          author: { role: 'assistant' },
+          create_time: 1794344028,
+          content: { parts: ['我是 **GPT-6**'] },
+          metadata: { model_slug: 'gpt-6', default_model_slug: 'auto' },
+        },
+      ],
+    });
+    expect(record).toMatchObject({
+      id: '11111111-2222-3333-4444-555555555555',
+      title: '示例会话标题',
+      last: '我是 **GPT-6**',
+      model: 'gpt-6',
+    });
+  });
+
+  test('messages 数组缺少 current_node 时，回退到最后一条可见消息', () => {
+    const record = buildConversationRecordFromPayload({
+      conversation_id: '11111111-2222-3333-4444-555555555555',
+      title: 't',
+      update_time: 1794345824,
+      messages: [
+        { id: 'a', author: { role: 'assistant' }, content: { parts: ['旧回复'] }, metadata: {} },
+        { id: 'b', author: { role: 'system' }, content: { parts: [''] }, metadata: { is_visually_hidden_from_conversation: true } },
+      ],
+    });
+    expect(record.last).toBe('旧回复');
+  });
+
   test('归档或隐藏时删除 everChanging 缓存', () => {
     expect(typeof shouldDeleteEverChangingRecord).toBe('function');
     expect(shouldDeleteEverChangingRecord({ is_visible: false })).toBe(true);
@@ -125,6 +190,104 @@ describe('everChanging helpers', () => {
     expect(parseJsonSafely('<html>not json</html>', { items: [] })).toEqual({
       items: [],
     });
+  });
+});
+
+// ─── 接口 URL 识别测试 ─────────────────────────────────────
+
+describe('conversation API URL helpers', () => {
+  const id = '11111111-2222-3333-4444-555555555555';
+
+  test('提取会话 ID 兼容 conversation 与 conversations 两种详情路径', () => {
+    expect(typeof extractConversationIdFromUrl).toBe('function');
+    expect(extractConversationIdFromUrl(`https://chatgpt.com/backend-api/conversation/${id}`)).toBe(id);
+    expect(extractConversationIdFromUrl(`/backend-api/conversations/${id}?num_turns=10&include_has_versions=true`)).toBe(id);
+    expect(extractConversationIdFromUrl('/backend-api/conversations?offset=0&limit=20')).toBe('');
+    expect(extractConversationIdFromUrl('/backend-api/f/conversation')).toBe('');
+    expect(extractConversationIdFromUrl(`/backend-api/conversation/id/${id}`)).toBe(id);
+  });
+
+  test('识别会话列表、会话详情与发送请求', () => {
+    expect(typeof isConversationListUrl).toBe('function');
+    expect(isConversationListUrl('/backend-api/conversations?order=updated&limit=20&offset=0')).toBe(true);
+    expect(isConversationListUrl(`/backend-api/conversations/${id}?num_turns=10`)).toBe(false);
+
+    expect(typeof isConversationDetailUrl).toBe('function');
+    expect(isConversationDetailUrl(`/backend-api/conversation/${id}`)).toBe(true);
+    expect(isConversationDetailUrl(`/backend-api/conversations/${id}?num_turns=10&include_has_versions=true`)).toBe(true);
+    expect(isConversationDetailUrl('/backend-api/conversations?offset=0')).toBe(false);
+    expect(isConversationDetailUrl(`/backend-api/conversation/${id}/stream_status`)).toBe(false);
+    expect(isConversationDetailUrl(`/backend-api/conversation/id/${id}`)).toBe(true);
+
+    expect(typeof isConversationSendUrl).toBe('function');
+    expect(isConversationSendUrl('/backend-api/conversation')).toBe(true);
+    expect(isConversationSendUrl('https://chatgpt.com/backend-api/f/conversation')).toBe(true);
+    expect(isConversationSendUrl('/backend-api/f/conversation/prepare')).toBe(false);
+    expect(isConversationSendUrl('/backend-api/conversations?offset=0')).toBe(false);
+  });
+
+  test('取消审计仅在请求体已有 supports_modapi 字段时改写', () => {
+    expect(typeof patchConversationSendBody).toBe('function');
+    expect(JSON.parse(patchConversationSendBody('{"action":"next","supports_modapi":true}'))).toEqual({
+      action: 'next',
+      supports_modapi: false,
+    });
+    const untouched = '{"action":"next","model":"auto"}';
+    expect(patchConversationSendBody(untouched)).toBe(untouched);
+    expect(patchConversationSendBody('not json')).toBe('not json');
+  });
+});
+
+// ─── 页面选择器夹具测试（结构取自 chatgpt.com 新版前端）──────────
+
+describe('页面选择器', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="app-shell-sidebar">
+        <nav data-app-navigation-rail="true" class="group/sidebar-rail pointer-events-none relative flex h-full w-13"></nav>
+        <div data-sidebar-navigation-root="true">
+          <div class="contents">
+            <div class="toolbar"></div>
+            <nav role="navigation" aria-label="聊天记录" class="Navigation-bibgtK"></nav>
+          </div>
+        </div>
+      </div>
+      <main>
+        <div data-turn-key="t1">
+          <div data-chatgpt-search-unit-key="fallback-turn-0:0:user">
+            <div data-user-message-bubble="true"><div class="whitespace-pre-wrap">你好</div></div>
+          </div>
+          <div data-chatgpt-search-unit-key="fallback-turn-0:1:assistant">
+            <div data-chatgpt-selection-message-id="m1"><div data-markdown-text-style="assistant-message">你好！</div></div>
+          </div>
+        </div>
+        <form data-chatgpt-composer="" data-composer-placement="thread">
+          <div class="ProseMirror" contenteditable="true" role="textbox"></div>
+        </form>
+      </main>`;
+  });
+
+  test('测试选择器已暴露', () => {
+    expect(selectors).toBeDefined();
+  });
+
+  test('侧边栏选择器命中主导航而不是折叠态 rail', () => {
+    const nav = document.querySelector(selectors.sidebar);
+    expect(nav).not.toBeNull();
+    expect(nav.getAttribute('aria-label')).toBe('聊天记录');
+    expect(nav.hasAttribute('data-app-navigation-rail')).toBe(false);
+  });
+
+  test('输入框选择器命中 ProseMirror 编辑器', () => {
+    const editor = document.querySelector(selectors.prompt);
+    expect(editor).not.toBeNull();
+    expect(editor.classList.contains('ProseMirror')).toBe(true);
+  });
+
+  test('用户与助手消息选择器各命中一条', () => {
+    expect(document.querySelectorAll(selectors.userMessage)).toHaveLength(1);
+    expect(document.querySelectorAll(selectors.assistantMessage)).toHaveLength(1);
+    expect(document.querySelector(selectors.userMessage).textContent).toContain('你好');
   });
 });
 
