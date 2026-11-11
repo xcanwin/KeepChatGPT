@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.11
+// @version           35.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -80,21 +80,35 @@
     const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
     const muob = (Selector, el, func) => {
+        const seen = new WeakSet();
+        const visit = (root) => {
+            const targets = root && root.matches && root.matches(Selector) ? [root] : [];
+            if (root && root.querySelectorAll) {
+                targets.push(...root.querySelectorAll(Selector));
+            }
+            targets.forEach((target) => {
+                if (seen.has(target)) return;
+                seen.add(target);
+                func(target);
+            });
+        };
         const observer = new MutationObserver((mutationsList, observer2) => {
             for (let mutation of mutationsList) {
-                if (mutation.type === "childList") {
-                    const target = mutation.target.querySelector(Selector);
-                    if (target && !target.hasAttribute("data-duplicate")) {
-                        target.setAttribute("data-duplicate", "true");
-                        func(target);
-                    }
+                if (mutation.type === "attributes") {
+                    visit(mutation.target);
+                } else if (mutation.type === "childList") {
+                    mutation.addedNodes.forEach(visit);
                 }
             }
         });
         observer.observe(el, {
             childList: true,
             subtree: true,
+            // React 可能把节点先插入、再提升为编辑器（后补 contenteditable）。
+            attributes: true,
+            attributeFilter: ["contenteditable", "data-composer-markdown"],
         });
+        visit(el);
     };
 
     const sv = function (key, value = "") {
@@ -106,9 +120,27 @@
     };
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_selector = "nav.flex:not(#stage-sidebar-tiny-bar)";
-    const symbol2_selector =
-        "div.sticky div.justify-center.top-0 button span.sr-only";
+    // 侧边栏主导航（不含折叠态 rail）、页面主区域，以及消息与输入框节点。
+    const symbol1_selector = "[data-sidebar-navigation-root] nav";
+    const symbol2_selector = "main";
+    const prompt_selector =
+        'form[data-chatgpt-composer] .ProseMirror[contenteditable="true"], form.w-full #prompt-textarea';
+
+    // 新版前端 SPA 切换会话后，旧会话的输入框仍留在 DOM 中且隐藏，querySelector 会先命中它。
+    // 这里返回第一个实际渲染（可见）的输入框，避免克隆/脱敏写入看不见的编辑器。
+    const getPromptTextarea = function () {
+        const nodes = Array.from($$(prompt_selector));
+        for (const node of nodes) {
+            if (node.getClientRects().length > 0) {
+                return node;
+            }
+        }
+        return nodes[0] || null;
+    };
+    const user_message_selector =
+        'main div[data-chatgpt-search-unit-key$=":user"]';
+    const assistant_message_selector =
+        'main div[data-chatgpt-search-unit-key$=":assistant"]';
     const trackingHostRegex =
         /(^|\.)((google-analytics|googletagmanager)\.com|browser-intake-datadoghq\.com|gravatar\.com|intercomcdn\.com|intercom\.io|featuregates\.org|statsigapi\.net|ab\.chatgpt\.com)$/i;
     const trackingPathRegex =
@@ -250,6 +282,9 @@
         }
 
         async open() {
+            if (this.ready) {
+                await this.ready;
+            }
             return new Promise((resolve, reject) => {
                 const openRequest = indexedDB.open(this.dbName, 1);
 
@@ -424,6 +459,10 @@
     };
 
     const isTrackingRequest = function (requestUrl) {
+        // 兼容 fetch(new URL(...)) / sendBeacon(new URL(...)) 传入 URL 对象的情况。
+        if (typeof URL !== "undefined" && requestUrl instanceof URL) {
+            requestUrl = requestUrl.href;
+        }
         if (typeof requestUrl !== "string" || requestUrl.trim() === "") {
             return false;
         }
@@ -492,7 +531,7 @@
                     );
                 }
             };
-            $("main").firstElementChild.lastElementChild.appendChild(nIfr);
+            ($("main") || document.body).appendChild(nIfr);
         } else {
             if (u) {
                 $("#xcanwin").src = u;
@@ -879,14 +918,17 @@
                 `${tl("建议间隔50秒")}`,
                 `Go`,
                 function (t) {
+                    let nextInterval;
                     try {
-                        interval2Time = parseInt($(".kdialoginput", t).value);
+                        nextInterval = parseInt($(".kdialoginput", t).value);
                     } catch (e) {
-                        interval2Time = parseInt(gv("k_interval", 50));
+                        nextInterval = parseInt(gv("k_interval", 50));
                     }
-                    if (interval2Time < 10) {
+                    // 非数字或过小值不应用，避免把定时器间隔清成 0。
+                    if (!Number.isFinite(nextInterval) || nextInterval < 10) {
                         return;
                     }
+                    interval2Time = nextInterval;
                     clearInterval(nInterval2);
                     nInterval2 = setInterval(
                         nInterval2Fun,
@@ -943,7 +985,7 @@
             } else {
                 sv("k_largescreen", true);
             }
-            $("main#main").classList.toggle("largescreen");
+            $("body").classList.toggle("largescreen");
             ncheck?.classList.toggle("checked");
         };
 
@@ -1104,7 +1146,7 @@
 
         if (gv("k_largescreen", false) === true) {
             setToggleChecked("nmenuid_ls", true);
-            $("main#main").classList.add("largescreen");
+            $("body").classList.add("largescreen");
         }
 
         if (gv("k_speakcompletely", false) === true) {
@@ -1223,13 +1265,10 @@
             }
         });
 
-        document.documentElement.style.setProperty(
-            "--keenobservation-user-image-url",
-            `url('${user_info.image_url}')`,
-        ); //更新明察秋毫用户头像
+        applyKeenObservationAvatar(); //更新明察秋毫用户头像
         document.documentElement.style.setProperty(
             "--keenobservation-assistant-image-url",
-            `url('https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp')`,
+            `url('${$('link[rel="apple-touch-icon"]')?.href || "https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp"}')`,
         ); //更新明察秋毫机器人头像
         addStyle();
         setUserOptions();
@@ -1246,113 +1285,77 @@
 */
 
 /*日星月异*/
-.ever-changing {
-    /*左边栏*/
-    ${symbol1_selector} {
-        background: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
-    }
-    /*左边栏顶部选项*/
-    ${symbol1_selector} .top-0 {
-        background: linear-gradient(to top, #f0f0ff, #fff3f3);
-    }
-    /*左边栏顶部工具*/
-    ${symbol1_selector} aside {
-        background: linear-gradient(to top, #efebff, #f0f0ff);
-    }
-    ${symbol1_selector} #history>div {
-        height: 3.5rem;
-        background-color: rgba(255, 255, 255, 0.4);
-    }
-    ${symbol1_selector} #history>div>a {
-        mask-image: unset !important;
-    }
-    ${symbol1_selector} #history>div .bg-gradient-to-l {
-        background-image: unset;
-    }
-
-    ${symbol1_selector} #history::after {
-        content: "";
-        display: block;
-        height: 1px;
-        background: linear-gradient(to right, transparent, #bfbfbf, transparent);
-    }
-
-    /*左边栏选中条目*/
-    ${symbol1_selector} #history>div.bg-token-sidebar-surface-tertiary {
-        background-color: #bfcbfd;
-    }
-    /*左边栏鼠标滑动*/
-    ${symbol1_selector} #history>div:hover {
-        background-color: #d5ddff;
-    }
-
-    /*左边栏一级功能*/
-    @layer utilities {
-        .bg-token-bg-elevated-secondary {
-            background-color: unset !important;
-            background: linear-gradient(to top, #f4f6ff, #f3f3ff, #f4f6ff);
-        }
-    }
-
-    /*左边栏日期*/
-    .navdate {
-        font-size: 0.75rem;
-        padding-right: 0.5rem;
-    }
+:root {
+    --kcg-ec-sidebar-bg: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
+    --kcg-ec-row-bg: rgba(255, 255, 255, 0.15);
+    --kcg-ec-row-selected-bg: #bfcbfd;
+    --kcg-ec-row-hover-bg: #d5ddff;
 }
 /*官方暗色模式*/
-.dark {
-    .ever-changing {
-        ${symbol1_selector} {
-            background: linear-gradient(to right top, #171717, #060606, #171717);
-        }
-        /*左边栏顶部选项*/
-        ${symbol1_selector} .top-0 {
-            background: linear-gradient(to top, #060606, #0f0f0f);
-        }
-        /*左边栏顶部工具*/
-        ${symbol1_selector} aside {
-            background: linear-gradient(to top, #111, #060606);
-        }
-        ${symbol1_selector} #history>div {
-            height: 3.5rem;
-            background-color: rgba(111, 111, 111, 0.25);
-        }
-        ${symbol1_selector} #history>div>a {
-            mask-image: unset !important;
-        }
-        ${symbol1_selector} #history>div .bg-gradient-to-l {
-            background-image: unset;
-        }
-
-        ${symbol1_selector} #history::after {
-            content: "";
-            display: block;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #535353, transparent);
-        }
-        ${symbol1_selector} #history>div.bg-token-sidebar-surface-tertiary {
-            background-color: #444;
-        }
-        ${symbol1_selector} #history>div:hover {
-            background-color: #2f2f2f;
-        }
-
-        ${symbol1_selector} #history a .navtitle {
-            color: #f4f4f4 !important;
-        }
-
-        ${symbol1_selector} #history a .navlast {
-            color: #d0d0d0 !important;
-        }
-
-        /*左边栏一级功能*/
-        @layer utilities {
-            .bg-token-bg-elevated-secondary {
-                background-color: unset !important;
-                background: linear-gradient(to top, #131313, #111, #131313);
-            }
-        }
+:root[data-theme="dark"], .dark {
+    --kcg-ec-sidebar-bg: linear-gradient(to right top, #171717, #060606, #171717);
+    --kcg-ec-row-bg: rgba(255, 255, 255, 0.05);
+    --kcg-ec-row-selected-bg: #444;
+    --kcg-ec-row-hover-bg: #2f2f2f;
+}
+.ever-changing {
+    /*左边栏*/
+    [data-sidebar-navigation-root] {
+        background: var(--kcg-ec-sidebar-bg);
+    }
+    /*左边栏会话条目*/
+    ${symbol1_selector} .sidebar-item:has(a[href*='/c/']) {
+        height: 3.5rem;
+        /*行与行之间留一点间隙，避免按钮粘连*/
+        margin-block: 0.125rem;
+        background-color: var(--kcg-ec-row-bg);
+    }
+    /*左边栏选中条目（新前端用 aria-current 标记当前会话）*/
+    ${symbol1_selector} .sidebar-item:has(a[aria-current="page"]) {
+        background-color: var(--kcg-ec-row-selected-bg);
+    }
+    /*左边栏鼠标滑动*/
+    ${symbol1_selector} .sidebar-item:has(a[href*='/c/']):hover {
+        background-color: var(--kcg-ec-row-hover-bg);
+    }
+    /*左边栏条目文字*/
+    [data-kcg-everchanging="true"] {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.125rem;
+    }
+    .navhead {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        min-width: 0;
+    }
+    .navtitle {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .navdate {
+        flex-shrink: 0;
+        font-size: 0.71rem;
+        opacity: 0.55;
+    }
+    .navlast {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        opacity: 0.65;
+    }
+    /*鼠标滑动时让出右侧的置顶、更多操作按钮*/
+    ${symbol1_selector} .sidebar-item:hover .navdate {
+        visibility: hidden;
     }
 }
 
@@ -1659,6 +1662,12 @@ body.kdark .kdialogcontent {
 .kmenu-item-range-input {
     flex: 1;
     accent-color: var(--kcg-accent);
+    /* 新版前端的全局 reset 会对 input 设置 appearance:none，导致原生轨道和滑头消失 */
+    -webkit-appearance: auto;
+    appearance: auto;
+}
+body.kdark .kmenu-item-range-input {
+    color-scheme: dark;
 }
 .kmenu-item-range-value {
     min-width: 3.2rem;
@@ -1766,13 +1775,8 @@ body.kdark .kdialogclose {
 
 /*净化页面*/
 .kpurifypage {
-    main .text-token-text-primary .mb-5.font-medium /*游客模式的首页的LOGO下方的问候语*/,
-    form.w-full .grow .bottom-full /*游客模式的首页的快捷提示词*/,
-    ${symbol1_selector} .mb-4 /*游客模式的侧边栏的登录提醒*/,
-    main .text-token-text-primary .mx-3.items-stretch /*首页的LOGO下方的快捷提示词*/,
-    main .shadow-xxs /*输入框上方的GPT-4o上限提示、GPT-5.5 Pro升级提示*/,
-    main form .text-token-text-secondary /*输入框上方标签*/,
-    main div.text-center>span /*输入框底部标签*/,
+    main section.group\\/home-suggestions /*首页的快捷提示词*/,
+    main .text-center.text-xs.select-none[data-markdown-copy="exclude"] /*输入框底部的提示标签*/,
     main [class*="aria-live=polite"] /*上下文的选中文本的"询问ChatGPT"弹窗*/
     {
         display: none;
@@ -1782,18 +1786,20 @@ body.kdark .kdialogclose {
 /*明察秋毫*/
 .kkeenobservation {
     /*用户气泡优化*/
-    main div[data-message-author-role="user"] {
-        padding-right: 3rem;
+    ${user_message_selector} {
+        position: relative;
+        padding-right: 2.75rem;
     }
-    main div[data-message-author-role="user"]>div.w-full>div {
+    ${user_message_selector} [data-user-message-bubble="true"] {
         background-color: #e1eaff;
     }
 
     /*添加用户头像*/
-    main div[data-message-author-role="user"]::after {
+    ${user_message_selector}::after {
         content: '';
         position: absolute;
         right: 0rem;
+        top: 0rem;
         width: 2rem;
         height: 2rem;
         background-color: gray;
@@ -1803,41 +1809,29 @@ body.kdark .kdialogclose {
         pointer-events: auto;
     }
 
-    /*用户气泡下标优化*/
-    main .text-token-text-primary .juice\\:flex-row-reverse .rounded-xl {
-        padding-right: 2.5rem;
-    }
-
     /*机器人气泡优化*/
-    main div[data-message-author-role="assistant"] {
-        padding-left: 3.5rem;
-        padding-right: 3.5rem;
+    ${assistant_message_selector} {
+        position: relative;
+        padding-left: 3rem;
     }
-    main div[data-message-author-role="assistant"]>div.w-full {
-        align-items: flex-start;
-        padding-top: 0;
-    }
-    main div[data-message-author-role="assistant"]>div.w-full>div {
+    ${assistant_message_selector} [data-chatgpt-selection-message-id] {
+        width: fit-content;
         max-width: 100%;
         border-radius: 1.5rem;
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
-        background-color: var(--main-surface-secondary);
+        padding: 0.75rem 1.25rem;
+        background-color: #f3f4f6;
     }
-    /*代码块颜色*/
-    @layer utilities {
-      .bg-token-sidebar-surface-primary {
-        background-color: #eee;
-      }
+    /*机器人操作按钮与气泡对齐*/
+    [data-talvt-turn-state] > .turn-action-controls {
+        padding-left: 3rem;
     }
 
     /*添加机器人头像*/
-    main div[data-message-author-role="assistant"]::after {
+    ${assistant_message_selector}::after {
         content: '';
         position: absolute;
         left: 0rem;
+        top: 0rem;
         width: 2rem;
         height: 2rem;
         background-color: gray;
@@ -1848,16 +1842,13 @@ body.kdark .kdialogclose {
     }
 }
 /*官方暗色模式*/
-.dark {
+:root[data-theme="dark"], .dark {
     .kkeenobservation {
-        main div[data-message-author-role="user"]>div.w-full>div {
+        ${user_message_selector} [data-user-message-bubble="true"] {
             background-color: #525452;
         }
-        /*代码块颜色*/
-        @layer utilities {
-            .bg-token-sidebar-surface-primary {
-                background-color: #171717;
-            }
+        ${assistant_message_selector} [data-chatgpt-selection-message-id] {
+            background-color: rgba(255, 255, 255, 0.08);
         }
     }
 }
@@ -1867,9 +1858,8 @@ ${symbol1_selector} {
     position: relative;
     scrollbar-width: thin;
 }
-${symbol1_selector} div.pt-3\\.5 {
-    padding-bottom: .5rem;
-    padding-top: .25rem;
+${symbol1_selector} [data-app-action-sidebar-scroll] {
+    scrollbar-width: thin;
 }
 
 /*选择按钮*/
@@ -1899,46 +1889,11 @@ ${symbol1_selector} div.pt-3\\.5 {
 /*展示大屏*/
 .largescreen {
     @media (min-width:1024px) {
-        /* ChatGPT 2026-03 起实际限宽节点已改到消息区和输入区的内层容器 */
-        section.text-token-text-primary>div>div,
-        #thread-bottom>div>div>div {
-            width: 100% !important;
-            max-width: min(90rem, calc(100vw - 8rem)) !important;
-            margin-inline: auto !important;
-        }
-        form.w-full {
-            max-width: 100% !important;
-            margin: auto;
+        /* ChatGPT 新版前端通过 --thread-content-max-width 变量限制消息区、输入区、首页的内容宽度 */
+        main [class*="--thread-content-max-width:"] {
+            --thread-content-max-width: min(90rem, calc(100vw - 8rem)) !important;
         }
     }
-}
-
-.btn-neutral {
-    cursor: pointer;
-}
-
-#new-chat-button + div, #expand-sidebar-bottom-button, #nav-toggle-button, #user-menu ~ div {
-    display: none !important;
-    max-height: 0 !important;
-}
-
-${symbol1_selector} div.overflow-y-auto a.hover\\:pr-4 {
-    padding-right: unset;
-}
-${symbol1_selector} div.overflow-y-auto {
-    scrollbar-width: thin;
-}
-.gptm {
-    position: absolute;
-    top: 1.15rem;
-    left: 0.95rem;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: white;
-}
-
-${symbol1_selector} .transition-all {
-    position: unset;
 }
 
 .khide {
@@ -2011,9 +1966,47 @@ ${symbol1_selector} .transition-all {
             return "";
         }
         const matched = requestUrl.match(
-            /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
+            /\/backend-api\/conversations?\/(?:id\/)?(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
         );
         return matched ? matched[1] : "";
+    };
+
+    // 会话列表：/backend-api/conversations?...offset=
+    const isConversationListUrl = function (requestUrl) {
+        return (
+            typeof requestUrl === "string" &&
+            /\/backend-api\/conversations\?.*offset=/.test(requestUrl)
+        );
+    };
+
+    // 会话详情：旧版 /backend-api/conversation/<id>，新版 /backend-api/conversations/<id>?num_turns=；
+    // 新版删除为 DELETE /backend-api/conversation/id/<id>
+    const isConversationDetailUrl = function (requestUrl) {
+        return extractConversationIdFromUrl(requestUrl) !== "";
+    };
+
+    // 发送消息：旧版 /backend-api/conversation，新版 /backend-api/f/conversation
+    const isConversationSendUrl = function (requestUrl) {
+        return (
+            typeof requestUrl === "string" &&
+            /\/backend-api\/(f\/)?conversation(\?|$)/.test(requestUrl)
+        );
+    };
+
+    // 取消审计：仅当请求体已携带 supports_modapi 时才关闭，避免给新接口塞入未知字段。
+    const patchConversationSendBody = function (bodyText) {
+        try {
+            const postBody = JSON.parse(bodyText);
+            if (
+                postBody &&
+                typeof postBody === "object" &&
+                "supports_modapi" in postBody
+            ) {
+                postBody.supports_modapi = false;
+                return JSON.stringify(postBody);
+            }
+        } catch (e) {}
+        return bodyText;
     };
 
     const normalizeConversationUpdateTime = function (value) {
@@ -2027,6 +2020,28 @@ ${symbol1_selector} .transition-all {
     };
 
     const findConversationMessageForPreview = function (payload) {
+        // 新版会话详情用 messages 数组代替 mapping。
+        if (Array.isArray(payload?.messages)) {
+            const messages = payload.messages.filter(Boolean);
+            const isVisible = (message) =>
+                (message.author?.role === "assistant" ||
+                    message.author?.role === "user") &&
+                message.metadata?.is_visually_hidden_from_conversation !==
+                    true &&
+                extractConversationPreview(message) !== "";
+            const currentMessage = messages.find(
+                (message) => message.id === payload.current_node,
+            );
+            if (currentMessage && isVisible(currentMessage)) {
+                return currentMessage;
+            }
+            for (let i = messages.length - 1; i >= 0; i--) {
+                if (isVisible(messages[i])) {
+                    return messages[i];
+                }
+            }
+            return null;
+        }
         const currentNodeMessage =
             payload?.mapping?.[payload?.current_node]?.message;
         if (currentNodeMessage) {
@@ -2075,25 +2090,54 @@ ${symbol1_selector} .transition-all {
         return matched ? matched[1] : "";
     };
 
+    // 取最后一条有文本内容的助手回复；优先读 Markdown 正文，避免带上"ChatGPT 说："等屏幕阅读器文本。
+    const getLastAssistantText = function () {
+        // SPA 切换会话后旧会话节点仍在 DOM 中：限定当前渲染的会话容器；
+        // 不按视口可见性过滤单条消息，虚拟列表会让屏外消息没有 client rects。
+        const containers = Array.from(
+            $$('[data-thread-find-target="conversation"]'),
+        ).filter((el) => el.getClientRects().length > 0);
+        const scope = containers[containers.length - 1] || document;
+        const assistantMessages = Array.from(
+            $$(assistant_message_selector, scope),
+        );
+        for (let i = assistantMessages.length - 1; i >= 0; i--) {
+            const contentElement =
+                $('[data-markdown-text-style="assistant-message"]', assistantMessages[i]) ||
+                assistantMessages[i];
+            const text = `${contentElement.innerText || ""}`
+                .replace(/[\r\n]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 100);
+            if (text) {
+                return text;
+            }
+        }
+        return "";
+    };
+
     const updateEverChangingFromCurrentPage = async function () {
         const conversationId = extractConversationIdFromPageUrl();
-        const assistantMessages = $$(`main [data-message-author-role="assistant"]`);
-        const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
-        const last = `${lastAssistantMessage?.innerText || ""}`
-            .replace(/[\r\n]+/g, " ")
-            .replace(/\s+/g, " ")
-            .trim()
-            .slice(0, 100);
+        const last = getLastAssistantText();
         if (!conversationId || !last || !global.st_ec) return;
 
         const oldRecord = (await global.st_ec.get(conversationId)) || {};
+        // 打开历史页面不等于新消息：保留服务端时间，内容未变时不写库。
+        if (
+            gv("k_everchanging", false) !== true ||
+            extractConversationIdFromPageUrl() !== conversationId
+        ) {
+            return;
+        }
+        if (oldRecord.last === last && oldRecord.update_time) return;
         const record = {
             id: conversationId,
             title:
                 document.title && document.title !== "ChatGPT"
                     ? document.title
                     : oldRecord.title || "",
-            update_time: new Date(),
+            update_time: oldRecord.update_time || new Date(),
             last: last,
             model: oldRecord.model || "",
         };
@@ -2131,12 +2175,77 @@ ${symbol1_selector} .transition-all {
         }
     };
 
-    const rebuildConsumedResponse = function (response, body) {
-        return new Response(body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers,
-        });
+    // 日新月异：通过 response.clone() 旁路读取历史接口响应，不消费调用方的 body，也无需重建 Response。
+    const syncEverChangingResponse = async function (
+        response,
+        requestUrl,
+        method,
+        reqBodyText,
+    ) {
+        if (
+            gv("k_everchanging", false) !== true ||
+            !global.st_ec ||
+            typeof requestUrl !== "string" ||
+            !response.ok
+        ) {
+            return;
+        }
+        const isList = isConversationListUrl(requestUrl);
+        const crt_con_id = extractConversationIdFromUrl(requestUrl);
+        if (!isList && !(crt_con_id && (method === "GET" || method === "PATCH" || method === "DELETE"))) {
+            return;
+        }
+        try {
+            // DELETE 的新响应体只有 {"success":true}，无需读取。
+            if (method === "DELETE") {
+                await global.st_ec.delete({ id: crt_con_id });
+                scheduleEverChangingAttach(undefined, 120);
+                return;
+            }
+            const payload = parseJsonSafely(await response.clone().text());
+            if (!payload) return;
+
+            // 刷新侧边栏时，同步更新数据库中的标题、时间和摘要。
+            if (isList && Array.isArray(payload.items)) {
+                let kec_object = {};
+                await Promise.all(
+                    payload.items.map(async (el) => {
+                        const update_time = new Date(el.update_time);
+                        const ec_tmp = (await global.st_ec.get(el.id)) || {};
+                        const mergedRecord = {
+                            id: el.id,
+                            title: el.title,
+                            update_time: update_time,
+                            last: ec_tmp.last || "",
+                            model: ec_tmp.model || "",
+                        };
+                        await global.st_ec.put(mergedRecord);
+                        kec_object[el.id] = mergedRecord;
+                    }),
+                );
+                scheduleEverChangingAttach(kec_object, 220);
+                // 打开、编辑、删除单个历史对话时，增量更新对应侧边栏数据。
+            } else if (crt_con_id && method === "GET") {
+                const record = buildConversationRecordFromPayload(payload, crt_con_id);
+                if (record) {
+                    await global.st_ec.put(record);
+                    let kec_object = {};
+                    kec_object[record.id] = record;
+                    scheduleEverChangingAttach(kec_object, 120);
+                }
+            } else if (crt_con_id && method === "PATCH") {
+                const reqBody = parseJsonSafely(reqBodyText);
+                if (
+                    shouldDeleteEverChangingRecord(payload) ||
+                    shouldDeleteEverChangingRecord(reqBody)
+                ) {
+                    await global.st_ec.delete({ id: crt_con_id });
+                    scheduleEverChangingAttach(undefined, 120);
+                }
+            }
+        } catch (e) {
+            console.error("KeepChatGPT everChanging response sync error:", e);
+        }
     };
 
     global.__test__ = Object.assign(global.__test__ || {}, {
@@ -2145,6 +2254,17 @@ ${symbol1_selector} .transition-all {
         buildConversationRecordFromPayload: buildConversationRecordFromPayload,
         shouldDeleteEverChangingRecord: shouldDeleteEverChangingRecord,
         parseJsonSafely: parseJsonSafely,
+        extractConversationIdFromUrl: extractConversationIdFromUrl,
+        isConversationListUrl: isConversationListUrl,
+        isConversationDetailUrl: isConversationDetailUrl,
+        isConversationSendUrl: isConversationSendUrl,
+        patchConversationSendBody: patchConversationSendBody,
+        selectors: {
+            sidebar: symbol1_selector,
+            prompt: prompt_selector,
+            userMessage: user_message_selector,
+            assistantMessage: assistant_message_selector,
+        },
     });
 
     const hookFetch = function () {
@@ -2154,8 +2274,14 @@ ${symbol1_selector} .transition-all {
                 let fetchReqUrl = "";
                 let fetchReqOptions = {};
 
-                if (typeof argumentsList[0] === "string") {
-                    fetchReqUrl = argumentsList[0];
+                if (
+                    typeof argumentsList[0] === "string" ||
+                    argumentsList[0] instanceof URL
+                ) {
+                    fetchReqUrl =
+                        argumentsList[0] instanceof URL
+                            ? argumentsList[0].href
+                            : argumentsList[0];
                     fetchReqOptions = argumentsList[1] || {};
                 } else if (argumentsList[0] instanceof Request) {
                     fetchReqOptions = argumentsList[0];
@@ -2186,14 +2312,13 @@ ${symbol1_selector} .transition-all {
                         // 取消审计2：发送会话请求前，关闭 modapi 支持位。
                     } else if (
                         gv("k_closeModer", false) &&
-                        typeof fetchReqUrl === "string" &&
-                        /\/backend-api\/conversation(\?|$)/.test(fetchReqUrl) &&
+                        isConversationSendUrl(fetchReqUrl) &&
                         argumentsList[1] &&
                         typeof argumentsList[1].body === "string"
                     ) {
-                        const post_body = JSON.parse(argumentsList[1].body);
-                        post_body.supports_modapi = false;
-                        argumentsList[1].body = JSON.stringify(post_body);
+                        argumentsList[1].body = patchConversationSendBody(
+                            argumentsList[1].body,
+                        );
                         // 拦截跟踪：必须返回标准 Response，避免调用方执行 text/json 时崩溃。
                     } else if (
                         gv("k_intercepttracking", false) &&
@@ -2240,150 +2365,20 @@ ${symbol1_selector} .transition-all {
                         if (
                             gv("k_everchanging", false) === true &&
                             fetchReqMethod === "POST" &&
-                            typeof fetchReqUrl === "string" &&
-                            /\/backend-api\/f\/conversation(\?|$)/.test(fetchReqUrl)
+                            isConversationSendUrl(fetchReqUrl)
                         ) {
                             scheduleCurrentConversationRecordUpdate(3000);
                         }
 
-                        // 刷新侧边栏时，同步更新数据库中的标题、时间和摘要。
-                        if (
-                            gv("k_everchanging", false) === true &&
-                            typeof fetchReqUrl === "string" &&
-                            /\/backend-api\/conversations\?.*offset=/.test(
-                                fetchReqUrl,
-                            )
-                        ) {
-                            return response
-                                .text()
-                                .then(async (fetchRspBody) => {
-                                    const parsedBody = parseJsonSafely(
-                                        fetchRspBody,
-                                    );
-                                    const b = Array.isArray(parsedBody?.items)
-                                        ? parsedBody.items
-                                        : null;
-
-                                    if (b) {
-                                        try {
-                                            let kec_object = {};
-
-                                            await Promise.all(
-                                                b.map(async (el) => {
-                                                    const update_time = new Date(
-                                                        el.update_time,
-                                                    );
-                                                    const ec_tmp =
-                                                        (await global.st_ec.get(
-                                                            el.id,
-                                                        )) || {};
-                                                    const mergedRecord = {
-                                                        id: el.id,
-                                                        title: el.title,
-                                                        update_time: update_time,
-                                                        last: ec_tmp.last || "",
-                                                        model: ec_tmp.model || "",
-                                                    };
-                                                    await global.st_ec.put(
-                                                        mergedRecord,
-                                                    );
-                                                    kec_object[el.id] =
-                                                        mergedRecord;
-                                                }),
-                                            );
-
-                                            scheduleEverChangingAttach(
-                                                kec_object,
-                                                220,
-                                            );
-                                        } catch (e) {
-                                            console.error(
-                                                "KeepChatGPT everChanging list sync error:",
-                                                e,
-                                            );
-                                        }
-                                    }
-
-                                    // response.body 已被 text() 消费，需要重建一个 Response 返还给页面。
-                                    return rebuildConsumedResponse(
-                                        response,
-                                        fetchRspBody,
-                                    );
-                                });
-                            // 打开、编辑、删除单个历史对话时，增量更新对应侧边栏数据。
-                        } else if (
-                            gv("k_everchanging", false) === true &&
-                            typeof fetchReqUrl === "string" &&
-                            /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)(\?|$)/.test(
-                                fetchReqUrl,
-                            )
-                        ) {
-                            return response
-                                .text()
-                                .then(async (fetchRspBody) => {
-                                    const f = parseJsonSafely(fetchRspBody);
-                                    if (f) {
-                                        try {
-                                            // 点击进入历史对话时，刷新当前会话的标题、摘要和模型信息。
-                                            if (fetchReqMethod === "GET") {
-                                                const crt_con_id =
-                                                    extractConversationIdFromUrl(
-                                                        fetchReqUrl,
-                                                    );
-                                                const record =
-                                                    buildConversationRecordFromPayload(
-                                                        f,
-                                                        crt_con_id,
-                                                    );
-
-                                                if (record) {
-                                                    await global.st_ec.put(record);
-                                                    let kec_object = {};
-                                                    kec_object[record.id] =
-                                                        record;
-                                                    scheduleEverChangingAttach(
-                                                        kec_object,
-                                                        120,
-                                                    );
-                                                }
-                                                // 删除历史对话后，从本地缓存移除对应记录。
-                                            } else if (
-                                                fetchReqMethod === "PATCH"
-                                            ) {
-                                                const crt_con_id =
-                                                    extractConversationIdFromUrl(
-                                                        fetchReqUrl,
-                                                    );
-                                                if (
-                                                    crt_con_id &&
-                                                    shouldDeleteEverChangingRecord(
-                                                        f,
-                                                    )
-                                                ) {
-                                                    await global.st_ec.delete({
-                                                        id: crt_con_id,
-                                                    });
-                                                    scheduleEverChangingAttach(
-                                                        undefined,
-                                                        120,
-                                                    );
-                                                }
-                                            }
-                                        } catch (e) {
-                                            console.error(
-                                                "KeepChatGPT everChanging detail sync error:",
-                                                e,
-                                            );
-                                        }
-                                    }
-
-                                    // 同上：消费过 body 后，返回一个可继续读取的新 Response。
-                                    return rebuildConsumedResponse(
-                                        response,
-                                        fetchRspBody,
-                                    );
-                                });
-                        }
+                        // 刷新侧边栏、打开、编辑、删除历史对话时，增量更新侧边栏数据。
+                        syncEverChangingResponse(
+                            response,
+                            fetchReqUrl,
+                            fetchReqMethod,
+                            typeof argumentsList[1]?.body === "string"
+                                ? argumentsList[1].body
+                                : "",
+                        );
 
                         return response;
                     })
@@ -2447,6 +2442,8 @@ ${symbol1_selector} .transition-all {
             $(symbol1_selector)?.classList.remove("knav");
             $("body").classList.remove("ever-changing");
             everChanging.stopObserver();
+            clearTimeout(global.kecAttachTimer);
+            clearTimeout(global.currentConversationRecordTimer);
             $$("[data-kcg-everchanging='true']").forEach((el) => el.remove());
             $$("[data-kcg-original-hidden='true']").forEach((el) => {
                 el.style.display = "";
@@ -2523,32 +2520,17 @@ ${symbol1_selector} .transition-all {
                 (previewText && !$(".navlast", el))
             ) {
                 const cdiv_old =
-                    $(`.flex.min-w-0.grow.items-center`, el) ||
-                    el.firstElementChild;
-                if (cdiv_old) {
+                    $(`[data-thread-title]`, el) || el.firstElementChild;
+                if (cdiv_old && !cdiv_old.hasAttribute("data-kcg-everchanging")) {
                     cdiv_old.style.display = "none";
                     cdiv_old.setAttribute("data-kcg-original-hidden", "true");
                 }
                 const cdiv_new = document.createElement("div");
-                cdiv_new.className = `flex-1 text-ellipsis overflow-hidden break-all relative`;
                 cdiv_new.setAttribute("data-kcg-everchanging", "true");
-                cdiv_new.innerHTML = `
-<div style="max-height: unset; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: absolute; color: #000000; font-weight: bold;" class="navtitle">
-    ${htmlEncode(title)}
-</div>
-<div style="right: 0; position: absolute; color: gray; font-size: 0.71rem;" class="navdate">
-    ${formatDate2(update_time)}
-</div>
-${previewText ? `<br>
-<div style="max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #606060; font-size: 0.75rem;" class="navlast">
-    ${htmlEncode(previewText)}
-</div>` : ``}
-`;
+                cdiv_new.innerHTML = `<div class="navhead"><div class="navtitle">${htmlEncode(title)}</div><div class="navdate">${formatDate2(update_time)}</div></div>${previewText ? `<div class="navlast">${htmlEncode(previewText)}</div>` : ``}`;
                 const renderedNode = $("[data-kcg-everchanging='true']", el);
                 if (renderedNode) {
                     renderedNode.replaceWith(cdiv_new);
-                } else if (el.childNodes[1]) {
-                    el.insertBefore(cdiv_new, el.childNodes[1]);
                 } else {
                     el.appendChild(cdiv_new);
                 }
@@ -2565,8 +2547,6 @@ ${previewText ? `<br>
                     } else {
                         const navlast = document.createElement("div");
                         navlast.className = "navlast";
-                        navlast.style =
-                            "max-height: unset; max-width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #606060; font-size: 0.75rem;";
                         navlast.textContent = previewText;
                         $("[data-kcg-everchanging='true']", el)?.appendChild(
                             navlast,
@@ -2577,15 +2557,6 @@ ${previewText ? `<br>
                 }
             }
         });
-
-        const sidebar_chat = $(`${symbol1_selector} div.overflow-y-auto`);
-        if (sidebar_chat) {
-            if (sidebar_chat.scrollHeight > sidebar_chat.clientHeight) {
-                sidebar_chat.classList.add("-mr-2");
-            } else {
-                sidebar_chat.classList.remove("-mr-2");
-            }
-        }
     };
 
     const verInt = function (vs) {
@@ -2673,16 +2644,26 @@ ${previewText ? `<br>
         promptTextarea.dispatchEvent(new Event("input", { bubbles: true }));
     };
 
+    /*
+    纯文本写入：每行一个 <p>，用片段插入。
+    旧实现使用 document.execCommand("insertText")，在新版 ProseMirror 编辑器里
+    会把每个换行变成"段落+空段落"（行间出现空行）。
+    */
+    const setPromptPlainText = function (promptTextarea, text) {
+        const contentProseMirror = `${text || ""}`
+            .split(/\r?\n/)
+            .map((line) => `<p>${htmlEncode(line) || "<br>"}</p>`)
+            .join("");
+        setPromptRichText(promptTextarea, contentProseMirror);
+    };
+
     cloneChat.listen_Click = function (event) {
         event.stopPropagation();
         const clickedElement = document.elementFromPoint(
             event.clientX,
             event.clientY,
         );
-        if (
-            clickedElement &&
-            clickedElement.matches('main div[data-message-author-role="user"]')
-        ) {
+        if (clickedElement && clickedElement.matches(user_message_selector)) {
             // 获取该元素的边界信息
             const rect = clickedElement.getBoundingClientRect();
 
@@ -2703,15 +2684,12 @@ ${previewText ? `<br>
                 event.clientY >= logoTop &&
                 event.clientY <= logoBottom
             ) {
-                const contentElement = $(".whitespace-pre-wrap", event.target);
-                const promptTextarea = $("form.w-full #prompt-textarea");
+                const contentElement =
+                    $(".whitespace-pre-wrap", clickedElement) ||
+                    $("[data-user-message-bubble]", clickedElement);
+                const promptTextarea = getPromptTextarea();
                 if (!contentElement || !promptTextarea) return;
-                const content = contentElement.innerHTML.trim();
-                const content_ProseMirror = content
-                    .split(/\n/)
-                    .map((line) => `<p>${line}</p>`)
-                    .join("");
-                setPromptRichText(promptTextarea, content_ProseMirror);
+                setPromptPlainText(promptTextarea, contentElement.innerText.trim());
             }
         }
     };
@@ -2742,55 +2720,91 @@ ${previewText ? `<br>
 
     /*
     言无不尽
+    新版前端的"继续生成"按钮以可访问名称（aria-label/文本）标识，旧版按 SVG 路径匹配的方式已失效。
     */
     const speakCompletely = function () {
         if (gv("k_speakcompletely", false) === true) {
-            const continue_svg_selector = `form.w-full .justify-center svg path[d*="M4.47189 2.5C5.02418 2.5 5.47189 2.94772 5.47189 3.5V5.07196C7.17062 3.47759 9.45672 2.5 11.9719 2.5C17.2186 2.5 21.4719 6.75329 21.4719 12C21.4719 17.2467 17.2186 21.5 11.9719 21.5C7.10259 21.5 3.09017 17.8375 2.53689 13.1164C2.47261 12.5679 2.86517"]:not(.ct_clicked)`;
-            if ($(continue_svg_selector)) {
+            const continueButton = Array.from($$("main button")).find(
+                (button) => {
+                    if (
+                        button.disabled ||
+                        button.getAttribute("aria-disabled") === "true" ||
+                        button.dataset.kcgContinuation === "true"
+                    ) {
+                        return false;
+                    }
+                    if (
+                        button.closest(
+                            '[role="dialog"], [contenteditable="true"]',
+                        )
+                    ) {
+                        return false;
+                    }
+                    const label = (
+                        button.getAttribute("aria-label") ||
+                        button.textContent ||
+                        ""
+                    ).trim();
+                    return /^(继续生成|繼續生成|繼續產生|Continue generating|Continuar generando)$/i.test(
+                        label,
+                    );
+                },
+            );
+            if (continueButton) {
+                continueButton.dataset.kcgContinuation = "true";
                 setTimeout(function () {
-                    fp(`button`, $(continue_svg_selector))?.click();
-                    $(continue_svg_selector)?.classList.add("ct_clicked");
+                    if (
+                        gv("k_speakcompletely", false) === true &&
+                        continueButton.isConnected
+                    ) {
+                        continueButton.click();
+                    }
                 }, 1000);
             }
         }
     };
 
     const dataSec = function () {
-        muob("form.w-full #prompt-textarea", $(`body`), () => {
-            if (gv("k_datasecblocklist", datasec_blocklist_default)) {
-                $("form.w-full #prompt-textarea")?.addEventListener(
-                    "input",
-                    dataSec.listen_input,
-                );
-                $("form.w-full #prompt-textarea")?.addEventListener(
-                    "paste",
-                    dataSec.listen_input,
-                );
-            } else {
-                $("form.w-full #prompt-textarea")?.removeEventListener(
-                    "input",
-                    dataSec.listen_input,
-                );
-                $("form.w-full #prompt-textarea")?.removeEventListener(
-                    "paste",
-                    dataSec.listen_input,
-                );
-            }
+        muob(prompt_selector, $(`body`), (promptTextarea) => {
+            // 对每个出现的输入框挂监听（含旧会话隐藏框，无副作用）；扫描时以事件源为准。
+            promptTextarea.addEventListener("input", dataSec.listen_input);
+            promptTextarea.addEventListener("paste", dataSec.listen_input);
         });
     };
 
     dataSec.listen_input = function (event) {
-        const scanPrompt = function () {
-            const promptTextarea = $("form.w-full #prompt-textarea");
-            if (!promptTextarea) return;
+        // 粘贴时同步读取剪贴板文本：编辑器若异步完成插入，可用作复查依据。
+        const clipboardText =
+            event?.type === "paste"
+                ? event.clipboardData?.getData("text/plain") || ""
+                : "";
+        const scanPrompt = function (recheck) {
+            const promptTextarea = getPromptTextarea();
+            if (!promptTextarea || !promptTextarea.isConnected) return;
 
-            const result = sanitizeDataSecText(
+            const editorText =
                 "value" in promptTextarea
                     ? promptTextarea.value
-                    : promptTextarea.innerText || promptTextarea.textContent,
+                    : promptTextarea.innerText || promptTextarea.textContent;
+            const result = sanitizeDataSecText(
+                editorText,
                 gv("k_datasecblocklist", datasec_blocklist_default),
             );
-            if (!result.matches.join(`\n`).trim()) return;
+            if (!result.matches.join(`\n`).trim()) {
+                // 首次未命中且剪贴板确有敏感数据：延时复查一次，兜住异步插入。
+                if (!recheck && clipboardText) {
+                    const clipboardResult = sanitizeDataSecText(
+                        clipboardText,
+                        gv("k_datasecblocklist", datasec_blocklist_default),
+                    );
+                    if (clipboardResult.matches.join(`\n`).trim()) {
+                        setTimeout(function () {
+                            scanPrompt(true);
+                        }, 400);
+                    }
+                }
+                return;
+            }
 
             setPromptPlainText(promptTextarea, result.text);
             ndialog(
@@ -2802,7 +2816,7 @@ ${previewText ? `<br>
                 result.matches.join(`\n`),
             );
         };
-        event?.type === "paste" ? setTimeout(scanPrompt, 0) : scanPrompt();
+        event?.type === "paste" ? setTimeout(scanPrompt, 0) : scanPrompt(false);
     };
 
     const sanitizeDataSecText = function (
@@ -2827,23 +2841,6 @@ ${previewText ? `<br>
             }
         });
         return { text: result, matches: matches };
-    };
-
-    const setPromptPlainText = function (promptTextarea, text) {
-        promptTextarea.focus();
-        if ("value" in promptTextarea) {
-            promptTextarea.value = text;
-        } else {
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(promptTextarea);
-            selection?.removeAllRanges();
-            selection?.addRange(range);
-            if (!document.execCommand?.("insertText", false, text)) {
-                promptTextarea.textContent = text;
-            }
-        }
-        promptTextarea.dispatchEvent(new Event("input", { bubbles: true }));
     };
 
     global.__test__ = Object.assign(global.__test__ || {}, {
@@ -2897,6 +2894,11 @@ ${previewText ? `<br>
         if (interceptTracking.observer || !document.documentElement) return;
         interceptTracking.observer = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
+                if (mutation.type === "attributes") {
+                    // 先插入、后补 src 的脚本同样要拦截。
+                    interceptTracking.blockScript(mutation.target);
+                    continue;
+                }
                 for (const node of mutation.addedNodes) {
                     if (node.nodeType !== 1) continue;
                     if (node.tagName === "SCRIPT") {
@@ -2913,6 +2915,8 @@ ${previewText ? `<br>
         interceptTracking.observer.observe(document.documentElement, {
             childList: true,
             subtree: true,
+            attributes: true,
+            attributeFilter: ["src"],
         });
         $$("script").forEach((scriptElement) =>
             interceptTracking.blockScript(scriptElement),
@@ -2991,6 +2995,7 @@ ${previewText ? `<br>
             if ($(symbol1_selector) && !$("#kcg")) loadKCG();
             setIfr();
             speakCompletely();
+            applyKeenObservationAvatar();
         }
     };
 
@@ -3008,21 +3013,41 @@ ${previewText ? `<br>
             email: `default`,
             image_url: ``,
         };
-        for (const s of $$("script")) {
-            const match = s.textContent?.match(/\\"email\\",\\"(.*?)\\"/);
-            if (match) {
-                user_info.email = match[1];
-            }
-            const match2 = s.textContent?.match(/\\"picture\\",\\"(.*?)\\"/);
-            if (match2) {
-                user_info.image_url = match2[1]?.replaceAll("\\u0026", "&");
-            }
-        }
         global.st_ec = new IndexedDB(
             `KeepChatGPT_${user_info.email}`,
             "conversations",
         );
+        // 新版页面不再内嵌邮箱与头像，改由会话接口读取；读取完成前数据库操作先等待，避免写入错误的库。
+        if (typeof fetch === "function") {
+            global.st_ec.ready = fetch(u, { credentials: "same-origin" })
+                .then((response) => response.json())
+                .then((session) => {
+                    const user = session?.user || {};
+                    user_info.email = user.email || user_info.email;
+                    user_info.image_url =
+                        user.image || user.picture || user_info.image_url;
+                    global.st_ec.dbName = `KeepChatGPT_${user_info.email}`;
+                })
+                .catch((e) => {
+                    console.log(`KeepChatGPT: USERINFO: ERROR: ${e}`);
+                });
+        }
         return user_info;
+    };
+
+    // 明察秋毫头像：优先会话接口返回的头像，其次取侧边栏账号按钮里的头像。
+    const applyKeenObservationAvatar = function () {
+        const imageUrl =
+            user_info.image_url ||
+            $('[data-sidebar-navigation-root] button[aria-haspopup="menu"] img')
+                ?.src ||
+            ``;
+        if (global.keenObservationAvatar === imageUrl) return;
+        global.keenObservationAvatar = imageUrl;
+        document.documentElement.style.setProperty(
+            "--keenobservation-user-image-url",
+            imageUrl ? `url('${imageUrl}')` : `none`,
+        );
     };
 
     /*
@@ -3043,6 +3068,9 @@ ${previewText ? `<br>
     let nInterval1 = null;
     let nInterval2 = null;
     let interval2Time = parseInt(gv("k_interval", 50));
+    if (!Number.isFinite(interval2Time) || interval2Time < 10) {
+        interval2Time = 50;
+    }
     const kcgBootstrapQuietTime = 600;
 
     const bootKCG = function () {
