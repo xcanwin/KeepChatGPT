@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       这是一款提高ChatGPT的数据安全能力和效率的插件。并且免费共享大量创新功能，如：自动刷新、保持活跃、数据安全、取消审计、克隆对话、言无不尽、净化页面、展示大屏、拦截跟踪、日新月异、明察秋毫等。让我们的AI体验无比安全、顺畅、丝滑、高效、简洁。
-// @version           34.12
+// @version           35.0
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -82,26 +82,31 @@
     const muob = (Selector, el, func) => {
         const seen = new WeakSet();
         const visit = (root) => {
-            const targets = root.matches?.(Selector) ? [root] : [];
-            targets.push(...(root.querySelectorAll?.(Selector) || []));
+            const targets = root && root.matches && root.matches(Selector) ? [root] : [];
+            if (root && root.querySelectorAll) {
+                targets.push(...root.querySelectorAll(Selector));
+            }
             targets.forEach((target) => {
                 if (seen.has(target)) return;
                 seen.add(target);
                 func(target);
             });
         };
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === "attributes") visit(mutation.target);
-                else mutation.addedNodes.forEach(visit);
-            });
+        const observer = new MutationObserver((mutationsList, observer2) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === "attributes") {
+                    visit(mutation.target);
+                } else if (mutation.type === "childList") {
+                    mutation.addedNodes.forEach(visit);
+                }
+            }
         });
         observer.observe(el, {
             childList: true,
             subtree: true,
-            // React can promote an existing node to an editor after inserting it.
+            // React 可能把节点先插入、再提升为编辑器（后补 contenteditable）。
             attributes: true,
-            attributeFilter: ["data-composer-markdown", "contenteditable"],
+            attributeFilter: ["contenteditable", "data-composer-markdown"],
         });
         visit(el);
     };
@@ -115,139 +120,27 @@
     };
 
     const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_selector = '#app-shell-sidebar nav[role="navigation"]';
-    const prompt_selector = '[data-composer-markdown][contenteditable="true"]';
+    // 侧边栏主导航（不含折叠态 rail）、页面主区域，以及消息与输入框节点。
+    const symbol1_selector = "[data-sidebar-navigation-root] nav";
+    const symbol2_selector = "main";
+    const prompt_selector =
+        'form[data-chatgpt-composer] .ProseMirror[contenteditable="true"], form.w-full #prompt-textarea';
 
-    // Match the CSS module name, not its generated build suffix.
-    const markdown_selector = '[class^="MarkdownRoot-"], [class*=" MarkdownRoot-"]';
-    const user_bubble_selector = '.bg-user-message';
-    const message_selector = user_bubble_selector + ', ' + markdown_selector;
-    const transcript_selector = '.thread-scroll-container, [class^="transcriptContent-"], [class*=" transcriptContent-"]';
-
-    const getActiveMain = function () {
-        // ChatGPT keeps earlier workspaces mounted with display:none on an ancestor.
-        return Array.from($$("main")).find((main) => {
-            if (main.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
-            for (let el = main; el; el = el.parentElement) {
-                if (window.getComputedStyle(el).display === "none") return false;
+    // 新版前端 SPA 切换会话后，旧会话的输入框仍留在 DOM 中且隐藏，querySelector 会先命中它。
+    // 这里返回第一个实际渲染（可见）的输入框，避免克隆/脱敏写入看不见的编辑器。
+    const getPromptTextarea = function () {
+        const nodes = Array.from($$(prompt_selector));
+        for (const node of nodes) {
+            if (node.getClientRects().length > 0) {
+                return node;
             }
-            const visibility = window.getComputedStyle(main).visibility;
-            return visibility !== "hidden" && visibility !== "collapse";
-        }) || null;
-    };
-
-    const getMessageRole = function (el) {
-        if (el.matches(user_bubble_selector)) return "user";
-        if (el.matches(markdown_selector) && !el.closest(user_bubble_selector + ', [class~="group/user-message"]')) return "assistant";
-        return "";
-    };
-
-    const getConversationMessages = function () {
-        const main = getActiveMain();
-        if (!main) return [];
-        return Array.from($$(message_selector, main)).filter((el) => {
-            if (el.closest('[contenteditable], form, [role="dialog"], aside')) return false;
-            if (!el.closest(transcript_selector)) return false;
-            const role = getMessageRole(el);
-            if (!role) return false;
-            const container = role === "user" ? user_bubble_selector : markdown_selector;
-            return !el.parentElement?.closest(container);
-        });
-    };
-
-    const syncMarkedElements = function (attribute, elements) {
-        const wanted = new Set(elements);
-        $$("[" + attribute + "]").forEach((el) => {
-            if (!wanted.has(el)) el.removeAttribute(attribute);
-        });
-        wanted.forEach((el) => {
-            if (!el.hasAttribute(attribute)) el.setAttribute(attribute, "");
-        });
-    };
-
-    const applyPageTheme = function () {
-        const root = document.documentElement;
-        const enabled = gv("k_theme", "light") === "dark";
-        document.body.classList.toggle("kdark", enabled);
-        if (enabled) {
-            // Native data-theme rules supply both page colors and color-scheme.
-            if (!applyPageTheme.original) {
-                applyPageTheme.original = { theme: root.getAttribute("data-theme") };
-            }
-            if (root.getAttribute("data-theme") !== "dark") root.setAttribute("data-theme", "dark");
-        } else if (applyPageTheme.original) {
-            const { theme } = applyPageTheme.original;
-            if (theme === null) root.removeAttribute("data-theme");
-            else root.setAttribute("data-theme", theme);
-            applyPageTheme.original = null;
         }
+        return nodes[0] || null;
     };
-
-    const applyLargeScreen = function () {
-        const main = getActiveMain();
-        const enabled = gv("k_largescreen", false) === true;
-        // Keep the setting outside the conversation subtree replaced by SPA navigation.
-        document.body.classList.toggle("klargescreen", enabled);
-        $$("main").forEach((el) => el.classList.toggle("largescreen", enabled && el === main));
-        const targets = new Set();
-        if (main && enabled) {
-            // Include the assistant's Markdown: it can impose a separate prose limit.
-            // Keep user bubbles and editor internals at their native widths.
-            const seeds = getConversationMessages().map((el) => {
-                return getMessageRole(el) === "assistant" ? el : el.parentElement;
-            });
-            $$(prompt_selector, main).forEach((editor) => {
-                seeds.push(editor.closest("form, [data-composer-body]") || editor.parentElement);
-            });
-            seeds.forEach((seed) => {
-                for (let el = seed; el && el !== main && main.contains(el); el = el.parentElement) {
-                    if (getMessageRole(el) === "user") continue;
-                    const maxWidth = window.getComputedStyle(el).maxWidth;
-                    // A percentage follows its parent and is not the reading-width cap.
-                    if (maxWidth && maxWidth !== "none" && !/^[\d.]+%$/.test(maxWidth) &&
-                        (parseFloat(maxWidth) > 0 || /^(min|max|clamp|calc)\(/.test(maxWidth))) {
-                        targets.add(el);
-                    }
-                }
-            });
-        }
-        syncMarkedElements("data-kcg-wide", targets);
-    };
-
-    const syncUserAvatar = function () {
-        const avatar = $('#app-shell-sidebar .sidebar-item button[aria-haspopup="menu"] img.rounded-full');
-        if (!avatar) return;
-        const imageUrl = avatar.currentSrc || avatar.src;
-        if (!imageUrl || imageUrl === user_info.image_url) return;
-        user_info.image_url = imageUrl;
-        document.documentElement.style.setProperty(
-            "--keenobservation-user-image-url",
-            `url(${JSON.stringify(imageUrl)})`,
-        );
-    };
-
-    const syncPageFeatures = function () {
-        applyPageTheme();
-        const keen = gv("k_keenObservation", true) === true;
-        if (keen) syncUserAvatar();
-        const messages = new Map();
-        if (keen) getConversationMessages().forEach((el) => {
-            messages.set(el, getMessageRole(el));
-        });
-        $$("[data-kcg-message-role]").forEach((el) => {
-            if (!messages.has(el)) el.removeAttribute("data-kcg-message-role");
-        });
-        messages.forEach((role, el) => {
-            if (el.getAttribute("data-kcg-message-role") !== role) el.setAttribute("data-kcg-message-role", role);
-        });
-        document.body.classList.toggle("kkeenobservation", keen);
-        document.body.classList.toggle("kpurifypage", gv("k_cleanlyhome", false) === true);
-        purifyPage();
-        applyLargeScreen();
-    };
-
-    const symbol2_selector =
-        "div.sticky div.justify-center.top-0 button span.sr-only";
+    const user_message_selector =
+        'main div[data-chatgpt-search-unit-key$=":user"]';
+    const assistant_message_selector =
+        'main div[data-chatgpt-search-unit-key$=":assistant"]';
     const trackingHostRegex =
         /(^|\.)((google-analytics|googletagmanager)\.com|browser-intake-datadoghq\.com|gravatar\.com|intercomcdn\.com|intercom\.io|featuregates\.org|statsigapi\.net|ab\.chatgpt\.com)$/i;
     const trackingPathRegex =
@@ -389,6 +282,9 @@
         }
 
         async open() {
+            if (this.ready) {
+                await this.ready;
+            }
             return new Promise((resolve, reject) => {
                 const openRequest = indexedDB.open(this.dbName, 1);
 
@@ -563,7 +459,10 @@
     };
 
     const isTrackingRequest = function (requestUrl) {
-        if (requestUrl instanceof URL) requestUrl = requestUrl.href;
+        // 兼容 fetch(new URL(...)) / sendBeacon(new URL(...)) 传入 URL 对象的情况。
+        if (typeof URL !== "undefined" && requestUrl instanceof URL) {
+            requestUrl = requestUrl.href;
+        }
         if (typeof requestUrl !== "string" || requestUrl.trim() === "") {
             return false;
         }
@@ -632,8 +531,7 @@
                     );
                 }
             };
-            // Keep the utility iframe outside React-owned layout children.
-            document.body.appendChild(nIfr);
+            ($("main") || document.body).appendChild(nIfr);
         } else {
             if (u) {
                 $("#xcanwin").src = u;
@@ -859,7 +757,6 @@
         if ($(".kmenu") !== null) {
             return;
         }
-        document.body.classList.remove("kmenu-open");
 
         const icon = GM_info.script.icon
             ? GM_info.script.icon
@@ -994,7 +891,6 @@
                 sv("k_theme", "dark");
             }
             ncheck?.classList.toggle("checked");
-            applyPageTheme();
             applyKcgHueByTheme();
         };
 
@@ -1028,6 +924,7 @@
                     } catch (e) {
                         nextInterval = parseInt(gv("k_interval", 50));
                     }
+                    // 非数字或过小值不应用，避免把定时器间隔清成 0。
                     if (!Number.isFinite(nextInterval) || nextInterval < 10) {
                         return;
                     }
@@ -1053,7 +950,6 @@
                 $("body").classList.add("kkeenobservation");
                 sv("k_keenObservation", true);
             }
-            syncPageFeatures();
             ncheck?.classList.toggle("checked");
         };
 
@@ -1076,9 +972,9 @@
                 sv("k_cleanlyhome", false);
             } else {
                 $("body").classList.add("kpurifypage");
+                purifyPage();
                 sv("k_cleanlyhome", true);
             }
-            purifyPage();
             ncheck?.classList.toggle("checked");
         };
 
@@ -1089,7 +985,7 @@
             } else {
                 sv("k_largescreen", true);
             }
-            applyLargeScreen();
+            $("body").classList.toggle("largescreen");
             ncheck?.classList.toggle("checked");
         };
 
@@ -1212,7 +1108,6 @@
     };
 
     const setUserOptions = function () {
-        syncPageFeatures();
         if (gv("k_showDebug", false) === true) {
             setToggleChecked("nmenuid_sd", true);
             if ($("#xcanwin")) {
@@ -1251,7 +1146,7 @@
 
         if (gv("k_largescreen", false) === true) {
             setToggleChecked("nmenuid_ls", true);
-            applyLargeScreen();
+            $("body").classList.add("largescreen");
         }
 
         if (gv("k_speakcompletely", false) === true) {
@@ -1313,12 +1208,7 @@
 
     const loadKCG = function () {
         let symbol_prt;
-        document.documentElement.style.setProperty(
-            "--keenobservation-assistant-image-url",
-            `url('https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp')`,
-        ); //更新明察秋毫机器人头像
-        if ($("#kcg") !== null || !$(symbol1_selector)) {
-            if ($(symbol1_selector)) loadMenu();
+        if ($("#kcg") !== null) {
             addStyle();
             setUserOptions();
             return;
@@ -1375,6 +1265,11 @@
             }
         });
 
+        applyKeenObservationAvatar(); //更新明察秋毫用户头像
+        document.documentElement.style.setProperty(
+            "--keenobservation-assistant-image-url",
+            `url('${$('link[rel="apple-touch-icon"]')?.href || "https://cdn.oaistatic.com/assets/favicon-180x180-od45eci6.webp"}')`,
+        ); //更新明察秋毫机器人头像
         addStyle();
         setUserOptions();
     };
@@ -1389,47 +1284,79 @@
 }
 */
 
-/*日新月异主题*/
-/* Keep native colors and actions; give metadata its own row in normal flow. */
-.ever-changing [data-kcg-history-row],
-.ever-changing [data-kcg-history-host] {
-    height: auto !important;
-    max-height: none !important;
-    flex-shrink: 0 !important;
-    box-sizing: border-box;
+/*日星月异*/
+:root {
+    --kcg-ec-sidebar-bg: linear-gradient(to right top, #d0dcff, #f0f0ff, #fff3f3);
+    --kcg-ec-row-bg: rgba(255, 255, 255, 0.15);
+    --kcg-ec-row-selected-bg: #bfcbfd;
+    --kcg-ec-row-hover-bg: #d5ddff;
 }
-.ever-changing [data-kcg-history-host] {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    align-items: center;
-    align-content: start;
-    min-height: 3.5rem;
-    row-gap: 0.25rem;
-    padding-block: 0.5rem;
+/*官方暗色模式*/
+:root[data-theme="dark"], .dark {
+    --kcg-ec-sidebar-bg: linear-gradient(to right top, #171717, #060606, #171717);
+    --kcg-ec-row-bg: rgba(255, 255, 255, 0.05);
+    --kcg-ec-row-selected-bg: #444;
+    --kcg-ec-row-hover-bg: #2f2f2f;
 }
-.ever-changing [data-kcg-everchanging] {
-    position: static;
-    flex: 0 0 auto;
-    grid-column: 1 / -1;
-    grid-row: 2;
-    min-width: 0;
-    max-width: 100%;
-    pointer-events: none;
-    font-size: 0.75rem;
-    line-height: 1.4;
-    color: inherit;
-}
-.ever-changing [data-kcg-everchanging] .navdate {
-    font-size: 0.71rem;
-}
-.ever-changing [data-kcg-everchanging] .navlast {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.ever-changing [data-kcg-everchanging] > :empty {
-    display: none;
+.ever-changing {
+    /*左边栏*/
+    [data-sidebar-navigation-root] {
+        background: var(--kcg-ec-sidebar-bg);
+    }
+    /*左边栏会话条目*/
+    ${symbol1_selector} .sidebar-item:has(a[href*='/c/']) {
+        height: 3.5rem;
+        /*行与行之间留一点间隙，避免按钮粘连*/
+        margin-block: 0.125rem;
+        background-color: var(--kcg-ec-row-bg);
+    }
+    /*左边栏选中条目（新前端用 aria-current 标记当前会话）*/
+    ${symbol1_selector} .sidebar-item:has(a[aria-current="page"]) {
+        background-color: var(--kcg-ec-row-selected-bg);
+    }
+    /*左边栏鼠标滑动*/
+    ${symbol1_selector} .sidebar-item:has(a[href*='/c/']):hover {
+        background-color: var(--kcg-ec-row-hover-bg);
+    }
+    /*左边栏条目文字*/
+    [data-kcg-everchanging="true"] {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.125rem;
+    }
+    .navhead {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        min-width: 0;
+    }
+    .navtitle {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+    .navdate {
+        flex-shrink: 0;
+        font-size: 0.71rem;
+        opacity: 0.55;
+    }
+    .navlast {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        opacity: 0.65;
+    }
+    /*鼠标滑动时让出右侧的置顶、更多操作按钮*/
+    ${symbol1_selector} .sidebar-item:hover .navdate {
+        visibility: hidden;
+    }
 }
 
 /*KeepChatGPT 视觉系统 token（亮色）*/
@@ -1735,6 +1662,12 @@ body.kdark .kdialogcontent {
 .kmenu-item-range-input {
     flex: 1;
     accent-color: var(--kcg-accent);
+    /* 新版前端的全局 reset 会对 input 设置 appearance:none，导致原生轨道和滑头消失 */
+    -webkit-appearance: auto;
+    appearance: auto;
+}
+body.kdark .kmenu-item-range-input {
+    color-scheme: dark;
 }
 .kmenu-item-range-value {
     min-width: 3.2rem;
@@ -1840,87 +1773,92 @@ body.kdark .kdialogclose {
     transform: translateY(-1px);
 }
 
-/*明察秋毫：直接标记 transcript 中的消息正文*/
-.kkeenobservation main [data-kcg-message-role] {
-    position: relative;
-    display: flow-root;
-    box-sizing: border-box;
-    min-width: 0;
-    max-width: 100%;
-    min-height: 3.25rem;
-    border-radius: 1.25rem;
-    margin-block: 0.75rem;
-}
-.kkeenobservation main [data-kcg-message-role="user"] {
-    padding: 0.875rem 3.375rem 0.875rem 1.25rem !important;
-    margin-inline-start: auto;
-    background: #e1eaff !important;
-    color: #17213a;
-}
-.kkeenobservation main [data-kcg-message-role="assistant"] {
-    padding: 0.875rem 1.25rem 0.875rem 3.375rem !important;
-    color: inherit;
-    background: color-mix(in srgb, currentColor 7%, transparent);
-}
-.kkeenobservation main [data-kcg-message-role]::after {
-    content: '';
-    position: absolute;
-    /* Center on the first line: padding + half a line - half the avatar. */
-    top: 0.5lh;
-    width: 1.75rem;
-    height: 1.75rem;
-    background-color: #858b98;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 50%;
-    pointer-events: none;
-}
-.kkeenobservation main [data-kcg-message-role="user"]::after {
-    right: 0.875rem;
-    background-image: var(--keenobservation-user-image-url, none);
-}
-.kkeenobservation main [data-kcg-message-role="assistant"]::after {
-    left: 0.875rem;
-    background-image: var(--keenobservation-assistant-image-url);
-}
-[data-theme="dark"] .kkeenobservation main [data-kcg-message-role="user"] {
-    background: #303b50 !important;
-    color: #f3f4f6;
-}
-.kpurifypage main [data-kcg-purify] {
-    display: none !important;
-}
-/*展示大屏：正文和输入区使用相同阅读宽度与留白，保留内部控件布局*/
-@media (min-width: 1024px) {
-    /* Native columns declare these variables locally, overriding inherited values. */
-    body.klargescreen main [class*="--thread-content-max-width"],
-    main.largescreen [class*="--thread-content-max-width"] {
-        --thread-content-max-width: 90rem !important;
-    }
-    /* A variable declaration on the home frame is not a reading column. */
-    body.klargescreen main [class~="max-w-(--thread-content-max-width)"],
-    body.klargescreen main [class~="max-w-(--thread-body-max-width)"],
-    main.largescreen [class~="max-w-(--thread-content-max-width)"],
-    main.largescreen [class~="max-w-(--thread-body-max-width)"] {
-        width: 100% !important;
-        max-width: min(90rem, 100%) !important;
-        box-sizing: border-box;
-    }
-    body.klargescreen main [class*="--thread-content-margin"],
-    main.largescreen [class*="--thread-content-margin"] {
-        --thread-content-margin: 1.5rem !important;
-    }
-    body.klargescreen main [data-kcg-wide],
-    main.largescreen [data-kcg-wide] {
-        max-width: min(90rem, 100%) !important;
-        min-width: 0;
-        box-sizing: border-box;
+/*净化页面*/
+.kpurifypage {
+    main section.group\\/home-suggestions /*首页的快捷提示词*/,
+    main .text-center.text-xs.select-none[data-markdown-copy="exclude"] /*输入框底部的提示标签*/,
+    main [class*="aria-live=polite"] /*上下文的选中文本的"询问ChatGPT"弹窗*/
+    {
+        display: none;
     }
 }
+
+/*明察秋毫*/
+.kkeenobservation {
+    /*用户气泡优化*/
+    ${user_message_selector} {
+        position: relative;
+        padding-right: 2.75rem;
+    }
+    ${user_message_selector} [data-user-message-bubble="true"] {
+        background-color: #e1eaff;
+    }
+
+    /*添加用户头像*/
+    ${user_message_selector}::after {
+        content: '';
+        position: absolute;
+        right: 0rem;
+        top: 0rem;
+        width: 2rem;
+        height: 2rem;
+        background-color: gray;
+        background-image: var(--keenobservation-user-image-url);
+        background-size: contain;
+        border-radius: 50%;
+        pointer-events: auto;
+    }
+
+    /*机器人气泡优化*/
+    ${assistant_message_selector} {
+        position: relative;
+        padding-left: 3rem;
+    }
+    ${assistant_message_selector} [data-chatgpt-selection-message-id] {
+        width: fit-content;
+        max-width: 100%;
+        border-radius: 1.5rem;
+        padding: 0.75rem 1.25rem;
+        background-color: #f3f4f6;
+    }
+    /*机器人操作按钮与气泡对齐*/
+    [data-talvt-turn-state] > .turn-action-controls {
+        padding-left: 3rem;
+    }
+
+    /*添加机器人头像*/
+    ${assistant_message_selector}::after {
+        content: '';
+        position: absolute;
+        left: 0rem;
+        top: 0rem;
+        width: 2rem;
+        height: 2rem;
+        background-color: gray;
+        background-image: var(--keenobservation-assistant-image-url);
+        background-size: contain;
+        border-radius: 50%;
+        pointer-events: auto;
+    }
+}
+/*官方暗色模式*/
+:root[data-theme="dark"], .dark {
+    .kkeenobservation {
+        ${user_message_selector} [data-user-message-bubble="true"] {
+            background-color: #525452;
+        }
+        ${assistant_message_selector} [data-chatgpt-selection-message-id] {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+}
+
 /*侧边栏*/
 ${symbol1_selector} {
     position: relative;
+    scrollbar-width: thin;
+}
+${symbol1_selector} [data-app-action-sidebar-scroll] {
     scrollbar-width: thin;
 }
 
@@ -1948,32 +1886,14 @@ ${symbol1_selector} {
     transform: translateX(14px);
 }
 
-.btn-neutral {
-    cursor: pointer;
-}
-
-#new-chat-button + div, #expand-sidebar-bottom-button, #nav-toggle-button, #user-menu ~ div {
-    display: none !important;
-    max-height: 0 !important;
-}
-
-${symbol1_selector} div.overflow-y-auto a.hover\\:pr-4 {
-    padding-right: unset;
-}
-${symbol1_selector} div.overflow-y-auto {
-    scrollbar-width: thin;
-}
-.gptm {
-    position: absolute;
-    top: 1.15rem;
-    left: 0.95rem;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: white;
-}
-
-${symbol1_selector} .transition-all {
-    position: unset;
+/*展示大屏*/
+.largescreen {
+    @media (min-width:1024px) {
+        /* ChatGPT 新版前端通过 --thread-content-max-width 变量限制消息区、输入区、首页的内容宽度 */
+        main [class*="--thread-content-max-width:"] {
+            --thread-content-max-width: min(90rem, calc(100vw - 8rem)) !important;
+        }
+    }
 }
 
 .khide {
@@ -2046,9 +1966,47 @@ ${symbol1_selector} .transition-all {
             return "";
         }
         const matched = requestUrl.match(
-            /\/backend-api\/conversation\/(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
+            /\/backend-api\/conversations?\/(?:id\/)?(([^/]{4,}?){4}-[^/]{4,}?)(\?|$)/,
         );
         return matched ? matched[1] : "";
+    };
+
+    // 会话列表：/backend-api/conversations?...offset=
+    const isConversationListUrl = function (requestUrl) {
+        return (
+            typeof requestUrl === "string" &&
+            /\/backend-api\/conversations\?.*offset=/.test(requestUrl)
+        );
+    };
+
+    // 会话详情：旧版 /backend-api/conversation/<id>，新版 /backend-api/conversations/<id>?num_turns=；
+    // 新版删除为 DELETE /backend-api/conversation/id/<id>
+    const isConversationDetailUrl = function (requestUrl) {
+        return extractConversationIdFromUrl(requestUrl) !== "";
+    };
+
+    // 发送消息：旧版 /backend-api/conversation，新版 /backend-api/f/conversation
+    const isConversationSendUrl = function (requestUrl) {
+        return (
+            typeof requestUrl === "string" &&
+            /\/backend-api\/(f\/)?conversation(\?|$)/.test(requestUrl)
+        );
+    };
+
+    // 取消审计：仅当请求体已携带 supports_modapi 时才关闭，避免给新接口塞入未知字段。
+    const patchConversationSendBody = function (bodyText) {
+        try {
+            const postBody = JSON.parse(bodyText);
+            if (
+                postBody &&
+                typeof postBody === "object" &&
+                "supports_modapi" in postBody
+            ) {
+                postBody.supports_modapi = false;
+                return JSON.stringify(postBody);
+            }
+        } catch (e) {}
+        return bodyText;
     };
 
     const normalizeConversationUpdateTime = function (value) {
@@ -2062,6 +2020,28 @@ ${symbol1_selector} .transition-all {
     };
 
     const findConversationMessageForPreview = function (payload) {
+        // 新版会话详情用 messages 数组代替 mapping。
+        if (Array.isArray(payload?.messages)) {
+            const messages = payload.messages.filter(Boolean);
+            const isVisible = (message) =>
+                (message.author?.role === "assistant" ||
+                    message.author?.role === "user") &&
+                message.metadata?.is_visually_hidden_from_conversation !==
+                    true &&
+                extractConversationPreview(message) !== "";
+            const currentMessage = messages.find(
+                (message) => message.id === payload.current_node,
+            );
+            if (currentMessage && isVisible(currentMessage)) {
+                return currentMessage;
+            }
+            for (let i = messages.length - 1; i >= 0; i--) {
+                if (isVisible(messages[i])) {
+                    return messages[i];
+                }
+            }
+            return null;
+        }
         const currentNodeMessage =
             payload?.mapping?.[payload?.current_node]?.message;
         if (currentNodeMessage) {
@@ -2110,30 +2090,54 @@ ${symbol1_selector} .transition-all {
         return matched ? matched[1] : "";
     };
 
+    // 取最后一条有文本内容的助手回复；优先读 Markdown 正文，避免带上"ChatGPT 说："等屏幕阅读器文本。
+    const getLastAssistantText = function () {
+        // SPA 切换会话后旧会话节点仍在 DOM 中：限定当前渲染的会话容器；
+        // 不按视口可见性过滤单条消息，虚拟列表会让屏外消息没有 client rects。
+        const containers = Array.from(
+            $$('[data-thread-find-target="conversation"]'),
+        ).filter((el) => el.getClientRects().length > 0);
+        const scope = containers[containers.length - 1] || document;
+        const assistantMessages = Array.from(
+            $$(assistant_message_selector, scope),
+        );
+        for (let i = assistantMessages.length - 1; i >= 0; i--) {
+            const contentElement =
+                $('[data-markdown-text-style="assistant-message"]', assistantMessages[i]) ||
+                assistantMessages[i];
+            const text = `${contentElement.innerText || ""}`
+                .replace(/[\r\n]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 100);
+            if (text) {
+                return text;
+            }
+        }
+        return "";
+    };
+
     const updateEverChangingFromCurrentPage = async function () {
         const conversationId = extractConversationIdFromPageUrl();
-        const assistantMessages = getConversationMessages().filter((el) =>
-            getMessageRole(el) === "assistant",
-        );
-        const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
-        const last = `${lastAssistantMessage?.innerText || lastAssistantMessage?.textContent || ""}`
-            .replace(/[\r\n]+/g, " ")
-            .replace(/\s+/g, " ")
-            .trim()
-            .slice(0, 100);
-        if (!conversationId || !last || !global.st_ec || gv("k_everchanging", false) !== true) return;
+        const last = getLastAssistantText();
+        if (!conversationId || !last || !global.st_ec) return;
 
         const oldRecord = (await global.st_ec.get(conversationId)) || {};
-        if (gv("k_everchanging", false) !== true || extractConversationIdFromPageUrl() !== conversationId) return;
-        if (oldRecord.last === last) return;
+        // 打开历史页面不等于新消息：保留服务端时间，内容未变时不写库。
+        if (
+            gv("k_everchanging", false) !== true ||
+            extractConversationIdFromPageUrl() !== conversationId
+        ) {
+            return;
+        }
+        if (oldRecord.last === last && oldRecord.update_time) return;
         const record = {
             id: conversationId,
             title:
                 document.title && document.title !== "ChatGPT"
                     ? document.title
                     : oldRecord.title || "",
-            // Reading a history page is not a new message. Keep its server timestamp.
-            update_time: oldRecord.update_time || null,
+            update_time: oldRecord.update_time || new Date(),
             last: last,
             model: oldRecord.model || "",
         };
@@ -2149,9 +2153,7 @@ ${symbol1_selector} .transition-all {
         }
         global.currentConversationRecordTimer = setTimeout(function () {
             if (gv("k_everchanging", false) === true) {
-                updateEverChangingFromCurrentPage().catch((error) => {
-                    console.error("KeepChatGPT current conversation cache error:", error);
-                });
+                updateEverChangingFromCurrentPage();
             }
         }, delay);
     };
@@ -2173,47 +2175,97 @@ ${symbol1_selector} .transition-all {
         }
     };
 
+    // 日新月异：通过 response.clone() 旁路读取历史接口响应，不消费调用方的 body，也无需重建 Response。
+    const syncEverChangingResponse = async function (
+        response,
+        requestUrl,
+        method,
+        reqBodyText,
+    ) {
+        if (
+            gv("k_everchanging", false) !== true ||
+            !global.st_ec ||
+            typeof requestUrl !== "string" ||
+            !response.ok
+        ) {
+            return;
+        }
+        const isList = isConversationListUrl(requestUrl);
+        const crt_con_id = extractConversationIdFromUrl(requestUrl);
+        if (!isList && !(crt_con_id && (method === "GET" || method === "PATCH" || method === "DELETE"))) {
+            return;
+        }
+        try {
+            // DELETE 的新响应体只有 {"success":true}，无需读取。
+            if (method === "DELETE") {
+                await global.st_ec.delete({ id: crt_con_id });
+                scheduleEverChangingAttach(undefined, 120);
+                return;
+            }
+            const payload = parseJsonSafely(await response.clone().text());
+            if (!payload) return;
+
+            // 刷新侧边栏时，同步更新数据库中的标题、时间和摘要。
+            if (isList && Array.isArray(payload.items)) {
+                let kec_object = {};
+                await Promise.all(
+                    payload.items.map(async (el) => {
+                        const update_time = new Date(el.update_time);
+                        const ec_tmp = (await global.st_ec.get(el.id)) || {};
+                        const mergedRecord = {
+                            id: el.id,
+                            title: el.title,
+                            update_time: update_time,
+                            last: ec_tmp.last || "",
+                            model: ec_tmp.model || "",
+                        };
+                        await global.st_ec.put(mergedRecord);
+                        kec_object[el.id] = mergedRecord;
+                    }),
+                );
+                scheduleEverChangingAttach(kec_object, 220);
+                // 打开、编辑、删除单个历史对话时，增量更新对应侧边栏数据。
+            } else if (crt_con_id && method === "GET") {
+                const record = buildConversationRecordFromPayload(payload, crt_con_id);
+                if (record) {
+                    await global.st_ec.put(record);
+                    let kec_object = {};
+                    kec_object[record.id] = record;
+                    scheduleEverChangingAttach(kec_object, 120);
+                }
+            } else if (crt_con_id && method === "PATCH") {
+                const reqBody = parseJsonSafely(reqBodyText);
+                if (
+                    shouldDeleteEverChangingRecord(payload) ||
+                    shouldDeleteEverChangingRecord(reqBody)
+                ) {
+                    await global.st_ec.delete({ id: crt_con_id });
+                    scheduleEverChangingAttach(undefined, 120);
+                }
+            }
+        } catch (e) {
+            console.error("KeepChatGPT everChanging response sync error:", e);
+        }
+    };
+
     global.__test__ = Object.assign(global.__test__ || {}, {
         isTrackingRequest: isTrackingRequest,
         extractConversationPreview: extractConversationPreview,
         buildConversationRecordFromPayload: buildConversationRecordFromPayload,
         shouldDeleteEverChangingRecord: shouldDeleteEverChangingRecord,
         parseJsonSafely: parseJsonSafely,
+        extractConversationIdFromUrl: extractConversationIdFromUrl,
+        isConversationListUrl: isConversationListUrl,
+        isConversationDetailUrl: isConversationDetailUrl,
+        isConversationSendUrl: isConversationSendUrl,
+        patchConversationSendBody: patchConversationSendBody,
+        selectors: {
+            sidebar: symbol1_selector,
+            prompt: prompt_selector,
+            userMessage: user_message_selector,
+            assistantMessage: assistant_message_selector,
+        },
     });
-
-    const syncEverChangingResponse = async function (response, requestUrl, method) {
-        if (gv("k_everchanging", false) !== true || !global.st_ec || typeof requestUrl !== "string") return;
-        const isList = method === "GET" && /\/backend-api\/conversations(?:\?|$)/.test(requestUrl);
-        const id = extractConversationIdFromUrl(requestUrl);
-        if (!isList && !(id && (method === "GET" || method === "PATCH"))) return;
-        if (!response.ok) return;
-        try {
-            // Read only JSON history endpoints, never a generation stream or the caller's body.
-            const payload = parseJsonSafely(await response.clone().text());
-            if (!payload || gv("k_everchanging", false) !== true) return;
-            if (isList && Array.isArray(payload.items)) {
-                for (const item of payload.items) {
-                    if (!item.id) continue;
-                    const old = (await global.st_ec.get(item.id)) || {};
-                    if (gv("k_everchanging", false) !== true) return;
-                    await global.st_ec.put({
-                        ...old,
-                        id: item.id,
-                        title: item.title || old.title || "",
-                        update_time: normalizeConversationUpdateTime(item.update_time || item.create_time) || old.update_time,
-                    });
-                }
-            } else if (id && method === "GET") {
-                const record = buildConversationRecordFromPayload(payload, id);
-                if (record) await global.st_ec.put(record);
-            } else if (id && method === "PATCH" && shouldDeleteEverChangingRecord(payload)) {
-                await global.st_ec.delete({ id: id });
-            }
-            if (gv("k_everchanging", false) === true) scheduleEverChangingAttach(undefined, 120);
-        } catch (error) {
-            console.error("KeepChatGPT history cache sync error:", error);
-        }
-    };
 
     const hookFetch = function () {
         const rawSendBeacon = navigator.sendBeacon?.bind(navigator);
@@ -2222,8 +2274,14 @@ ${symbol1_selector} .transition-all {
                 let fetchReqUrl = "";
                 let fetchReqOptions = {};
 
-                if (typeof argumentsList[0] === "string" || argumentsList[0] instanceof URL) {
-                    fetchReqUrl = argumentsList[0] instanceof URL ? argumentsList[0].href : argumentsList[0];
+                if (
+                    typeof argumentsList[0] === "string" ||
+                    argumentsList[0] instanceof URL
+                ) {
+                    fetchReqUrl =
+                        argumentsList[0] instanceof URL
+                            ? argumentsList[0].href
+                            : argumentsList[0];
                     fetchReqOptions = argumentsList[1] || {};
                 } else if (argumentsList[0] instanceof Request) {
                     fetchReqOptions = argumentsList[0];
@@ -2254,14 +2312,13 @@ ${symbol1_selector} .transition-all {
                         // 取消审计2：发送会话请求前，关闭 modapi 支持位。
                     } else if (
                         gv("k_closeModer", false) &&
-                        typeof fetchReqUrl === "string" &&
-                        /\/backend-api\/conversation(\?|$)/.test(fetchReqUrl) &&
+                        isConversationSendUrl(fetchReqUrl) &&
                         argumentsList[1] &&
                         typeof argumentsList[1].body === "string"
                     ) {
-                        const post_body = JSON.parse(argumentsList[1].body);
-                        post_body.supports_modapi = false;
-                        argumentsList[1].body = JSON.stringify(post_body);
+                        argumentsList[1].body = patchConversationSendBody(
+                            argumentsList[1].body,
+                        );
                         // 拦截跟踪：必须返回标准 Response，避免调用方执行 text/json 时崩溃。
                     } else if (
                         gv("k_intercepttracking", false) &&
@@ -2308,13 +2365,20 @@ ${symbol1_selector} .transition-all {
                         if (
                             gv("k_everchanging", false) === true &&
                             fetchReqMethod === "POST" &&
-                            typeof fetchReqUrl === "string" &&
-                            /\/backend-api\/f\/conversation(\?|$)/.test(fetchReqUrl)
+                            isConversationSendUrl(fetchReqUrl)
                         ) {
                             scheduleCurrentConversationRecordUpdate(3000);
                         }
 
-                        syncEverChangingResponse(response, fetchReqUrl, fetchReqMethod);
+                        // 刷新侧边栏、打开、编辑、删除历史对话时，增量更新侧边栏数据。
+                        syncEverChangingResponse(
+                            response,
+                            fetchReqUrl,
+                            fetchReqMethod,
+                            typeof argumentsList[1]?.body === "string"
+                                ? argumentsList[1].body
+                                : "",
+                        );
 
                         return response;
                     })
@@ -2374,16 +2438,17 @@ ${symbol1_selector} .transition-all {
             $("body").classList.add("ever-changing");
             everChanging.startObserver();
             scheduleEverChangingAttach(undefined, 60);
-            scheduleCurrentConversationRecordUpdate(0);
         } else {
             $(symbol1_selector)?.classList.remove("knav");
             $("body").classList.remove("ever-changing");
             everChanging.stopObserver();
             clearTimeout(global.kecAttachTimer);
             clearTimeout(global.currentConversationRecordTimer);
-            $$("[data-kcg-history-host]").forEach((el) => el.removeAttribute("data-kcg-history-host"));
-            syncMarkedElements("data-kcg-history-row", []);
             $$("[data-kcg-everchanging='true']").forEach((el) => el.remove());
+            $$("[data-kcg-original-hidden='true']").forEach((el) => {
+                el.style.display = "";
+                el.removeAttribute("data-kcg-original-hidden");
+            });
         }
     };
 
@@ -2393,32 +2458,16 @@ ${symbol1_selector} .transition-all {
         if (everChanging.observer || !document.body) {
             return;
         }
-        everChanging.observer = new MutationObserver(function (mutations) {
-            const relevantSelector = symbol1_selector + ", " + transcript_selector;
-            const externalChange = mutations.some((mutation) => {
-                const target = mutation.target.nodeType === 1 ? mutation.target : mutation.target.parentElement;
-                if (target?.closest('[data-kcg-everchanging], #kcg, .kmenu, .kdialog')) return false;
-                if (!target?.closest(relevantSelector) &&
-                    ![...mutation.addedNodes, ...mutation.removedNodes].some((node) =>
-                        node.nodeType === 1 && (node.matches(relevantSelector) || node.querySelector(relevantSelector)),
-                    )) return false;
-                return mutation.type === "attributes" || mutation.type === "characterData" ||
-                    [...mutation.addedNodes, ...mutation.removedNodes].some((node) =>
-                        node.nodeType !== 1 || !node.matches('[data-kcg-everchanging]'),
-                    );
-            });
-            if (!externalChange || gv("k_everchanging", false) !== true) {
+        everChanging.observer = new MutationObserver(function () {
+            if (gv("k_everchanging", false) !== true) {
                 return;
             }
             scheduleEverChangingAttach();
             scheduleCurrentConversationRecordUpdate();
         });
         everChanging.observer.observe(document.body, {
-            characterData: true,
             childList: true,
             subtree: true,
-            attributes: true,
-            attributeFilter: ["href"],
         });
     };
 
@@ -2429,66 +2478,85 @@ ${symbol1_selector} .transition-all {
         }
     };
 
-    const syncHistoryRows = function () {
-        const rows = new Set();
-        $$("[data-kcg-history-host]").forEach((host) => {
-            const row = host.closest("li, [role='listitem']");
-            if (!row) return;
-            for (let el = host.parentElement; el && row.contains(el); el = el.parentElement) {
-                rows.add(el);
+    const attachDate = function (kec_object) {
+        $$(`${symbol1_selector} a[href*='/c/']`).forEach(async (el) => {
+            let a_id;
+            const a_id_m = el.href.match(
+                "/(([^/]{4,}?){4}-[^/]{4,}?)(\\?|$)(\\?|$)",
+            );
+            if (a_id_m) {
+                a_id = a_id_m[1];
+            } else {
+                return;
+            }
+            let kec_obj_el;
+            if (kec_object) {
+                kec_obj_el = kec_object[a_id];
+            } else {
+                if (global.st_ec) {
+                    kec_obj_el = await global.st_ec.get(a_id);
+                } else {
+                    kec_obj_el = {};
+                }
+            }
+            const title = (kec_obj_el && kec_obj_el.title) || "";
+            const update_time = (kec_obj_el && kec_obj_el.update_time) || "";
+            const last = (kec_obj_el && kec_obj_el.last) || "";
+            const model = (kec_obj_el && kec_obj_el.model) || "";
+            const previewText = last || model || "";
+
+            if (!title || !update_time) return;
+            if (!previewText) {
+                $("[data-kcg-everchanging='true']", el)?.remove();
+                $$("[data-kcg-original-hidden='true']", el).forEach((node) => {
+                    node.style.display = "";
+                    node.removeAttribute("data-kcg-original-hidden");
+                });
+                return;
+            }
+            if (
+                !$(".navtitle", el) ||
+                !$(".navdate", el) ||
+                (previewText && !$(".navlast", el))
+            ) {
+                const cdiv_old =
+                    $(`[data-thread-title]`, el) || el.firstElementChild;
+                if (cdiv_old && !cdiv_old.hasAttribute("data-kcg-everchanging")) {
+                    cdiv_old.style.display = "none";
+                    cdiv_old.setAttribute("data-kcg-original-hidden", "true");
+                }
+                const cdiv_new = document.createElement("div");
+                cdiv_new.setAttribute("data-kcg-everchanging", "true");
+                cdiv_new.innerHTML = `<div class="navhead"><div class="navtitle">${htmlEncode(title)}</div><div class="navdate">${formatDate2(update_time)}</div></div>${previewText ? `<div class="navlast">${htmlEncode(previewText)}</div>` : ``}`;
+                const renderedNode = $("[data-kcg-everchanging='true']", el);
+                if (renderedNode) {
+                    renderedNode.replaceWith(cdiv_new);
+                } else {
+                    el.appendChild(cdiv_new);
+                }
+            } else if (
+                $(".navtitle", el).textContent !== title ||
+                $(".navdate", el).textContent !== formatDate2(update_time) ||
+                ($(".navlast", el)?.textContent || "") !== previewText
+            ) {
+                $(".navtitle", el).textContent = title;
+                $(".navdate", el).textContent = formatDate2(update_time);
+                if (previewText) {
+                    if ($(".navlast", el)) {
+                        $(".navlast", el).textContent = previewText;
+                    } else {
+                        const navlast = document.createElement("div");
+                        navlast.className = "navlast";
+                        navlast.textContent = previewText;
+                        $("[data-kcg-everchanging='true']", el)?.appendChild(
+                            navlast,
+                        );
+                    }
+                } else {
+                    $(".navlast", el)?.remove();
+                }
             }
         });
-        syncMarkedElements("data-kcg-history-row", rows);
-    };
-
-    const attachDate = async function (kec_object) {
-        const links = $$(symbol1_selector + " a[href*='/c/']");
-        for (const link of links) {
-            const match = new URL(link.href).pathname.match(/\/c\/([^/]+)\/?$/);
-            if (!match || gv("k_everchanging", false) !== true) continue;
-            const id = match[1];
-            let record;
-            try {
-                record = kec_object?.[id] || (global.st_ec && await global.st_ec.get(id));
-            } catch (error) {
-                console.error("KeepChatGPT sidebar cache read error:", error);
-                continue;
-            }
-            if (!link.isConnected || gv("k_everchanging", false) !== true ||
-                new URL(link.href).pathname.match(/\/c\/([^/]+)\/?$/)?.[1] !== id) continue;
-            const date = record?.update_time ? new Date(record.update_time) : null;
-            const dateText = date && !Number.isNaN(date.getTime()) ? formatDate2(date) : "";
-            const preview = [record?.last, record?.model].filter(Boolean).join(" · ");
-            // New rows use an empty overlay link; preserve its label and sibling action menu.
-            const host = !link.textContent.trim() || window.getComputedStyle(link).position === "absolute"
-                ? link.parentElement : link;
-            if (!host) continue;
-            Array.from(host.children).filter((el) => el.hasAttribute("data-kcg-conversation-id") &&
-                el.getAttribute("data-kcg-conversation-id") !== id).forEach((el) => el.remove());
-            let annotation = Array.from(host.children).find((el) => el.getAttribute("data-kcg-conversation-id") === id);
-            if (!dateText && !preview) {
-                annotation?.remove();
-                host.removeAttribute("data-kcg-history-host");
-                continue;
-            }
-            host.setAttribute("data-kcg-history-host", "");
-            if (!annotation) {
-                annotation = document.createElement("div");
-                annotation.setAttribute("data-kcg-everchanging", "true");
-                annotation.setAttribute("data-kcg-conversation-id", id);
-                const dateNode = document.createElement("div");
-                dateNode.className = "navdate";
-                const previewNode = document.createElement("div");
-                previewNode.className = "navlast";
-                annotation.append(dateNode, previewNode);
-                host.appendChild(annotation);
-            }
-            const dateNode = $(".navdate", annotation);
-            const previewNode = $(".navlast", annotation);
-            if (dateNode.textContent !== dateText) dateNode.textContent = dateText;
-            if (previewNode.textContent !== preview) previewNode.textContent = preview;
-        }
-        syncHistoryRows();
     };
 
     const verInt = function (vs) {
@@ -2539,6 +2607,7 @@ ${symbol1_selector} .transition-all {
     克隆对话
     */
     const cloneChat = function (action) {
+        cloneChat.firstTarget = null;
         if (action === true) {
             window.addEventListener("click", cloneChat.listen_Click);
         } else {
@@ -2546,8 +2615,7 @@ ${symbol1_selector} .transition-all {
         }
     };
 
-    const setPromptPlainText = function (promptTextarea, text) {
-        const contentProseMirror = text.split(/\r?\n/).map((line) => `<p>${line ? htmlEncode(line) : "<br>"}</p>`).join("");
+    const setPromptRichText = function (promptTextarea, contentProseMirror) {
         promptTextarea.innerHTML = "";
         promptTextarea.focus();
 
@@ -2561,141 +2629,182 @@ ${symbol1_selector} .transition-all {
             selection.addRange(range);
         }
 
-        const fragment = range.createContextualFragment(contentProseMirror);
-        range.insertNode(fragment);
-        range.collapse(false);
-        if (selection) {
-            selection.removeAllRanges();
-            selection.addRange(range);
+        if (typeof range.createContextualFragment === "function") {
+            const fragment = range.createContextualFragment(contentProseMirror);
+            range.insertNode(fragment);
+            range.collapse(false);
+            if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        } else {
+            promptTextarea.innerHTML = contentProseMirror;
         }
 
         promptTextarea.dispatchEvent(new Event("input", { bubbles: true }));
     };
 
+    /*
+    纯文本写入：每行一个 <p>，用片段插入。
+    旧实现使用 document.execCommand("insertText")，在新版 ProseMirror 编辑器里
+    会把每个换行变成"段落+空段落"（行间出现空行）。
+    */
+    const setPromptPlainText = function (promptTextarea, text) {
+        const contentProseMirror = `${text || ""}`
+            .split(/\r?\n/)
+            .map((line) => `<p>${htmlEncode(line) || "<br>"}</p>`)
+            .join("");
+        setPromptRichText(promptTextarea, contentProseMirror);
+    };
+
     cloneChat.listen_Click = function (event) {
-        if (gv("k_clonechat", false) !== true || !document.body.classList.contains("kkeenobservation")) return;
-        const clickedElement = event.target instanceof Element
-            ? event.target : document.elementFromPoint(event.clientX, event.clientY);
-        const bubble = clickedElement?.closest('[data-kcg-message-role="user"]');
-        const main = getActiveMain();
-        if (!main || !bubble || bubble.closest("main") !== main || !bubble.closest(transcript_selector)) return;
+        event.stopPropagation();
+        const clickedElement = document.elementFromPoint(
+            event.clientX,
+            event.clientY,
+        );
+        if (clickedElement && clickedElement.matches(user_message_selector)) {
+            // 获取该元素的边界信息
+            const rect = clickedElement.getBoundingClientRect();
 
-        // Hit-test the avatar on the marked message bubble.
-        // Its dimensions vary with font size and browser zoom.
-        const avatar = window.getComputedStyle(bubble, "::after");
-        if (avatar.content === "none" || avatar.content === "normal" || avatar.display === "none") return;
-        const width = parseFloat(avatar.width);
-        const height = parseFloat(avatar.height);
-        const right = parseFloat(avatar.right);
-        const top = parseFloat(avatar.top);
-        if (![width, height, right, top].every(Number.isFinite) || width <= 0 || height <= 0) return;
-        const rect = bubble.getBoundingClientRect();
-        const logoRight = rect.right - right;
-        const logoTop = rect.top + top;
-        if (event.clientX < logoRight - width || event.clientX > logoRight ||
-            event.clientY < logoTop || event.clientY > logoTop + height) return;
+            // 伪元素的宽度和高度是2rem
+            const logoWidth = 32;
+            const logoHeight = 32;
 
-        const contentElement = $(".whitespace-pre-wrap", bubble);
-        const promptTextarea = $(prompt_selector, main);
-        if (!contentElement || !promptTextarea) return;
-        // Copy message text, never its rendered bold/inline styling into the editor.
-        const content = contentElement.innerText ?? contentElement.textContent;
-        setPromptPlainText(promptTextarea, content);
+            // 计算伪元素所在区域的边界
+            const logoRight = rect.right;
+            const logoLeft = rect.right - logoWidth;
+            const logoTop = rect.top;
+            const logoBottom = rect.top + logoHeight;
+
+            // 判断鼠标点击的位置是否在伪元素范围内
+            if (
+                event.clientX >= logoLeft &&
+                event.clientX <= logoRight &&
+                event.clientY >= logoTop &&
+                event.clientY <= logoBottom
+            ) {
+                const contentElement =
+                    $(".whitespace-pre-wrap", clickedElement) ||
+                    $("[data-user-message-bubble]", clickedElement);
+                const promptTextarea = getPromptTextarea();
+                if (!contentElement || !promptTextarea) return;
+                setPromptPlainText(promptTextarea, contentElement.innerText.trim());
+            }
+        }
     };
 
     /*
     净化页面
     */
     const purifyPage = function () {
-        const main = getActiveMain();
-        const targets = new Set();
-        if (main && gv("k_cleanlyhome", false) === true) {
-            const isHome = !/\/c\//.test(location.pathname) && getConversationMessages().length === 0;
-            if (isHome && $(prompt_selector, main)) {
-                $$("h1", main).forEach((el) => targets.add(el));
-                $$("button", main).forEach((button) => {
-                    if (/^(对该建议不感兴趣|對此建議不感興趣|Not interested in this suggestion)$/i.test(button.getAttribute("aria-label") || button.textContent.trim())) {
-                        for (let card = button.parentElement; card && card !== main; card = card.parentElement) {
-                            if ($(prompt_selector, card) || card.closest("form")) break;
-                            if ($$("button", card).length > 1) {
-                                targets.add(card);
-                                break;
-                            }
-                        }
-                    }
-                });
+        if (
+            location.href.match(
+                /https:\/\/(chatgpt\.com|chat\.openai\.com)\/\??/,
+            )
+        ) {
+            //添加专属logo
+            if (
+                $("main h1") &&
+                $("main h1").innerText.match(/^ChatGPT(\nPLUS)?$/)
+            ) {
+                $("main h1").classList.add("text-gray-200");
+                const nSpan = document.createElement("span");
+                nSpan.className =
+                    "bg-yellow-200 text-yellow-900 py-0.5 px-1.5 text-xs md:text-sm rounded-md uppercase";
+                nSpan.textContent = `KEEP`;
+                $("main h1").appendChild(nSpan);
             }
-            $$("small, p, span, div", main).forEach((el) => {
-                if (el.childElementCount || el.closest(message_selector + ', [contenteditable], form, [role="alert"], [role="dialog"]')) return;
-                if (/^(ChatGPT 可能会出错[。．]|ChatGPT 可能會出錯[。．]|ChatGPT can make mistakes\.)/.test(el.textContent.trim())) targets.add(el);
-            });
         }
-        syncMarkedElements("data-kcg-purify", targets);
     };
 
     /*
     言无不尽
+    新版前端的"继续生成"按钮以可访问名称（aria-label/文本）标识，旧版按 SVG 路径匹配的方式已失效。
     */
-    const continuationButtons = new Map();
-    const isContinuationButton = function (button) {
-        const main = getActiveMain();
-        if (!main || !button.isConnected || button.closest("main") !== main || button.disabled ||
-            button.getAttribute("aria-disabled") === "true" ||
-            button.closest('[hidden], [aria-hidden="true"], [contenteditable], [role="dialog"], aside, ' + message_selector)) {
-            return false;
-        }
-        const label = (button.getAttribute("aria-label") || button.textContent).trim();
-        return /^(Continue generating|继续生成|繼續生成|繼續產生|Continuar generando)$/i.test(label);
-    };
-
     const speakCompletely = function () {
-        const enabled = gv("k_speakcompletely", false) === true;
-        const isCurrent = (button, state) => isContinuationButton(button) &&
-            button.closest("main") === state.main && location.pathname === state.pathname;
-        continuationButtons.forEach((state, button) => {
-            if (enabled && isCurrent(button, state)) return;
-            clearTimeout(state.timer);
-            continuationButtons.delete(button);
-        });
-        if (!enabled) return;
-        const button = Array.from($$("main button")).find((candidate) =>
-            !continuationButtons.has(candidate) && isContinuationButton(candidate),
-        );
-        if (!button) return;
-        // Reused controls start a new cycle only after leaving their previous context/state.
-        const state = { main: button.closest("main"), pathname: location.pathname };
-        continuationButtons.set(button, state);
-        state.timer = setTimeout(function () {
-            if (!isCurrent(button, state) ||
-                gv("k_speakcompletely", false) !== true) {
-                continuationButtons.delete(button);
-                return;
+        if (gv("k_speakcompletely", false) === true) {
+            const continueButton = Array.from($$("main button")).find(
+                (button) => {
+                    if (
+                        button.disabled ||
+                        button.getAttribute("aria-disabled") === "true" ||
+                        button.dataset.kcgContinuation === "true"
+                    ) {
+                        return false;
+                    }
+                    if (
+                        button.closest(
+                            '[role="dialog"], [contenteditable="true"]',
+                        )
+                    ) {
+                        return false;
+                    }
+                    const label = (
+                        button.getAttribute("aria-label") ||
+                        button.textContent ||
+                        ""
+                    ).trim();
+                    return /^(继续生成|繼續生成|繼續產生|Continue generating|Continuar generando)$/i.test(
+                        label,
+                    );
+                },
+            );
+            if (continueButton) {
+                continueButton.dataset.kcgContinuation = "true";
+                setTimeout(function () {
+                    if (
+                        gv("k_speakcompletely", false) === true &&
+                        continueButton.isConnected
+                    ) {
+                        continueButton.click();
+                    }
+                }, 1000);
             }
-            button.click();
-        }, 1000);
+        }
     };
 
     const dataSec = function () {
-        muob(prompt_selector, document.body, (promptTextarea) => {
+        muob(prompt_selector, $(`body`), (promptTextarea) => {
+            // 对每个出现的输入框挂监听（含旧会话隐藏框，无副作用）；扫描时以事件源为准。
             promptTextarea.addEventListener("input", dataSec.listen_input);
             promptTextarea.addEventListener("paste", dataSec.listen_input);
         });
     };
 
     dataSec.listen_input = function (event) {
-        const main = getActiveMain();
-        const promptTextarea = event?.currentTarget || (main && $(prompt_selector, main));
-        const pathname = location.pathname;
-        const scanPrompt = function () {
-            if (!promptTextarea?.isConnected || !promptTextarea.matches(prompt_selector) ||
-                promptTextarea.closest("main") !== getActiveMain() ||
-                location.pathname !== pathname) return;
+        // 粘贴时同步读取剪贴板文本：编辑器若异步完成插入，可用作复查依据。
+        const clipboardText =
+            event?.type === "paste"
+                ? event.clipboardData?.getData("text/plain") || ""
+                : "";
+        const scanPrompt = function (recheck) {
+            const promptTextarea = getPromptTextarea();
+            if (!promptTextarea || !promptTextarea.isConnected) return;
 
+            const editorText =
+                "value" in promptTextarea
+                    ? promptTextarea.value
+                    : promptTextarea.innerText || promptTextarea.textContent;
             const result = sanitizeDataSecText(
-                promptTextarea.innerText || promptTextarea.textContent,
+                editorText,
                 gv("k_datasecblocklist", datasec_blocklist_default),
             );
-            if (!result.matches.join(`\n`).trim()) return;
+            if (!result.matches.join(`\n`).trim()) {
+                // 首次未命中且剪贴板确有敏感数据：延时复查一次，兜住异步插入。
+                if (!recheck && clipboardText) {
+                    const clipboardResult = sanitizeDataSecText(
+                        clipboardText,
+                        gv("k_datasecblocklist", datasec_blocklist_default),
+                    );
+                    if (clipboardResult.matches.join(`\n`).trim()) {
+                        setTimeout(function () {
+                            scanPrompt(true);
+                        }, 400);
+                    }
+                }
+                return;
+            }
 
             setPromptPlainText(promptTextarea, result.text);
             ndialog(
@@ -2707,7 +2816,7 @@ ${symbol1_selector} .transition-all {
                 result.matches.join(`\n`),
             );
         };
-        event?.type === "paste" ? setTimeout(scanPrompt, 0) : scanPrompt();
+        event?.type === "paste" ? setTimeout(scanPrompt, 0) : scanPrompt(false);
     };
 
     const sanitizeDataSecText = function (
@@ -2786,6 +2895,7 @@ ${symbol1_selector} .transition-all {
         interceptTracking.observer = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
                 if (mutation.type === "attributes") {
+                    // 先插入、后补 src 的脚本同样要拦截。
                     interceptTracking.blockScript(mutation.target);
                     continue;
                 }
@@ -2882,16 +2992,17 @@ ${symbol1_selector} .transition-all {
     const nInterval1Fun = function () {
         byebyeCF();
         if ($(symbol1_selector) || $(symbol2_selector)) {
-            if ($(symbol1_selector) && (!$("#kcg") || !$(".kmenu"))) loadKCG();
+            if ($(symbol1_selector) && !$("#kcg")) loadKCG();
             setIfr();
+            speakCompletely();
+            applyKeenObservationAvatar();
         }
-        // Conversation rendering and continuation also run with a collapsed sidebar.
-        syncPageFeatures();
-        speakCompletely();
     };
 
     const nInterval2Fun = function () {
-        keepChat();
+        if ($(symbol1_selector) || $(symbol2_selector)) {
+            keepChat();
+        }
     };
 
     /*
@@ -2902,17 +3013,41 @@ ${symbol1_selector} .transition-all {
             email: `default`,
             image_url: ``,
         };
-        for (const s of $$("script")) {
-            const match = s.textContent?.match(/\\"email\\",\\"(.*?)\\"/);
-            if (match) {
-                user_info.email = match[1];
-            }
-        }
         global.st_ec = new IndexedDB(
             `KeepChatGPT_${user_info.email}`,
             "conversations",
         );
+        // 新版页面不再内嵌邮箱与头像，改由会话接口读取；读取完成前数据库操作先等待，避免写入错误的库。
+        if (typeof fetch === "function") {
+            global.st_ec.ready = fetch(u, { credentials: "same-origin" })
+                .then((response) => response.json())
+                .then((session) => {
+                    const user = session?.user || {};
+                    user_info.email = user.email || user_info.email;
+                    user_info.image_url =
+                        user.image || user.picture || user_info.image_url;
+                    global.st_ec.dbName = `KeepChatGPT_${user_info.email}`;
+                })
+                .catch((e) => {
+                    console.log(`KeepChatGPT: USERINFO: ERROR: ${e}`);
+                });
+        }
         return user_info;
+    };
+
+    // 明察秋毫头像：优先会话接口返回的头像，其次取侧边栏账号按钮里的头像。
+    const applyKeenObservationAvatar = function () {
+        const imageUrl =
+            user_info.image_url ||
+            $('[data-sidebar-navigation-root] button[aria-haspopup="menu"] img')
+                ?.src ||
+            ``;
+        if (global.keenObservationAvatar === imageUrl) return;
+        global.keenObservationAvatar = imageUrl;
+        document.documentElement.style.setProperty(
+            "--keenobservation-user-image-url",
+            imageUrl ? `url('${imageUrl}')` : `none`,
+        );
     };
 
     /*
@@ -2933,18 +3068,20 @@ ${symbol1_selector} .transition-all {
     let nInterval1 = null;
     let nInterval2 = null;
     let interval2Time = parseInt(gv("k_interval", 50));
-    if (!Number.isFinite(interval2Time) || interval2Time < 10) interval2Time = 50;
-    const kcgBootstrapDelay = 600;
+    if (!Number.isFinite(interval2Time) || interval2Time < 10) {
+        interval2Time = 50;
+    }
+    const kcgBootstrapQuietTime = 600;
 
     const bootKCG = function () {
         if (kcgBooted) return;
+        if (!$(symbol1_selector)) return;
+
+        kcgBooted = true;
         if (kcgBootTimer) {
             clearTimeout(kcgBootTimer);
             kcgBootTimer = null;
         }
-        if (!$(symbol1_selector) && !getActiveMain()) return;
-
-        kcgBooted = true;
         if (kcgBootstrapObserver) {
             kcgBootstrapObserver.disconnect();
             kcgBootstrapObserver = null;
@@ -2965,11 +3102,15 @@ ${symbol1_selector} .transition-all {
         if (kcgBooted) return;
 
         onDomStable(() => {
-            if (kcgBooted || kcgBootTimer) return;
-            if (!$(symbol1_selector) && !getActiveMain()) return;
+            if (kcgBooted) return;
+            if (!$(symbol1_selector)) return;
 
-            // Streaming updates must not keep postponing startup after the shell exists.
-            kcgBootTimer = setTimeout(bootKCG, kcgBootstrapDelay);
+            if (kcgBootTimer) {
+                clearTimeout(kcgBootTimer);
+            }
+
+            // Wait for a short DOM-quiet window instead of using a fixed startup delay.
+            kcgBootTimer = setTimeout(bootKCG, kcgBootstrapQuietTime);
         });
     };
 
